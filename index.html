@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Section A - Applied AI & Full Stack Portfolio | Gopi Krishna N</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #080c14;
+            color: #f1f5f9;
+        }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(51, 65, 85, 0.55);
+        }
+        .hero-glow {
+            background: radial-gradient(circle at 50% 0%, rgba(14, 165, 233, 0.18) 0%, rgba(15, 23, 42, 0) 70%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#080c14] text-slate-100 selection:bg-cyan-500 selection:text-white">
+
+    <!-- Top Navigation -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80 px-4 sm:px-8 py-3.5 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/25">
+                <i data-lucide="layers" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <h1 class="text-base font-bold text-white tracking-tight">Section A Engineering Portfolio</h1>
+                <p class="text-xs text-slate-400">Curated by <strong class="text-cyan-400">Gopi Krishna N</strong></p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3">
+            <a href="https://github.com/gopi-krishna-ai" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+                <i data-lucide="github" class="w-4 h-4"></i>
+                <span>GitHub Profile</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-glow pt-12 pb-10 px-4 sm:px-6 max-w-6xl mx-auto w-full text-center space-y-6">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold bg-cyan-950/80 text-cyan-300 border border-cyan-800/80 shadow-inner">
+            <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i> All 22 Applied Projects Deployed &amp; Verified
+        </div>
+        <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight max-w-4xl mx-auto leading-tight sm:leading-tight">
+            Applied Artificial Intelligence &amp; Full-Stack Systems Portfolio
+        </h2>
+        <p class="text-sm sm:text-base text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            Twenty-two real-world software applications spanning Computer Vision, NLP, FinOps, Defensive Cybersecurity, and Full-Stack EdTech, trained on authentic public datasets and deployed with live interactive demonstrations.
+        </p>
+
+        <!-- Stats Bar -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto pt-4">
+            <div class="glass-panel p-4 rounded-xl text-center">
+                <div class="text-2xl sm:text-3xl font-extrabold text-cyan-400 font-mono">22</div>
+                <div class="text-xs text-slate-400 mt-1">Total Projects</div>
+            </div>
+            <div class="glass-panel p-4 rounded-xl text-center">
+                <div class="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono">100%</div>
+                <div class="text-xs text-slate-400 mt-1">Live Free Deployed</div>
+            </div>
+            <div class="glass-panel p-4 rounded-xl text-center">
+                <div class="text-2xl sm:text-3xl font-extrabold text-purple-400 font-mono">207K+</div>
+                <div class="text-xs text-slate-400 mt-1">Police / Telemetry Records</div>
+            </div>
+            <div class="glass-panel p-4 rounded-xl text-center">
+                <div class="text-2xl sm:text-3xl font-extrabold text-amber-400 font-mono">MIT</div>
+                <div class="text-xs text-slate-400 mt-1">Open Source License</div>
+            </div>
+        </div>
+
+        <!-- Search and Filter Bar -->
+        <div class="max-w-2xl mx-auto space-y-3 pt-6">
+            <div class="relative">
+                <i data-lucide="search" class="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                <input type="text" id="searchInput" oninput="filterProjects()" placeholder="Search by name, technology (e.g. YOLO, React, Flask, Scikit), or category..." class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl pl-11 pr-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition shadow-lg">
+            </div>
+            <div class="flex flex-wrap justify-center gap-2 pt-2" id="filterPills">
+                <button onclick="setCategoryFilter('all')" class="cat-pill active px-3 py-1 rounded-full text-xs font-semibold bg-cyan-600 text-white transition">All (22)</button>
+                <button onclick="setCategoryFilter('computer-vision')" class="cat-pill px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition">Computer Vision</button>
+                <button onclick="setCategoryFilter('machine-learning')" class="cat-pill px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition">Machine Learning</button>
+                <button onclick="setCategoryFilter('cybersecurity')" class="cat-pill px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition">Cybersecurity</button>
+                <button onclick="setCategoryFilter('full-stack')" class="cat-pill px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition">Full Stack</button>
+                <button onclick="setCategoryFilter('nlp')" class="cat-pill px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition">NLP &amp; Audio</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Grid -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 pb-16">
+        <div id="projectsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="machine-learning-amp;-geospatial" data-title="guardpath ai ai-powered women safety &amp; safe route navigation system machine learning &amp; geospatial">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        Machine Learning &amp; Geospatial
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">GuardPath AI</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">AI-Powered Women Safety &amp; Safe Route Navigation System</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Intelligent urban navigation platform leveraging real-world crime data (207,000+ Bengaluru police records) to compute safety scores, recommend well-lit secure transit routes, and trigger real-time emergency SOS alerts.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> Random Forest trained on 207,617 Bengaluru police records; 94.2% route safety classification accuracy.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Flask</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Random Forest</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Scikit-Learn</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+3</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/GuardPath-AI/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/GuardPath-AI" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="full-stack-amp;-edtech-ai" data-title="studyai: smart study planner intelligent adaptive study planner &amp; performance predictor full stack &amp; edtech ai">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        Full Stack &amp; EdTech AI
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">StudyAI: Smart Study Planner</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Intelligent Adaptive Study Planner &amp; Performance Predictor</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Personalized study scheduling engine combining predictive grade analytics with adaptive revision prioritization algorithms to maximize student exam readiness and retention.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> 83% accuracy in predicting exam score outcomes based on student study patterns and historical review intervals.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">React</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">TypeScript</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Vite</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Tailwind CSS</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+4</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/AI-Assisted-Smart-Study-Planner/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/AI-Assisted-Smart-Study-Planner" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="computer-vision-amp;-explainable-ai" data-title="ai manufacturing defect detection industrial defect inspection with explainable grad-cam heatmaps computer vision &amp; explainable ai">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        Computer Vision &amp; Explainable AI
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">AI Manufacturing Defect Detection</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Industrial Defect Inspection with Explainable Grad-CAM Heatmaps</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Deep learning visual inspection pipeline utilizing Convolutional Neural Networks and Gradient-weighted Class Activation Mapping (Grad-CAM) for real-time industrial surface defect localization.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> 96.4% defect classification accuracy with interpretable gradient heatmaps highlighting crack &amp; void regions.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">PyTorch</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Streamlit</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">OpenCV</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+3</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/AI-Manufacturing-GradCAM/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/AI-Manufacturing-GradCAM" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="agricultural-ai-amp;-full-stack" data-title="agrimitra ai smart agriculture advisory, disease detection &amp; farmer marketplace agricultural ai &amp; full stack">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        Agricultural AI &amp; Full Stack
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">AgriMitra AI</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Smart Agriculture Advisory, Disease Detection &amp; Farmer Marketplace</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Comprehensive agritech portal offering automated crop disease diagnosis, localized weather-informed planting advice, yield optimization, and a direct farm-to-consumer e-commerce marketplace.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> Integrated multi-crop disease classification and dynamic multi-seller farmer product marketplace.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Flask</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Computer Vision</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Weather API</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+3</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/AgriMitra-AI/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/AgriMitra-AI" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="computer-vision" data-title="automated weed detection system precision agriculture weed identification using real-time yolov8 computer vision">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        Computer Vision
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">Automated Weed Detection System</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Precision Agriculture Weed Identification using Real-Time YOLOv8</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Ultra-fast object detection system deploying YOLOv8 to identify and localize weeds versus crops in real-time, enabling targeted herbicide application and precision farming.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> Real-time inference at 45+ FPS with mAP@0.5 of 0.892 on diverse agricultural field imagery.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">YOLOv8</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Ultralytics</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">OpenCV</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+2</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/Automated-Weed-Detection-YOLO/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/Automated-Weed-Detection-YOLO" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="nlp-amp;-audio-ai" data-title="sentionet: real-time sentiment analysis multimodal speech &amp; text emotion intelligence engine nlp &amp; audio ai">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        NLP &amp; Audio AI
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">SentioNet: Real-Time Sentiment Analysis</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Multimodal Speech &amp; Text Emotion Intelligence Engine</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Dual-engine emotion classification system analyzing streaming social text and live microphone speech acoustics to detect nuanced sentiment polarity and psychological affect.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> 84.7% text sentiment accuracy on Sentiment140 and acoustic feature extraction across pitch/energy spectral bands.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Flask</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Scikit-Learn</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">TF-IDF</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+3</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/Real-Time-Sentiment-Analysis-SentioNet/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/Real-Time-Sentiment-Analysis-SentioNet" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="full-stack-amp;-edtech-ai" data-title="ai aptitude mastery coach full-stack competitive placement &amp; aptitude diagnostic coach full stack &amp; edtech ai">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        Full Stack &amp; EdTech AI
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">AI Aptitude Mastery Coach</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Full-Stack Competitive Placement &amp; Aptitude Diagnostic Coach</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Comprehensive placement training hub covering Quantitative, Logical, Verbal, DI, and Technical CS aptitude with real-time test engines, timed assessments, and weakness diagnostic AI.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> Over 1,200 curated placement problems across 6 core aptitude disciplines with real-time analytics.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">FastAPI</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">React</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">TypeScript</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+3</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/CSE-Aptitude-Test-Practice-Hub/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/CSE-Aptitude-Test-Practice-Hub" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="finops-amp;-cloud-ai" data-title="cloudcost ai intelligent cloud infrastructure cost optimizer &amp; anomaly detector finops &amp; cloud ai">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        FinOps &amp; Cloud AI
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">CloudCost AI</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Intelligent Cloud Infrastructure Cost Optimizer &amp; Anomaly Detector</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Predictive FinOps utility that ingests multi-cloud billing metrics, discovers idle compute resources, flags anomalous expenditure spikes, and automates rightsizing recommendations.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> Identifies up to 34% cost savings on simulated AWS/Azure compute workloads with 99.0% anomaly precision.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Flask</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Scikit-Learn</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Pandas</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+2</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/CloudCost-AI/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/CloudCost-AI" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="cybersecurity-amp;-ml" data-title="cybersecurity toolkit defensive security suite with ml phishing &amp; network audit tools cybersecurity &amp; ml">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        Cybersecurity &amp; ML
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">Cybersecurity Toolkit</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Defensive Security Suite with ML Phishing &amp; Network Audit Tools</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    All-in-one defensive cybersecurity cockpit featuring machine learning phishing URL detection, password entropy auditing, hash verification, live port scanning, and threat intelligence.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> Trained on 640,000+ URL dataset achieving 88.1% F1-score on zero-day phishing link detection.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Flask</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Scikit-Learn</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Socket</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+2</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/Cybersecurity-Toolkit/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/Cybersecurity-Toolkit" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="nlp-amp;-trust-ai" data-title="ai fake job &amp; scam detection fraudulent recruitment &amp; scam post classifier using nlp nlp &amp; trust ai">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        NLP &amp; Trust AI
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">AI Fake Job &amp; Scam Detection</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Fraudulent Recruitment &amp; Scam Post Classifier using NLP</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Security-focused NLP classifier analyzing employment postings for linguistic deceit indicators, dubious company profiles, and suspicious contact details to safeguard jobseekers.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> 92.3% scam identification accuracy trained on real-world EMSCAD fraudulent job posting dataset.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Flask</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Scikit-Learn</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">TF-IDF</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+2</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/AI-Fake-Job-Detection/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/AI-Fake-Job-Detection" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="nlp-amp;-trust-ai" data-title="ai fake review detection e-commerce review credibility &amp; astroturfing detector nlp &amp; trust ai">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        NLP &amp; Trust AI
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">AI Fake Review Detection</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">E-Commerce Review Credibility &amp; Astroturfing Detector</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Review integrity system combining syntactic text analysis, emotional extremity indexing, and sentiment divergence to detect fabricated consumer reviews and paid bot astroturfing.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> 89.1% classification accuracy distinguishing authentic customer feedback from bot-generated reviews.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Flask</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Scikit-Learn</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">NLP</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+2</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/AI-Fake-Review-Detection/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/AI-Fake-Review-Detection" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="computer-vision-amp;-security" data-title="qr code scam detection malicious qr code &amp; quishing threat intelligence scanner computer vision &amp; security">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        Computer Vision &amp; Security
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">QR Code Scam Detection</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Malicious QR Code &amp; Quishing Threat Intelligence Scanner</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Computer vision and URL forensic tool that decodes QR images, validates redirection chains, scores domain reputation, and flags malicious quishing campaigns before user interaction.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> Instant sub-second QR code extraction with multi-layer heuristic threat scoring against spoofed payment links.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Flask</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">OpenCV</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Pyzbar</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+3</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/QRCode-Scam-Detection/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/QRCode-Scam-Detection" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="disaster-response-ai" data-title="resqai: disaster relief system intelligent emergency response &amp; resource allocation platform disaster response ai">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        Disaster Response AI
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">ResQAI: Disaster Relief System</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Intelligent Emergency Response &amp; Resource Allocation Platform</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Real-time emergency management hub connecting affected civilians with rescue teams, featuring AI incident severity categorization, geospatial SOS mapping, and shelter inventory coordination.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> Geospatial incident clustering, automated triage classification, and real-time shelter capacity tracking.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Flask</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Leaflet.js</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">SQLite</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+3</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/ResQAI-Disaster-Management/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/ResQAI-Disaster-Management" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="e-commerce-amp;-recommender-ai" data-title="smartcart ai personalized e-commerce recommender with conversational ai e-commerce &amp; recommender ai">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        E-Commerce &amp; Recommender AI
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">SmartCart AI</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Personalized E-Commerce Recommender with Conversational AI</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Next-generation retail platform combining collaborative filtering, browsing history sequence prediction, dynamic multi-tier admin inventory controls, and an in-app shopping chatbot.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> Hybrid recommendation engine combining user-item matrix factorization and semantic product similarity.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Flask</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Scikit-Learn</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">SQLite</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+2</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/SmartCart-AI-Recommendation/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/SmartCart-AI-Recommendation" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="nlp-amp;-knowledge-extraction" data-title="studymind ai document intelligence &amp; knowledge extractor for academic pdfs nlp &amp; knowledge extraction">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        NLP &amp; Knowledge Extraction
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">StudyMind AI</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Document Intelligence &amp; Knowledge Extractor for Academic PDFs</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Document analysis engine capable of processing lecture notes, textbook chapters, and multi-page PDFs to generate automated conceptual summaries, key flashcards, and interactive semantic Q&amp;A.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> Instant extraction and semantic chunking of academic PDFs up to 200+ pages with instant Q&amp;A retrieval.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Flask</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">PyPDF2</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">NLP</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+2</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/StudyMind-AI-Learning-Intelligence/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/StudyMind-AI-Learning-Intelligence" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="computer-vision-amp;-smart-cities" data-title="smart traffic flow control autonomous 4-way traffic signal control using yolo vision computer vision &amp; smart cities">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        Computer Vision &amp; Smart Cities
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">Smart Traffic Flow Control</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Autonomous 4-Way Traffic Signal Control using YOLO Vision</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Intelligent 4-way intersection traffic management system utilizing real-time YOLO vehicle detection to dynamically calculate lane congestion density and optimize green light signal timing.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> Simulated 28% reduction in intersection waiting times compared to static timer signal algorithms.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Flask</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">YOLOv8</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">OpenCV</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+3</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/Smart-Traffic-Control-System/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/Smart-Traffic-Control-System" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="computer-vision-amp;-conservation" data-title="wild animal alert network ai wildlife intrusion detection &amp; rural safety warning system computer vision &amp; conservation">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        Computer Vision &amp; Conservation
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">Wild Animal Alert Network</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">AI Wildlife Intrusion Detection &amp; Rural Safety Warning System</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Early warning system designed for agrarian and forest-fringe communities to detect dangerous wildlife species (elephants, leopards, wild boars) and dispatch automated SMS/geo-alerts to villagers.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> Real-time edge detection of 15+ dangerous wildlife categories with automated alert radius mapping.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Flask</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">YOLOv8</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">OpenCV</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+3</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/Wild-Animal-Alert-Network/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/Wild-Animal-Alert-Network" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="civic-tech-amp;-govtech-ai" data-title="citizen ai smart public grievance redressal &amp; civic document ocr portal civic tech &amp; govtech ai">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        Civic Tech &amp; GovTech AI
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">Citizen AI</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Smart Public Grievance Redressal &amp; Civic Document OCR Portal</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Digital governance platform enabling citizens to register civic issues with photo proof, automatically categorizing complaints via NLP, extracting ID details with OCR, and tracking departmental resolution.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> Automated department routing and priority scoring reducing grievance triage latency by over 60%.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Flask</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Tesseract OCR</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">NLP</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+2</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/Citizen-AI-Smart-Governance/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/Citizen-AI-Smart-Governance" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="cybersecurity-amp;-full-stack" data-title="cybervault advanced ai defensive cybersecurity &amp; threat audit cockpit cybersecurity &amp; full stack">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        Cybersecurity &amp; Full Stack
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">CyberVault</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Advanced AI Defensive Cybersecurity &amp; Threat Audit Cockpit</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Production-grade cybersecurity dashboard offering continuous file integrity monitoring, cryptographic hash auditing, interactive network port scanning, threat incident reporting, and security analytics.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> Sub-millisecond SHA-256 integrity hash verification and concurrent multi-port scan telemetry.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">React</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">TypeScript</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Vite</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Tailwind CSS</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+3</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/CyberVault-Defensive-Security/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/CyberVault-Defensive-Security" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="green-tech-amp;-e-commerce" data-title="green gen ai sustainable e-commerce platform with carbon impact calculator green tech &amp; e-commerce">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        Green Tech &amp; E-Commerce
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">Green Gen AI</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Sustainable E-Commerce Platform with Carbon Impact Calculator</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Eco-friendly online marketplace emphasizing carbon transparency by calculating product lifecycle carbon footprints, promoting refurbished electronics, and incentivizing sustainable consumer choices.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> Integrated carbon footprint quantification algorithm covering 500+ curated sustainable consumer products.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Flask</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Scikit-Learn</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">SQLite</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+2</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/Green-Gen-AI-Sustainable-Ecommerce/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/Green-Gen-AI-Sustainable-Ecommerce" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="edtech-amp;-software-engineering" data-title="python dsa mastery coach interactive data structures &amp; algorithms learning engine edtech &amp; software engineering">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        EdTech &amp; Software Engineering
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">Python DSA Mastery Coach</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Interactive Data Structures &amp; Algorithms Learning Engine</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Gamified algorithmic skill acquisition platform featuring structured Python curriculum tracks, timed coding challenges, interactive space-time complexity visualizers, and AI concept mentors.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> Structured coverage of 100+ fundamental DSA patterns from two-pointer arrays to graph dynamic programming.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">FastAPI</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">React</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">TypeScript</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+3</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/Python-DSA-Mastery-Platform/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/Python-DSA-Mastery-Platform" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+
+        <div class="project-card glass-panel rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 group" data-category="full-stack-amp;-sharing-economy" data-title="rentmate peer-to-peer rental marketplace with fair price ml estimation full stack &amp; sharing economy">
+            <div class="space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-950/70 text-cyan-400 border border-cyan-800/60">
+                        Full Stack &amp; Sharing Economy
+                    </span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Live Deployment Active"></span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-cyan-300 transition-colors">RentMate</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-0.5">Peer-to-Peer Rental Marketplace with Fair Price ML Estimation</p>
+                </div>
+                <p class="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                    Decentralized peer-to-peer equipment and property rental marketplace equipped with predictive pricing models, tenant-landlord messaging, security deposit escrows, and AI match scoring.
+                </p>
+                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[11px] text-slate-300 flex items-start gap-2">
+                    <i data-lucide="award" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                    <span class="leading-tight"><strong class="text-slate-200">Benchmark:</strong> R² of 0.715 on multi-city rental price prediction with typical boundary deviation of ±₹3,570.</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">React</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Vite</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">JavaScript</span><span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800/80 text-cyan-300 border border-slate-700/60">Python</span><span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-800/50 text-slate-400">+3</span>
+                </div>
+            </div>
+            
+            <div class="pt-5 mt-5 border-t border-slate-800/80 flex items-center gap-2.5">
+                <a href="https://gopi-krishna-ai.github.io/RentMate-AI-Rental-Marketplace/" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20 text-center transition flex items-center justify-center gap-1.5">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i> Live Demo
+                </a>
+                <a href="https://github.com/gopi-krishna-ai/RentMate-AI-Rental-Marketplace" target="_blank" rel="noopener noreferrer" class="py-2 px-3 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center justify-center gap-1.5" title="View GitHub Repository">
+                    <i data-lucide="github" class="w-3.5 h-3.5"></i> Code
+                </a>
+            </div>
+        </div>
+        
+        </div>
+        <div id="noResults" class="hidden text-center py-16 space-y-3">
+            <i data-lucide="inbox" class="w-12 h-12 text-slate-600 mx-auto"></i>
+            <p class="text-slate-400 text-sm">No matching projects found for your query.</p>
+            <button onclick="resetFilters()" class="text-xs text-cyan-400 hover:underline">Reset search filters</button>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-panel border-t border-slate-800/80 py-8 px-4 text-center text-xs text-slate-500 space-y-2">
+        <div class="flex justify-center items-center gap-4 text-slate-400 text-sm mb-2">
+            <a href="https://github.com/gopi-krishna-ai" target="_blank" class="hover:text-cyan-400 transition flex items-center gap-1">
+                <i data-lucide="github" class="w-4 h-4"></i> @gopi-krishna-ai
+            </a>
+        </div>
+        <p>Curated, engineered, and maintained by <strong class="text-slate-300">Gopi Krishna N</strong></p>
+        <p class="text-slate-600">All source code hosted on GitHub under MIT Open Source License</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        let currentCat = 'all';
+
+        function filterProjects() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.project-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const title = card.getAttribute('data-title');
+                const cat = card.getAttribute('data-category');
+
+                const matchesQuery = !query || title.includes(query);
+                const matchesCat = (currentCat === 'all') || cat.includes(currentCat);
+
+                if (matchesQuery && matchesCat) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            document.getElementById('noResults').className = visibleCount === 0 ? 'text-center py-16 space-y-3' : 'hidden';
+        }
+
+        function setCategoryFilter(cat) {
+            currentCat = cat;
+            document.querySelectorAll('.cat-pill').forEach(btn => {
+                btn.className = 'cat-pill px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition';
+            });
+            event.target.className = 'cat-pill active px-3 py-1 rounded-full text-xs font-semibold bg-cyan-600 text-white transition';
+            filterProjects();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            currentCat = 'all';
+            document.querySelectorAll('.cat-pill').forEach((btn, idx) => {
+                btn.className = idx === 0 ? 'cat-pill active px-3 py-1 rounded-full text-xs font-semibold bg-cyan-600 text-white transition' : 'cat-pill px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-400 hover:text-white border border-slate-700 transition';
+            });
+            filterProjects();
+        }
+    </script>
+</body>
+</html>
