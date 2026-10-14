@@ -1,0 +1,6 @@
+path: C:\Users\krish\OneDrive\Desktop\section a\B-3-Automated Weed Detection System Using YOLO\data\yolo_dataset
+train: images/train
+val: images/val
+names:
+  0: crop
+  1: weed

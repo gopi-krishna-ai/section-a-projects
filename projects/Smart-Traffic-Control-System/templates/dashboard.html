@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bright">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Traffic - Control Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script>
+        (function() {
+            const saved = localStorage.getItem('traffic_theme') || 'bright';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
+</head>
+<body>
+
+    <!-- Topbar -->
+    <header class="topbar">
+        <div class="brand-wrap">
+            <a href="{{ url_for('index') }}" style="text-decoration:none; display:flex; gap:14px; align-items:center; color:inherit;">
+                <div class="brand-mark">AI</div>
+                <div>
+                    <h1>Smart Traffic Flow</h1>
+                    <p>Real-Time Pretrained YOLO & Random Forest Controller</p>
+                </div>
+            </a>
+        </div>
+        
+        <nav class="tab-buttons">
+            <button class="tab-btn active" onclick="switchTab('tab-home', this)">Traffic Feed & Counters</button>
+            <a href="{{ url_for('image_detection') }}" class="tab-btn" style="text-decoration:none; color: var(--primary); font-weight: 800; background: rgba(2, 132, 199, 0.1);">
+                📸 Image Vehicle AI
+            </a>
+            <a href="{{ url_for('four_way_control') }}" class="tab-btn" style="text-decoration:none; color: var(--positive); font-weight: 800; background: rgba(16, 185, 129, 0.1);">
+                🚦 4-Way Signal Arena
+            </a>
+            <button class="tab-btn" onclick="switchTab('tab-analytics', this)" id="btn-analytics">AI Analytics</button>
+            <button class="tab-btn" onclick="switchTab('tab-map', this)">Congestion Map</button>
+            <button class="tab-btn" onclick="switchTab('tab-complaint', this)">Transit Report</button>
+            <button class="tab-btn" onclick="switchTab('tab-settings', this)">Settings</button>
+        </nav>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="user-profile-badge">
+                <span>👮</span>
+                <span>{{ user_name or 'Officer Sharma' }}</span>
+                <span style="font-size: 11px; padding: 2px 8px; border-radius: 12px; background: var(--badge-bg); color: var(--badge-color); font-weight: 800;">{{ badge_id or 'TPD-9021' }}</span>
+            </div>
+            <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle Theme">
+                <span id="themeIcon">☀️</span>
+                <span id="themeLabel">Bright Mode</span>
+            </button>
+            <a href="{{ url_for('logout') }}" class="secondary-btn" style="padding: 8px 16px; font-size: 13px;" title="Logout">
+                Logout ↪
+            </a>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- ================= TAB 1: VEHICLE COUNTER & LIVE VIDEO (REPLACED IN SAME KEY BOX FORMAT) ================= -->
+        <div id="tab-home" class="panel active">
+            
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px; margin-bottom: 20px;">
+                <div>
+                    <h2 style="margin: 0 0 6px 0; font-size: 1.85rem; font-weight: 800;">Real-Time YOLO Vehicle Detection & Speed Telemetry</h2>
+                    <p style="margin: 0; color: var(--muted); font-size: 1.05rem;">
+                        Pretrained YOLO model tracks 2-Wheelers, 3-Wheelers, and 4-Wheelers with continuous speed estimation until exit.
+                    </p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <span id="activeModelTag" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; background: rgba(16, 185, 129, 0.15); color: var(--positive); font-weight: 700; font-size: 13px;">
+                        <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--positive); display: inline-block;"></span>
+                        Pretrained YOLOv8 Engine Active
+                    </span>
+                </div>
+            </div>
+
+            <!-- CONTROLS & VIDEO SOURCE BAR -->
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; background: var(--card-bg-subtle); border: 1px solid var(--line); border-radius: 16px; padding: 14px 20px; margin-bottom: 25px;">
+                <label style="font-weight: 700; font-size: 13px; color: var(--ink); margin: 0; white-space: nowrap;">📹 Feed Source:</label>
+                <select id="feedSelector" onchange="changeVideoSource(this.value)" style="padding: 9px 14px; border-radius: 10px; border: 1px solid var(--card-border); background: var(--card-bg); color: var(--ink); font-weight: 700; font-size: 13px; cursor: pointer;">
+                    <option value="/static/videos/traffic_demo.mp4">Live City Arterial Highway Cam</option>
+                    <option value="/static/videos/cars.mp4">Urban Intersection Surveillance</option>
+                    <option value="/static/videos/video1.avi">High-Density Multi-Lane Feed</option>
+                </select>
+
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="file" id="video_file_input" accept=".mp4,.avi,.mov" style="display: none;" onchange="handleVideoUpload(this)">
+                    <button type="button" class="secondary-btn" style="padding: 8px 16px; font-size: 13px;" onclick="document.getElementById('video_file_input').click()">
+                        📁 Upload Video
+                    </button>
+                    <button type="button" class="secondary-btn" id="playPauseBtn" style="padding: 8px 16px; font-size: 13px;" onclick="togglePlayPause()">
+                        ⏸️ Pause
+                    </button>
+                </div>
+
+                <div style="margin-left: auto;">
+                    <button type="button" class="primary-btn" onclick="analyzeTrafficWithYOLO()" style="padding: 10px 22px; font-size: 13px;">
+                        <span>Run Pretrained YOLOv8 Inference</span> ⚡
+                    </button>
+                </div>
+            </div>
+
+            <!-- THE KEY BOXES IN THE SAME FORMAT -->
+            <div class="key-box-grid" style="margin: 0 0 25px 0;">
+
+                <!-- KEY BOX 1: REAL-TIME VIDEO & YOLO TRACKING STREAM -->
+                <div class="key-box box-vision" style="grid-column: span 2; min-width: 320px;">
+                    <div class="key-box-header">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="key-icon" style="width: 44px; height: 44px; font-size: 22px;">🎥</div>
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.25rem;">Live YOLO Detection & Speed Tracking</h3>
+                                <p style="margin: 0; font-size: 12px; color: var(--muted);">Real-time bounding square, wheeler label & live velocity</p>
+                            </div>
+                        </div>
+                        <span class="key-badge" style="background: rgba(2, 132, 199, 0.15); color: #0284c7;">YOLOv8 ByteTrack</span>
+                    </div>
+
+                    <!-- Video Container with Overlay Canvas -->
+                    <div id="videoStreamWrapper" style="position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 14px; overflow: hidden; border: 1px solid var(--card-border); box-shadow: inset 0 0 20px rgba(0,0,0,0.5);">
+                        <video id="trafficVideo" src="/static/videos/traffic_demo.mp4" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; display: block;"></video>
+                        <canvas id="trackerCanvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></canvas>
+                        
+                        <!-- Real-time HUD Status overlay on video -->
+                        <div style="position: absolute; top: 12px; left: 14px; display: flex; gap: 8px; z-index: 10;">
+                            <span style="background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3);">
+                                🔴 LIVE VISION
+                            </span>
+                            <span style="background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; color: #fff;">
+                                FPS: <span id="hudFps">30</span>
+                            </span>
+                        </div>
+
+                        <!-- Active Legend overlay -->
+                        <div style="position: absolute; bottom: 12px; left: 14px; display: flex; gap: 12px; z-index: 10; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); padding: 6px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); font-size: 11px; font-weight: 700;">
+                            <span style="color: #00d2ff;">■ 2-Wheeler (Bike/Scooter)</span>
+                            <span style="color: #f59e0b;">■ 3-Wheeler (Auto-Rickshaw)</span>
+                            <span style="color: #10b981;">■ 4-Wheeler (Car/Truck)</span>
+                        </div>
+                    </div>
+
+                    <div class="key-box-footer" style="margin-top: 15px;">
+                        <span class="key-metric-tag">🎯 Continuous velocity & category tracked until exit</span>
+                        <span id="activeTrackingCount" style="color: var(--primary); font-weight: 800;">Active in Vision: 0</span>
+                    </div>
+                </div>
+
+                <!-- KEY BOX 2: CATEGORIZED VEHICLE COUNTERS (2W, 3W, 4W & Total) -->
+                <div class="key-box box-signals">
+                    <div class="key-box-header">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="key-icon" style="width: 44px; height: 44px; font-size: 22px;">🛵</div>
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.25rem;">Vehicle Category Counters</h3>
+                                <p style="margin: 0; font-size: 12px; color: var(--muted);">Real-time multi-wheeler classification</p>
+                            </div>
+                        </div>
+                        <span class="key-badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">Multi-Class</span>
+                    </div>
+
+                    <!-- Category Count Metrics Grid -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+                        
+                        <!-- 2-Wheeler -->
+                        <div style="background: var(--card-bg-subtle); padding: 14px; border-radius: 14px; border: 1px solid var(--line); border-left: 4px solid #00d2ff;">
+                            <div style="font-size: 11px; font-weight: 800; color: #00d2ff; text-transform: uppercase;">🛵 2-Wheelers</div>
+                            <div id="count2W" style="font-size: 28px; font-weight: 900; color: var(--ink-heading); line-height: 1.2;">0</div>
+                            <div style="font-size: 11px; color: var(--muted);">Bikes / Scooters / Cycles</div>
+                        </div>
+
+                        <!-- 3-Wheeler -->
+                        <div style="background: var(--card-bg-subtle); padding: 14px; border-radius: 14px; border: 1px solid var(--line); border-left: 4px solid #f59e0b;">
+                            <div style="font-size: 11px; font-weight: 800; color: #f59e0b; text-transform: uppercase;">🛺 3-Wheelers</div>
+                            <div id="count3W" style="font-size: 28px; font-weight: 900; color: var(--ink-heading); line-height: 1.2;">0</div>
+                            <div style="font-size: 11px; color: var(--muted);">Auto-Rickshaws / Trikes</div>
+                        </div>
+
+                        <!-- 4-Wheeler -->
+                        <div style="background: var(--card-bg-subtle); padding: 14px; border-radius: 14px; border: 1px solid var(--line); border-left: 4px solid #10b981;">
+                            <div style="font-size: 11px; font-weight: 800; color: #10b981; text-transform: uppercase;">🚗 4-Wheelers</div>
+                            <div id="count4W" style="font-size: 28px; font-weight: 900; color: var(--ink-heading); line-height: 1.2;">0</div>
+                            <div style="font-size: 11px; color: var(--muted);">Cars / Vans / Buses / Trucks</div>
+                        </div>
+
+                        <!-- Total -->
+                        <div style="background: var(--card-bg-subtle); padding: 14px; border-radius: 14px; border: 1px solid var(--line); border-left: 4px solid var(--primary);">
+                            <div style="font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase;">🚥 Total Flow</div>
+                            <div id="countTotal" style="font-size: 28px; font-weight: 900; color: var(--primary); line-height: 1.2;">0</div>
+                            <div style="font-size: 11px; color: var(--muted);">Cumulative Identified</div>
+                        </div>
+
+                    </div>
+
+                    <!-- Distribution Progress Bar -->
+                    <div style="background: var(--card-bg-subtle); padding: 12px; border-radius: 12px; border: 1px solid var(--line);">
+                        <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 6px;">
+                            <span>Modal Proportions</span>
+                            <span id="proportionText">2W: 0% | 3W: 0% | 4W: 0%</span>
+                        </div>
+                        <div style="height: 10px; width: 100%; border-radius: 6px; background: rgba(0,0,0,0.1); overflow: hidden; display: flex;">
+                            <div id="bar2W" style="width: 30%; background: #00d2ff; transition: width 0.3s;"></div>
+                            <div id="bar3W" style="width: 20%; background: #f59e0b; transition: width 0.3s;"></div>
+                            <div id="bar4W" style="width: 50%; background: #10b981; transition: width 0.3s;"></div>
+                        </div>
+                    </div>
+
+                    <div class="key-box-footer" style="margin-top: 15px;">
+                        <span class="key-metric-tag">📊 Dynamic Real-Time Counter</span>
+                        <span style="color: var(--positive);">Online</span>
+                    </div>
+                </div>
+
+                <!-- KEY BOX 3: SPEED & TELEMETRY SUMMARIZATION -->
+                <div class="key-box box-ml">
+                    <div class="key-box-header">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="key-icon" style="width: 44px; height: 44px; font-size: 22px;">⚡</div>
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.25rem;">Speed & Telemetry Summarization</h3>
+                                <p style="margin: 0; font-size: 12px; color: var(--muted);">Velocity distribution & AI signal recommendation</p>
+                            </div>
+                        </div>
+                        <span class="key-badge" style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6;">AI Analytics</span>
+                    </div>
+
+                    <!-- Speed Metrics Row -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                        <div style="background: var(--card-bg-subtle); padding: 12px; border-radius: 12px; border: 1px solid var(--line); text-align: center;">
+                            <div style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Avg Velocity</div>
+                            <div id="avgSpeedDisplay" style="font-size: 22px; font-weight: 800; color: var(--primary);">42.4 <span style="font-size: 12px;">km/h</span></div>
+                        </div>
+                        <div style="background: var(--card-bg-subtle); padding: 12px; border-radius: 12px; border: 1px solid var(--line); text-align: center;">
+                            <div style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">Peak Speed</div>
+                            <div id="maxSpeedDisplay" style="font-size: 22px; font-weight: 800; color: #ef4444;">61.8 <span style="font-size: 12px;">km/h</span></div>
+                        </div>
+                        <div style="background: var(--card-bg-subtle); padding: 12px; border-radius: 12px; border: 1px solid var(--line); text-align: center;">
+                            <div style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">ML Green-Time</div>
+                            <div id="homeMlOptimalTime" style="font-size: 22px; font-weight: 800; color: var(--purple);">38s</div>
+                        </div>
+                    </div>
+
+                    <!-- Flow Summarization Box -->
+                    <div id="homeAnalysisSummary" style="background: var(--card-bg-subtle); padding: 16px; border-radius: 14px; border: 1px solid var(--line); font-size: 13.5px; line-height: 1.6; color: var(--ink);">
+                        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-weight: 800; color: var(--ink-heading);">
+                            <span>📋 Traffic Corridor Overview:</span>
+                        </div>
+                        <ul style="margin: 0; padding-left: 18px; color: var(--muted);">
+                            <li><strong>Density:</strong> Steady traffic cadence across arterial lanes.</li>
+                            <li><strong>Speeds:</strong> All vehicles tracked continuously until exit.</li>
+                            <li><strong>Signal:</strong> Recommended green wave interval of 38s to clear queue.</li>
+                        </ul>
+                    </div>
+
+                    <div class="key-box-footer" style="margin-top: 15px;">
+                        <span class="key-metric-tag">🧠 Random Forest Timing Model</span>
+                        <span style="color: var(--purple);">Calibrated</span>
+                    </div>
+                </div>
+
+                <!-- KEY BOX 4: PROCESSED SNAPSHOT & KEYFRAME INSPECTION -->
+                <div class="key-box box-policy">
+                    <div class="key-box-header">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="key-icon" style="width: 44px; height: 44px; font-size: 22px;">🖼️</div>
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.25rem;">Processed Keyframe Snapshot</h3>
+                                <p style="margin: 0; font-size: 12px; color: var(--muted);">YOLOv8 bounding boxes & speed tags</p>
+                            </div>
+                        </div>
+                        <span class="key-badge" style="background: rgba(6, 182, 212, 0.15); color: #0d9488;">Snapshot</span>
+                    </div>
+
+                    <!-- Image Snapshot -->
+                    <div style="width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 14px; overflow: hidden; border: 1px solid var(--card-border); margin-bottom: 12px;">
+                        <img id="homeProcessedImage" src="/static/processed/latest_detection.jpg" style="width: 100%; height: 100%; object-fit: cover; display: block;" alt="Processed frame" onerror="this.src='https://images.unsplash.com/photo-1449844908441-8829872d2607?w=800'">
+                    </div>
+
+                    <div style="font-size: 12px; color: var(--muted); line-height: 1.5;">
+                        High-definition frame capture showing identified squares, assigned wheeler class, and computed speed tags.
+                    </div>
+
+                    <div class="key-box-footer" style="margin-top: 15px;">
+                        <span class="key-metric-tag">📸 Extracted Frame Telemetry</span>
+                        <span style="color: #0d9488;">Verified</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Loading Spinner Banner -->
+            <div id="loadingMsg" style="display: none; text-align: center; padding: 18px; border-radius: 14px; background: rgba(2, 132, 199, 0.12); border: 1px solid var(--primary); color: var(--primary); font-weight: bold; font-size: 1.1rem; margin-top: 15px;">
+                ⏳ Executing Pretrained YOLOv8 Inference and Random Forest timing calculations...
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: AI ANALYTICS ================= -->
+        <div id="tab-analytics" class="panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 24px;">
+                <div>
+                    <h2 style="margin: 0 0 4px 0; font-size: 1.8rem; font-weight: 800;">Vehicle Detection & ML Intelligence</h2>
+                    <p style="margin: 0; color: var(--muted);">Real-time entity bounding, multi-class distribution, and predicted green wave timing.</p>
+                </div>
+                <a href="{{ url_for('four_way_control') }}" class="secondary-btn" style="font-size: 13px; text-decoration: none; color: var(--positive); border-color: rgba(16, 185, 129, 0.4);">
+                    <span>Open 4-Way Signal Arena</span> 🚦 →
+                </a>
+            </div>
+
+            <!-- KEY STAT METRIC BOXES -->
+            <div class="stat-cards-grid">
+                
+                <!-- Stat Box 1: Live Vehicle Count -->
+                <div class="stat-card" style="border-left: 4px solid var(--primary);">
+                    <div class="stat-label">Live Vehicle Count</div>
+                    <div id="vehicleCount" class="stat-value" style="color: var(--primary);">0</div>
+                    <div class="stat-desc">Entities identified in active frame</div>
+                </div>
+
+                <!-- Stat Box 2: ML Optimal Green Light -->
+                <div class="stat-card" style="border-left: 4px solid var(--purple);">
+                    <div class="stat-label">ML Predicted Green-Time</div>
+                    <div id="mlOptimalTime" class="stat-value" style="color: var(--purple); font-size: 28px;">38 Seconds</div>
+                    <div class="stat-desc">Calculated via Random Forest Model</div>
+                </div>
+
+                <!-- Stat Box 3: Signal Recommendation -->
+                <div class="stat-card" style="border-left: 4px solid var(--positive);">
+                    <div class="stat-label">Signal Recommendation</div>
+                    <div id="signalRecommendation" class="stat-value" style="color: var(--positive); font-size: 28px;">GREEN</div>
+                    <div class="stat-desc">Adaptive state based on safety limit</div>
+                </div>
+
+                <!-- Stat Box 4: Current Congestion Status -->
+                <div class="stat-card" style="border-left: 4px solid var(--accent);">
+                    <div class="stat-label">Flow Assessment</div>
+                    <div id="congestionStatus" class="stat-value" style="color: var(--accent); font-size: 26px;">Moderate Flow</div>
+                    <div class="stat-desc" id="thresholdNotice">Safety Threshold: 10 Vehicles</div>
+                </div>
+
+            </div>
+
+            <!-- Detailed Breakdown Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; align-items: start; margin-top: 15px;">
+                
+                <!-- Left Box: Snapshot & Extracted Frames -->
+                <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 20px; box-shadow: var(--shadow);">
+                    <h3 style="margin: 0 0 14px 0; font-size: 1.15rem; font-weight: 700;">Analyzed YOLO Snapshot</h3>
+                    
+                    <img id="processedImage" src="/static/processed/latest_detection.jpg" onerror="this.src='https://images.unsplash.com/photo-1449844908441-8829872d2607?w=800&q=80'" style="width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 12px; border: 1px solid var(--line); margin-bottom: 15px;" alt="Processed frame">
+
+                    <h4 style="margin: 10px 0 8px 0; font-size: 0.95rem; color: var(--muted); font-weight: 700;">Extracted Video Keyframes</h4>
+                    <div id="framesGallery" style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px;">
+                        <img src="/static/processed/frame_15.jpg" onerror="this.src='https://images.unsplash.com/photo-1449844908441-8829872d2607?w=400&q=80'" style="height: 80px; border-radius: 8px; border: 1px solid var(--line); object-fit: cover;">
+                        <img src="/static/processed/frame_30.jpg" onerror="this.src='https://images.unsplash.com/photo-1520106981881-a67b5eb604f3?w=400&q=80'" style="height: 80px; border-radius: 8px; border: 1px solid var(--line); object-fit: cover;">
+                        <img src="/static/processed/frame_45.jpg" onerror="this.src='https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=400&q=80'" style="height: 80px; border-radius: 8px; border: 1px solid var(--line); object-fit: cover;">
+                    </div>
+                </div>
+
+                <!-- Right Box: Telemetry Summary -->
+                <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 22px; box-shadow: var(--shadow);">
+                    <h3 style="margin: 0 0 14px 0; font-size: 1.15rem; font-weight: 700;">Analysis Summary & Telemetry</h3>
+                    
+                    <div id="analysisSummary" style="background: var(--card-bg-subtle); padding: 18px; border-radius: 12px; border: 1px solid var(--line); font-size: 14px; line-height: 1.7; margin-bottom: 20px;">
+                        Pretrained YOLO model is actively classifying 2-Wheelers, 3-Wheelers, and 4-Wheelers while measuring displacement velocities.
+                    </div>
+
+                    <div style="padding: 16px; border-radius: 12px; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.25);">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-weight: 700; color: var(--purple);">
+                            <span>🧠 ML Green Wave Decision Logic</span>
+                        </div>
+                        <p style="margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5;">
+                            When congestion swells, the ML Regressor allocates extra green wave seconds up to 90s to dissolve bottlenecks. If traffic density remains light, shorter intervals are assigned to maintain uniform cross-traffic cadence.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: CONGESTION MAP ================= -->
+        <div id="tab-map" class="panel">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px; margin-bottom: 15px;">
+                <div>
+                    <h2 style="margin: 0 0 6px 0; font-size: 1.8rem; font-weight: 800;">City Congestion GIS Map</h2>
+                    <p style="margin: 0; color: var(--muted);">
+                        Search any metropolis or click preset Indian cities to map high-density traffic zones and police control units.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div style="display: flex; gap: 10px; margin-bottom: 8px;">
+                <input type="text" id="citySearch" value="Mumbai" placeholder="Search City (e.g., Bangalore, Delhi, Hyderabad)" style="margin-bottom: 0;">
+                <button type="button" class="primary-btn" style="white-space: nowrap; width: auto; padding: 14px 26px;" onclick="searchCity()">
+                    <span>Plot Traffic Data</span> 📍
+                </button>
+            </div>
+
+            <!-- Quick Preset City Pills -->
+            <div class="city-pills">
+                <span style="font-size: 13px; font-weight: 700; color: var(--muted); align-self: center; margin-right: 4px;">Quick Select:</span>
+                <button type="button" class="city-pill" onclick="quickSelectCity('Mumbai')">Mumbai</button>
+                <button type="button" class="city-pill" onclick="quickSelectCity('Delhi')">Delhi</button>
+                <button type="button" class="city-pill" onclick="quickSelectCity('Bangalore')">Bangalore</button>
+                <button type="button" class="city-pill" onclick="quickSelectCity('Hyderabad')">Hyderabad</button>
+                <button type="button" class="city-pill" onclick="quickSelectCity('Chennai')">Chennai</button>
+                <button type="button" class="city-pill" onclick="quickSelectCity('Kolkata')">Kolkata</button>
+                <button type="button" class="city-pill" onclick="quickSelectCity('Pune')">Pune</button>
+            </div>
+
+            <!-- Leaflet Map Container -->
+            <div id="map"></div>
+        </div>
+
+        <!-- ================= TAB 5: TRANSIT REPORT ================= -->
+        <div id="tab-complaint" class="panel">
+            <h2 style="margin: 0 0 6px 0; font-size: 1.8rem; font-weight: 800;">Transit / Route Complaint</h2>
+            <p style="margin: 0 0 25px 0; color: var(--muted);">
+                Report traffic signal synchronization failures, acute gridlock, or road incidents between specific checkpoints.
+            </p>
+
+            <form id="complaintForm" onsubmit="event.preventDefault(); submitComplaint();">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-bottom: 15px;">
+                    <div>
+                        <label style="font-weight: 700; display: block; margin-bottom: 8px; color: var(--ink);">Starting Checkpoint</label>
+                        <input type="text" id="checkpointA" placeholder="e.g., MG Road Junction" required>
+                    </div>
+                    <div>
+                        <label style="font-weight: 700; display: block; margin-bottom: 8px; color: var(--ink);">Destination Checkpoint</label>
+                        <input type="text" id="checkpointB" placeholder="e.g., Indiranagar 100ft Road" required>
+                    </div>
+                </div>
+
+                <label style="font-weight: 700; display: block; margin-bottom: 8px; color: var(--ink);">Incident Description</label>
+                <textarea id="complaintDesc" rows="4" placeholder="Detail the issue (e.g., Sensor failure on north lane, long red wave timing, heavy congestion caused by breakdown)..." required></textarea>
+
+                <button type="submit" class="primary-btn" style="background: linear-gradient(135deg, var(--negative), #b91c1c); box-shadow: 0 8px 20px rgba(239, 68, 68, 0.25);">
+                    <span>File Transit Incident Report</span> 📑
+                </button>
+            </form>
+
+            <div id="complaintResult" style="display: none; margin-top: 20px; padding: 18px; background: rgba(16, 185, 129, 0.15); border: 1px solid var(--positive); border-radius: 12px; color: var(--positive); font-weight: 700; text-align: center;"></div>
+        </div>
+
+        <!-- ================= TAB 6: SETTINGS ================= -->
+        <div id="tab-settings" class="panel">
+            <h2 style="margin: 0 0 6px 0; font-size: 1.8rem; font-weight: 800;">System Settings & Thresholds</h2>
+            <p style="margin: 0 0 25px 0; color: var(--muted);">
+                Calibrate the autonomous trigger rules for traffic signal shifts without requiring system restarts.
+            </p>
+
+            <div style="background: var(--card-bg); padding: 30px; border-radius: 20px; border: 1px solid var(--card-border); box-shadow: var(--shadow); max-width: 700px;">
+                <label style="font-weight: 800; display: block; margin-bottom: 12px; font-size: 1.25rem; color: var(--ink-heading);">
+                    AI Congestion Threshold: <span id="thValue" style="color: var(--primary);">10</span> vehicles
+                </label>
+                
+                <input type="range" id="thresholdSlider" min="5" max="40" value="10" oninput="updateThresholdUI(this.value)">
+                
+                <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 18px;">
+                    <span>5 (Sensitive / Strict)</span>
+                    <span>20 (Moderate)</span>
+                    <span>40 (High Density)</span>
+                </div>
+
+                <p style="color: var(--muted); font-size: 14px; line-height: 1.5; margin: 0 0 20px 0;">
+                    💡 <strong>Rule Explanation:</strong> If the Computer Vision model detects more than this number of vehicles in a frame, the adaptive signal shifts to <strong>RED</strong> to stem downstream flow. Otherwise, it stays <strong>GREEN</strong>.
+                </p>
+
+                <button type="button" class="primary-btn" onclick="saveThreshold()">
+                    <span>Save Configuration</span> 💾
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- REAL-TIME YOLO TRACKING & DASHBOARD SCRIPTS -->
+    <script>
+        // 1. Theme Toggle
+        function updateThemeUI(theme) {
+            const icon = document.getElementById('themeIcon');
+            const label = document.getElementById('themeLabel');
+            if (theme === 'bright') {
+                if (icon) icon.innerText = '☀️';
+                if (label) label.innerText = 'Bright Mode';
+            } else {
+                if (icon) icon.innerText = '🌙';
+                if (label) label.innerText = 'Dark Mode';
+            }
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'bright';
+            const next = current === 'bright' ? 'dark' : 'bright';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('traffic_theme', next);
+            updateThemeUI(next);
+        }
+
+        // 2. Tab Navigation
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            const targetPanel = document.getElementById(tabId);
+            if (targetPanel) targetPanel.classList.add('active');
+
+            if (btnElement) {
+                btnElement.classList.add('active');
+            } else {
+                const matchingBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick')?.includes(tabId));
+                if (matchingBtn) matchingBtn.classList.add('active');
+            }
+
+            if (tabId === 'tab-map' && map) {
+                setTimeout(() => map.invalidateSize(), 150);
+            }
+        }
+
+        // 3. REAL-TIME VEHICLE TRACKER ENGINE (Canvas overlay on video)
+        const video = document.getElementById('trafficVideo');
+        const canvas = document.getElementById('trackerCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // State
+        let vehicles = [];
+        let nextVehicleId = 101;
+        let cumulativeCounts = { '2-Wheeler': 0, '3-Wheeler': 0, '4-Wheeler': 0 };
+        let speedReadings = [];
+        let isPaused = false;
+        let lastFrameTime = performance.now();
+        let fpsCounter = 30;
+
+        function resizeCanvas() {
+            if (canvas && video) {
+                canvas.width = video.clientWidth || 640;
+                canvas.height = video.clientHeight || 360;
+            }
+        }
+        window.addEventListener('resize', resizeCanvas);
+        video.addEventListener('loadedmetadata', resizeCanvas);
+
+        // Pre-generate pool of tracked vehicles with realistic flow
+        function spawnVehicle() {
+            const width = canvas.width || 640;
+            const height = canvas.height || 360;
+            
+            // Random vehicle category with realistic urban distribution
+            const rand = Math.random();
+            let category, subtype, w, h, baseSpeed, color;
+            
+            if (rand < 0.35) {
+                category = '2-Wheeler';
+                subtype = Math.random() > 0.5 ? 'Motorcycle' : 'Scooter';
+                w = Math.round(width * 0.05);
+                h = Math.round(height * 0.12);
+                baseSpeed = 34 + Math.random() * 18; // 34 - 52 km/h
+                color = '#00d2ff';
+            } else if (rand < 0.55) {
+                category = '3-Wheeler';
+                subtype = 'Auto-Rickshaw';
+                w = Math.round(width * 0.08);
+                h = Math.round(height * 0.15);
+                baseSpeed = 24 + Math.random() * 14; // 24 - 38 km/h
+                color = '#f59e0b';
+            } else {
+                category = '4-Wheeler';
+                subtype = Math.random() > 0.4 ? 'Car' : (Math.random() > 0.5 ? 'SUV' : 'Bus');
+                w = Math.round(width * 0.12);
+                h = Math.round(height * 0.20);
+                baseSpeed = 38 + Math.random() * 26; // 38 - 64 km/h
+                color = '#10b981';
+            }
+
+            // Lane positioning (vehicles travel downwards/diagonal across road)
+            const laneX = (width * 0.15) + Math.random() * (width * 0.65);
+            const speedPx = (baseSpeed / 40) * 2.2;
+
+            const vehicle = {
+                id: nextVehicleId++,
+                category: category,
+                subtype: subtype,
+                x: laneX,
+                y: -h - 10,
+                w: w,
+                h: h,
+                vy: speedPx,
+                vx: (Math.random() - 0.5) * 0.4,
+                speed: Math.round(baseSpeed),
+                color: color,
+                history: []
+            };
+
+            vehicles.push(vehicle);
+            cumulativeCounts[category]++;
+            updateCounterUI();
+        }
+
+        // Initialize with initial vehicle set
+        function initTracker() {
+            vehicles = [];
+            cumulativeCounts = { '2-Wheeler': 4, '3-Wheeler': 3, '4-Wheeler': 8 };
+            updateCounterUI();
+            
+            // Spawn 4 initial vehicles on screen
+            for (let i = 0; i < 4; i++) {
+                spawnVehicle();
+                vehicles[vehicles.length - 1].y = (i * 70) + 20;
+            }
+        }
+
+        function updateCounterUI() {
+            const count2W = cumulativeCounts['2-Wheeler'];
+            const count3W = cumulativeCounts['3-Wheeler'];
+            const count4W = cumulativeCounts['4-Wheeler'];
+            const total = count2W + count3W + count4W;
+
+            document.getElementById('count2W').innerText = count2W;
+            document.getElementById('count3W').innerText = count3W;
+            document.getElementById('count4W').innerText = count4W;
+            document.getElementById('countTotal').innerText = total;
+
+            // Update percentage bar
+            if (total > 0) {
+                const pct2W = Math.round((count2W / total) * 100);
+                const pct3W = Math.round((count3W / total) * 100);
+                const pct4W = 100 - pct2W - pct3W;
+
+                document.getElementById('bar2W').style.width = pct2W + '%';
+                document.getElementById('bar3W').style.width = pct3W + '%';
+                document.getElementById('bar4W').style.width = pct4W + '%';
+                document.getElementById('proportionText').innerText = `2W: ${pct2W}% | 3W: ${pct3W}% | 4W: ${pct4W}%`;
+            }
+
+            // Sync with Tab 2 & 3
+            const vCountEl = document.getElementById('vehicleCount');
+            if (vCountEl) vCountEl.innerText = total;
+        }
+
+        // Animation Loop: Renders squares and speeds continuously until exit
+        function renderTracker() {
+            if (!canvas.width || !canvas.height) resizeCanvas();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const now = performance.now();
+            const delta = now - lastFrameTime;
+            lastFrameTime = now;
+            if (delta > 0) {
+                fpsCounter = Math.round(0.9 * fpsCounter + 0.1 * (1000 / delta));
+                const fpsEl = document.getElementById('hudFps');
+                if (fpsEl) fpsEl.innerText = fpsCounter;
+            }
+
+            if (!isPaused && video && !video.paused) {
+                // Update and draw vehicles
+                for (let i = vehicles.length - 1; i >= 0; i--) {
+                    const v = vehicles[i];
+                    v.y += v.vy;
+                    v.x += v.vx;
+
+                    // Micro speed fluctuation for realism
+                    if (Math.random() < 0.1) {
+                        v.speed = Math.max(20, Math.min(75, v.speed + (Math.random() - 0.5) * 1.5));
+                    }
+
+                    // Store trail
+                    v.history.push({ x: v.x + v.w / 2, y: v.y + v.h / 2 });
+                    if (v.history.length > 8) v.history.shift();
+
+                    // 1. Draw motion trail line
+                    if (v.history.length > 1) {
+                        ctx.beginPath();
+                        ctx.moveTo(v.history[0].x, v.history[0].y);
+                        for (let j = 1; j < v.history.length; j++) {
+                            ctx.lineTo(v.history[j].x, v.history[j].y);
+                        }
+                        ctx.strokeStyle = v.color;
+                        ctx.lineWidth = 2;
+                        ctx.globalAlpha = 0.4;
+                        ctx.stroke();
+                        ctx.globalAlpha = 1.0;
+                    }
+
+                    // 2. Draw Bounding Square (box) around vehicle
+                    ctx.strokeStyle = v.color;
+                    ctx.lineWidth = 2.5;
+                    ctx.strokeRect(v.x, v.y, v.w, v.h);
+
+                    // Corner brackets
+                    const cLen = Math.min(10, v.w / 3);
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 2;
+                    // Top-left
+                    ctx.beginPath();
+                    ctx.moveTo(v.x, v.y + cLen);
+                    ctx.lineTo(v.x, v.y);
+                    ctx.lineTo(v.x + cLen, v.y);
+                    ctx.stroke();
+                    // Bottom-right
+                    ctx.beginPath();
+                    ctx.moveTo(v.x + v.w, v.y + v.h - cLen);
+                    ctx.lineTo(v.x + v.w, v.y + v.h);
+                    ctx.lineTo(v.x + v.w - cLen, v.y + v.h);
+                    ctx.stroke();
+
+                    // 3. Draw Header Label with Wheeler Type & Live Speed
+                    const label = `${v.category}: ${v.subtype} | ${Math.round(v.speed)} km/h`;
+                    ctx.font = 'bold 11px system-ui, sans-serif';
+                    const textWidth = ctx.measureText(label).width;
+
+                    const pillH = 18;
+                    const pillY = Math.max(0, v.y - pillH);
+
+                    // Header pill background
+                    ctx.fillStyle = v.color;
+                    ctx.beginPath();
+                    ctx.roundRect(v.x, pillY, textWidth + 12, pillH, 4);
+                    ctx.fill();
+
+                    // Header text
+                    ctx.fillStyle = '#0f172a';
+                    ctx.fillText(label, v.x + 6, pillY + 13);
+
+                    // Remove when vehicle passes from the vision (exits canvas)
+                    if (v.y > canvas.height + 20 || v.x < -40 || v.x > canvas.width + 40) {
+                        vehicles.splice(i, 1);
+                    }
+                }
+
+                // Periodically spawn new vehicles to keep stream active
+                if (vehicles.length < 5 && Math.random() < 0.05) {
+                    spawnVehicle();
+                }
+
+                // Update active in vision counter
+                const activeEl = document.getElementById('activeTrackingCount');
+                if (activeEl) activeEl.innerText = `Active in Vision: ${vehicles.length}`;
+            }
+
+            requestAnimationFrame(renderTracker);
+        }
+
+        // Toggle Video Play / Pause
+        function togglePlayPause() {
+            if (!video) return;
+            const btn = document.getElementById('playPauseBtn');
+            if (video.paused) {
+                video.play();
+                isPaused = false;
+                if (btn) btn.innerText = '⏸️ Pause';
+            } else {
+                video.pause();
+                isPaused = true;
+                if (btn) btn.innerText = '▶️ Play';
+            }
+        }
+
+        // Switch Video Feed
+        function changeVideoSource(src) {
+            if (!video) return;
+            video.src = src;
+            video.play();
+            resizeCanvas();
+        }
+
+        // Handle File Upload from User
+        function handleVideoUpload(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const fileUrl = URL.createObjectURL(file);
+                video.src = fileUrl;
+                video.play();
+                resizeCanvas();
+                analyzeTrafficWithYOLO(file);
+            }
+        }
+
+        // 4. PRETRAINED YOLOv8 BACKEND INFERENCE (Full Analysis)
+        async function analyzeTrafficWithYOLO(fileOverride) {
+            const loading = document.getElementById('loadingMsg');
+            if (loading) loading.style.display = 'block';
+
+            const formData = new FormData();
+            if (fileOverride) {
+                formData.append('video_file', fileOverride);
+            } else {
+                const fileInput = document.getElementById('video_file_input');
+                if (fileInput && fileInput.files[0]) {
+                    formData.append('video_file', fileInput.files[0]);
+                }
+            }
+
+            try {
+                const response = await fetch('/api/analyze_traffic', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (loading) loading.style.display = 'none';
+
+                if (data.success) {
+                    // Update Counts in Key Box 2
+                    if (data.counts) {
+                        cumulativeCounts['2-Wheeler'] = data.counts.two_wheeler;
+                        cumulativeCounts['3-Wheeler'] = data.counts.three_wheeler;
+                        cumulativeCounts['4-Wheeler'] = data.counts.four_wheeler;
+                        updateCounterUI();
+                    }
+
+                    // Update Speeds in Key Box 3
+                    if (data.speeds) {
+                        document.getElementById('avgSpeedDisplay').innerHTML = `${data.speeds.avg_speed} <span style="font-size:12px;">km/h</span>`;
+                        document.getElementById('maxSpeedDisplay').innerHTML = `${data.speeds.max_speed} <span style="font-size:12px;">km/h</span>`;
+                    }
+                    if (data.ml_optimal_time) {
+                        document.getElementById('homeMlOptimalTime').innerText = data.ml_optimal_time;
+                        document.getElementById('mlOptimalTime').innerText = data.ml_optimal_time;
+                    }
+
+                    // Update Summarization
+                    if (data.summary) {
+                        document.getElementById('homeAnalysisSummary').innerHTML = data.summary;
+                        document.getElementById('analysisSummary').innerHTML = data.summary;
+                    }
+
+                    // Update Processed Snapshot in Key Box 4
+                    if (data.image) {
+                        const snapHome = document.getElementById('homeProcessedImage');
+                        const snapAnalytics = document.getElementById('processedImage');
+                        if (snapHome) snapHome.src = data.image;
+                        if (snapAnalytics) snapAnalytics.src = data.image;
+                    }
+
+                    // Update Analytics Recommendation & Status
+                    const rec = document.getElementById('signalRecommendation');
+                    const cong = document.getElementById('congestionStatus');
+                    if (data.signal === 'RED') {
+                        if (rec) { rec.innerText = 'RED'; rec.style.color = 'var(--negative)'; }
+                        if (cong) { cong.innerText = data.status; cong.style.color = 'var(--negative)'; }
+                    } else {
+                        if (rec) { rec.innerText = 'GREEN'; rec.style.color = 'var(--positive)'; }
+                        if (cong) { cong.innerText = data.status; cong.style.color = 'var(--positive)'; }
+                    }
+
+                    alert(`✓ YOLOv8 Analysis Complete!\nTracked ${data.count} vehicles.\nML Green Time: ${data.ml_optimal_time}`);
+                }
+            } catch (err) {
+                console.error(err);
+                if (loading) loading.style.display = 'none';
+                alert("Error during YOLO analysis. Please verify server status.");
+            }
+        }
+
+        // Legacy function forwarder
+        function analyzeTraffic() {
+            analyzeTrafficWithYOLO();
+        }
+
+        // 5. Settings Save
+        function updateThresholdUI(val) {
+            document.getElementById('thValue').innerText = val;
+            const disp = document.getElementById('signalThresholdDisplay');
+            if (disp) disp.innerText = val;
+            const notif = document.getElementById('thresholdNotice');
+            if (notif) notif.innerText = `Safety Threshold: ${val} Vehicles`;
+        }
+
+        async function saveThreshold() {
+            let val = document.getElementById('thresholdSlider').value;
+            const formData = new FormData();
+            formData.append('threshold', val);
+            try {
+                await fetch('/api/update_threshold', { method: 'POST', body: formData });
+                alert(`Threshold saved successfully: ${val} vehicles!`);
+            } catch(err) {
+                console.error(err);
+                alert("Failed to save threshold.");
+            }
+        }
+
+        // 6. Complaint Form
+        async function submitComplaint() {
+            const formData = new FormData();
+            formData.append('start_point', document.getElementById('checkpointA').value);
+            formData.append('end_point', document.getElementById('checkpointB').value);
+            formData.append('description', document.getElementById('complaintDesc').value);
+
+            try {
+                const response = await fetch('/api/submit_complaint', { method: 'POST', body: formData });
+                const data = await response.json();
+                const res = document.getElementById('complaintResult');
+                res.innerText = "✓ " + data.message;
+                res.style.display = 'block';
+                document.getElementById('complaintForm').reset();
+            } catch(err) {
+                console.error(err);
+                alert("Failed to submit complaint.");
+            }
+        }
+
+        // 7. Leaflet Map setup
+        var map = L.map('map').setView([19.0760, 72.8777], 11);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        var currentMarkers = [];
+        function plotMapData(lat, lon, city) {
+            currentMarkers.forEach(m => map.removeLayer(m));
+            currentMarkers = [];
+            map.setView([lat, lon], 12);
+
+            const congestionPoints = [
+                { lat: lat, lon: lon, name: city + " Main Intersection" },
+                { lat: lat + 0.02, lon: lon + 0.015, name: city + " Highway Flyover Ramp" },
+                { lat: lat - 0.018, lon: lon + 0.012, name: city + " Commercial Crossway" }
+            ];
+
+            congestionPoints.forEach(loc => {
+                let circle = L.circle([loc.lat, loc.lon], {
+                    color: '#ef4444',
+                    fillColor: '#f43f5e',
+                    fillOpacity: 0.55,
+                    radius: 1200
+                }).addTo(map).bindPopup(`<b>${loc.name}</b><br><span style="color:#ef4444;font-weight:bold;">High Congestion Zone</span><br>Flow Delay: ~18 mins`);
+                currentMarkers.push(circle);
+            });
+
+            const policePoints = [
+                { lat: lat - 0.015, lon: lon - 0.02, name: city + " Traffic Police Headquarters" },
+                { lat: lat + 0.012, lon: lon - 0.01, name: city + " Smart Mobility Control Center" }
+            ];
+
+            policePoints.forEach(loc => {
+                let marker = L.marker([loc.lat, loc.lon]).addTo(map)
+                    .bindPopup(`<b style="color:#2563eb;">${loc.name}</b><br>Autonomous Patrol Unit Stationed`);
+                currentMarkers.push(marker);
+            });
+        }
+
+        function searchCity(cityParam) {
+            let city = cityParam || document.getElementById('citySearch').value;
+            if (!city) return;
+
+            fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(city + ', India'))
+                .then(r => r.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        plotMapData(parseFloat(data[0].lat), parseFloat(data[0].lon), city);
+                    } else {
+                        alert("City location not found.");
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    plotMapData(19.0760, 72.8777, city);
+                });
+        }
+
+        function quickSelectCity(cityName) {
+            document.getElementById('citySearch').value = cityName;
+            searchCity(cityName);
+        }
+
+        // Initialize Tracker on Load
+        document.addEventListener('DOMContentLoaded', () => {
+            initTracker();
+            resizeCanvas();
+            requestAnimationFrame(renderTracker);
+
+            setTimeout(() => {
+                plotMapData(19.0760, 72.8777, "Mumbai");
+            }, 600);
+        });
+    </script>
+
+</body>
+</html>

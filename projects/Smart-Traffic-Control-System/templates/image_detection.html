@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bright">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Image AI Detector - Smart Traffic Flow</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        (function() {
+            const saved = localStorage.getItem('traffic_theme') || 'bright';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
+</head>
+<body>
+
+    <!-- Topbar Navigation -->
+    <header class="topbar">
+        <div class="brand-wrap">
+            <a href="{{ url_for('dashboard') }}" style="text-decoration:none; display:flex; gap:14px; align-items:center; color:inherit;">
+                <div class="brand-mark">AI</div>
+                <div>
+                    <h1>Vehicle Image AI Detector</h1>
+                    <p>Pretrained YOLOv8 Image Classification & Counting</p>
+                </div>
+            </a>
+        </div>
+        
+        <nav class="tab-buttons">
+            <a href="{{ url_for('dashboard') }}" class="tab-btn" style="text-decoration:none;">
+                🎥 Video Feed & Signal Control
+            </a>
+            <button class="tab-btn active">
+                📸 Image Vehicle Detector
+            </button>
+            <a href="{{ url_for('four_way_control') }}" class="tab-btn" style="text-decoration:none; color: var(--positive); font-weight: 800; background: rgba(16, 185, 129, 0.1);">
+                🚦 4-Way Signal Arena
+            </a>
+        </nav>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="user-profile-badge">
+                <span>👮</span>
+                <span>{{ user_name or 'Officer Sharma' }}</span>
+                <span style="font-size: 11px; padding: 2px 8px; border-radius: 12px; background: var(--badge-bg); color: var(--badge-color); font-weight: 800;">{{ badge_id or 'TPD-9021' }}</span>
+            </div>
+            <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle Theme">
+                <span id="themeIcon">☀️</span>
+                <span id="themeLabel">Bright Mode</span>
+            </button>
+            <a href="{{ url_for('logout') }}" class="secondary-btn" style="padding: 8px 16px; font-size: 13px;" title="Logout">
+                Logout ↪
+            </a>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- Page Header -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px; margin-bottom: 24px;">
+            <div>
+                <h2 style="margin: 0 0 6px 0; font-size: 1.85rem; font-weight: 800;">Upload Image & Predict Vehicle Categories</h2>
+                <p style="margin: 0; color: var(--muted); font-size: 1.05rem;">
+                    Upload any traffic surveillance photo or street capture to identify vehicle types (2W, 3W, 4W), exact names, confidence scores, and bounding boxes.
+                </p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; background: rgba(16, 185, 129, 0.15); color: var(--positive); font-weight: 700; font-size: 13px;">
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--positive); display: inline-block;"></span>
+                    YOLOv8 Single-Shot Detector Ready
+                </span>
+            </div>
+        </div>
+
+        <!-- THE KEY BOXES GRID -->
+        <div class="key-box-grid" style="margin: 0 0 25px 0;">
+
+            <!-- KEY BOX 1: IMAGE UPLOAD & PRESETS -->
+            <div class="key-box box-vision" style="grid-column: span 2; min-width: 320px;">
+                <div class="key-box-header">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="key-icon" style="width: 44px; height: 44px; font-size: 22px;">📤</div>
+                        <div>
+                            <h3 style="margin: 0; font-size: 1.25rem;">Upload Image or Select Sample</h3>
+                            <p style="margin: 0; font-size: 12px; color: var(--muted);">Supports JPG, PNG, WEBP high-resolution captures</p>
+                        </div>
+                    </div>
+                    <span class="key-badge">Image Input</span>
+                </div>
+
+                <!-- Upload Drag-Drop Box -->
+                <div id="dropZone" onclick="document.getElementById('imageFileInput').click()" style="border: 2px dashed var(--card-border); border-radius: 14px; padding: 28px 20px; text-align: center; cursor: pointer; background: var(--card-bg-subtle); transition: all 0.25s ease; margin-bottom: 18px;">
+                    <div style="font-size: 38px; margin-bottom: 8px;">📷</div>
+                    <div style="font-weight: 800; font-size: 15px; color: var(--ink-heading); margin-bottom: 4px;">
+                        Click or Drag & Drop Traffic Image Here
+                    </div>
+                    <div style="font-size: 12px; color: var(--muted);">
+                        Files processed directly with Pretrained YOLOv8 multi-class weights
+                    </div>
+                    <input type="file" id="imageFileInput" accept=".jpg,.jpeg,.png,.webp" style="display: none;" onchange="handleImageSelection(this)">
+                </div>
+
+                <!-- Sample Presets Selection -->
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <span style="font-size: 12px; font-weight: 700; color: var(--muted);">Quick Preset Captures:</span>
+                    <button type="button" class="city-pill" onclick="loadSampleImage('junction_heavy.jpg')">
+                        🚦 Multi-Lane Junction (12 Vehicles)
+                    </button>
+                    <button type="button" class="city-pill" onclick="loadSampleImage('road_cars.jpg')">
+                        🚗 Urban Highway Flow
+                    </button>
+                    <button type="button" class="city-pill" onclick="loadSampleImage('motorbikes.jpg')">
+                        🛵 Two-Wheeler Patrol
+                    </button>
+                </div>
+
+                <div class="key-box-footer" style="margin-top: 20px;">
+                    <button type="button" class="primary-btn" onclick="executeImageAnalysis()" style="width: 100%; padding: 13px 20px;">
+                        <span>Run Pretrained YOLO Vehicle Analysis</span> 🚀
+                    </button>
+                </div>
+            </div>
+
+            <!-- KEY BOX 2: CATEGORY VEHICLE COUNTERS -->
+            <div class="key-box box-signals">
+                <div class="key-box-header">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="key-icon" style="width: 44px; height: 44px; font-size: 22px;">🛵</div>
+                        <div>
+                            <h3 style="margin: 0; font-size: 1.25rem;">Vehicle Category Counts</h3>
+                            <p style="margin: 0; font-size: 12px; color: var(--muted);">2-Wheeler, 3-Wheeler & 4-Wheeler split</p>
+                        </div>
+                    </div>
+                    <span class="key-badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">Counts</span>
+                </div>
+
+                <!-- Category Count Metrics Grid -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+                    
+                    <!-- 2-Wheeler -->
+                    <div style="background: var(--card-bg-subtle); padding: 14px; border-radius: 14px; border: 1px solid var(--line); border-left: 4px solid #00d2ff;">
+                        <div style="font-size: 11px; font-weight: 800; color: #00d2ff; text-transform: uppercase;">🛵 2-Wheelers</div>
+                        <div id="imgCount2W" style="font-size: 28px; font-weight: 900; color: var(--ink-heading); line-height: 1.2;">0</div>
+                        <div style="font-size: 11px; color: var(--muted);">Bikes / Scooters / Cycles</div>
+                    </div>
+
+                    <!-- 3-Wheeler -->
+                    <div style="background: var(--card-bg-subtle); padding: 14px; border-radius: 14px; border: 1px solid var(--line); border-left: 4px solid #f59e0b;">
+                        <div style="font-size: 11px; font-weight: 800; color: #f59e0b; text-transform: uppercase;">🛺 3-Wheelers</div>
+                        <div id="imgCount3W" style="font-size: 28px; font-weight: 900; color: var(--ink-heading); line-height: 1.2;">0</div>
+                        <div style="font-size: 11px; color: var(--muted);">Auto-Rickshaws / Trikes</div>
+                    </div>
+
+                    <!-- 4-Wheeler -->
+                    <div style="background: var(--card-bg-subtle); padding: 14px; border-radius: 14px; border: 1px solid var(--line); border-left: 4px solid #10b981;">
+                        <div style="font-size: 11px; font-weight: 800; color: #10b981; text-transform: uppercase;">🚗 4-Wheelers</div>
+                        <div id="imgCount4W" style="font-size: 28px; font-weight: 900; color: var(--ink-heading); line-height: 1.2;">0</div>
+                        <div style="font-size: 11px; color: var(--muted);">Cars / Vans / Buses / Trucks</div>
+                    </div>
+
+                    <!-- Total -->
+                    <div style="background: var(--card-bg-subtle); padding: 14px; border-radius: 14px; border: 1px solid var(--line); border-left: 4px solid var(--primary);">
+                        <div style="font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase;">🚥 Total In Frame</div>
+                        <div id="imgCountTotal" style="font-size: 28px; font-weight: 900; color: var(--primary); line-height: 1.2;">0</div>
+                        <div style="font-size: 11px; color: var(--muted);">Vehicles In Image</div>
+                    </div>
+
+                </div>
+
+                <!-- Distribution Progress Bar -->
+                <div style="background: var(--card-bg-subtle); padding: 12px; border-radius: 12px; border: 1px solid var(--line);">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 6px;">
+                        <span>Proportion Breakdown</span>
+                        <span id="imgProportionText">2W: 0% | 3W: 0% | 4W: 0%</span>
+                    </div>
+                    <div style="height: 10px; width: 100%; border-radius: 6px; background: rgba(0,0,0,0.1); overflow: hidden; display: flex;">
+                        <div id="imgBar2W" style="width: 0%; background: #00d2ff; transition: width 0.3s;"></div>
+                        <div id="imgBar3W" style="width: 0%; background: #f59e0b; transition: width 0.3s;"></div>
+                        <div id="imgBar4W" style="width: 100%; background: #10b981; transition: width 0.3s;"></div>
+                    </div>
+                </div>
+
+                <div class="key-box-footer" style="margin-top: 15px;">
+                    <span class="key-metric-tag">🎯 Count Classification Summary</span>
+                    <span id="imgStatusBadge" style="color: var(--positive); font-weight: 800;">Processed</span>
+                </div>
+            </div>
+
+            <!-- KEY BOX 3: ANNOTATED IMAGE VISUALIZER -->
+            <div class="key-box box-policy" style="grid-column: span 2; min-width: 320px;">
+                <div class="key-box-header">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="key-icon" style="width: 44px; height: 44px; font-size: 22px;">🖼️</div>
+                        <div>
+                            <h3 style="margin: 0; font-size: 1.25rem;">Annotated Detection Image</h3>
+                            <p style="margin: 0; font-size: 12px; color: var(--muted);">Bounding squares, wheeler category labels & confidence score</p>
+                        </div>
+                    </div>
+                    <span class="key-badge" style="background: rgba(6, 182, 212, 0.15); color: #0d9488;">Visualizer</span>
+                </div>
+
+                <!-- Image Container -->
+                <div style="position: relative; width: 100%; min-height: 380px; max-height: 520px; background: #000; border-radius: 14px; overflow: hidden; border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center;">
+                    <img id="annotatedImageResult" src="/static/samples/junction_heavy.jpg" style="max-width: 100%; max-height: 520px; object-fit: contain; display: block;" alt="Detection Result" onerror="this.src='/static/processed/latest_detection.jpg'">
+                </div>
+
+                <!-- Legend under image -->
+                <div style="display: flex; gap: 14px; flex-wrap: wrap; margin-top: 14px; font-size: 12px; font-weight: 700;">
+                    <span style="color: #00d2ff;">■ 2-Wheeler (Motorcycle, Scooter, Cycle)</span>
+                    <span style="color: #f59e0b;">■ 3-Wheeler (Auto-Rickshaw, Trike)</span>
+                    <span style="color: #10b981;">■ 4-Wheeler (Car, SUV, Bus, Truck)</span>
+                </div>
+            </div>
+
+            <!-- KEY BOX 4: DETECTED VEHICLES PREDICTION INVENTORY -->
+            <div class="key-box box-ml" style="grid-column: span 1;">
+                <div class="key-box-header">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="key-icon" style="width: 44px; height: 44px; font-size: 22px;">📋</div>
+                        <div>
+                            <h3 style="margin: 0; font-size: 1.25rem;">Predicted Vehicles List</h3>
+                            <p style="margin: 0; font-size: 12px; color: var(--muted);">Entity inventory & prediction confidence</p>
+                        </div>
+                    </div>
+                    <span class="key-badge" style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6;">Predictions</span>
+                </div>
+
+                <!-- Inventory Table / List -->
+                <div style="max-height: 420px; overflow-y: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--card-bg-subtle);">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 12.5px; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid var(--line); color: var(--muted); font-size: 11px; text-transform: uppercase;">
+                                <th style="padding: 10px;">#</th>
+                                <th style="padding: 10px;">Name</th>
+                                <th style="padding: 10px;">Type</th>
+                                <th style="padding: 10px;">Conf.</th>
+                                <th style="padding: 10px;">Size</th>
+                            </tr>
+                        </thead>
+                        <tbody id="predictionsTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 25px; color: var(--muted);">
+                                    Click <strong>"Run Pretrained YOLO"</strong> or select a sample image to view predictions.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Summarization Card -->
+                <div id="imageSummaryCard" style="margin-top: 15px; padding: 14px; border-radius: 12px; background: var(--card-bg-subtle); border: 1px solid var(--line); font-size: 13px; line-height: 1.6;">
+                    Select an image to view comprehensive traffic density analysis.
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Loading Banner -->
+        <div id="imgLoadingMsg" style="display: none; text-align: center; padding: 18px; border-radius: 14px; background: rgba(2, 132, 199, 0.12); border: 1px solid var(--primary); color: var(--primary); font-weight: bold; font-size: 1.1rem; margin-top: 15px;">
+            ⏳ Running Pretrained YOLOv8 Inference on image... Extracting vehicle bounding boxes & names...
+        </div>
+
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        // 1. Theme Toggle
+        function updateThemeUI(theme) {
+            const icon = document.getElementById('themeIcon');
+            const label = document.getElementById('themeLabel');
+            if (theme === 'bright') {
+                if (icon) icon.innerText = '☀️';
+                if (label) label.innerText = 'Bright Mode';
+            } else {
+                if (icon) icon.innerText = '🌙';
+                if (label) label.innerText = 'Dark Mode';
+            }
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'bright';
+            const next = current === 'bright' ? 'dark' : 'bright';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('traffic_theme', next);
+            updateThemeUI(next);
+        }
+
+        // State
+        let currentImageFile = null;
+        let currentSampleName = 'junction_heavy.jpg';
+
+        function handleImageSelection(input) {
+            if (input.files && input.files[0]) {
+                currentImageFile = input.files[0];
+                currentSampleName = null;
+                const previewUrl = URL.createObjectURL(currentImageFile);
+                document.getElementById('annotatedImageResult').src = previewUrl;
+                executeImageAnalysis();
+            }
+        }
+
+        function loadSampleImage(sampleFileName) {
+            currentSampleName = sampleFileName;
+            currentImageFile = null;
+            document.getElementById('annotatedImageResult').src = `/static/samples/${sampleFileName}`;
+            executeImageAnalysis();
+        }
+
+        async function executeImageAnalysis() {
+            const loading = document.getElementById('imgLoadingMsg');
+            if (loading) loading.style.display = 'block';
+
+            const formData = new FormData();
+            if (currentImageFile) {
+                formData.append('image_file', currentImageFile);
+            } else if (currentSampleName) {
+                formData.append('sample_image', currentSampleName);
+            }
+
+            try {
+                const response = await fetch('/api/analyze_image', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (loading) loading.style.display = 'none';
+
+                if (data.success) {
+                    // Update Counts
+                    const c = data.counts;
+                    document.getElementById('imgCount2W').innerText = c.two_wheeler;
+                    document.getElementById('imgCount3W').innerText = c.three_wheeler;
+                    document.getElementById('imgCount4W').innerText = c.four_wheeler;
+                    document.getElementById('imgCountTotal').innerText = c.total;
+
+                    // Update proportions
+                    if (c.total > 0) {
+                        const pct2W = Math.round((c.two_wheeler / c.total) * 100);
+                        const pct3W = Math.round((c.three_wheeler / c.total) * 100);
+                        const pct4W = 100 - pct2W - pct3W;
+
+                        document.getElementById('imgBar2W').style.width = pct2W + '%';
+                        document.getElementById('imgBar3W').style.width = pct3W + '%';
+                        document.getElementById('imgBar4W').style.width = pct4W + '%';
+                        document.getElementById('imgProportionText').innerText = `2W: ${pct2W}% | 3W: ${pct3W}% | 4W: ${pct4W}%`;
+                    }
+
+                    // Update Image
+                    if (data.latest_image) {
+                        document.getElementById('annotatedImageResult').src = data.latest_image;
+                    }
+
+                    // Update Summarization
+                    if (data.summary) {
+                        document.getElementById('imageSummaryCard').innerHTML = data.summary;
+                    }
+
+                    // Populate Predictions Inventory Table
+                    const tbody = document.getElementById('predictionsTableBody');
+                    tbody.innerHTML = '';
+
+                    if (data.predictions && data.predictions.length > 0) {
+                        data.predictions.forEach(p => {
+                            const tr = document.createElement('tr');
+                            tr.style.borderBottom = '1px solid var(--line)';
+                            tr.innerHTML = `
+                                <td style="padding: 10px; font-weight: 800;">${p.id}</td>
+                                <td style="padding: 10px; font-weight: 800;">
+                                    <span style="color: ${p.color};">●</span> ${p.name}
+                                </td>
+                                <td style="padding: 10px;">
+                                    <span style="font-size: 11px; padding: 2px 8px; border-radius: 12px; background: rgba(255,255,255,0.08); font-weight: 700;">
+                                        ${p.category}
+                                    </span>
+                                </td>
+                                <td style="padding: 10px; font-weight: 800; color: var(--positive);">${p.confidence}</td>
+                                <td style="padding: 10px; font-size: 11px; color: var(--muted);">${p.dimensions}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    } else {
+                        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--muted);">No vehicles detected in this frame.</td></tr>`;
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                if (loading) loading.style.display = 'none';
+                alert("Error during image analysis. Check console.");
+            }
+        }
+
+        // Initialize with default sample analysis
+        document.addEventListener('DOMContentLoaded', () => {
+            const active = document.documentElement.getAttribute('data-theme') || 'bright';
+            updateThemeUI(active);
+            executeImageAnalysis();
+        });
+    </script>
+
+</body>
+</html>

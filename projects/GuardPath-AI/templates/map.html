@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GuardPath - AI Powered Personal Safety &amp; Smart Route Planner</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="brand">
+        <img src="{{ url_for('static', filename='images/logo.jpg') }}" class="brand-icon" alt="GuardPath Logo">
+        <div>
+            <h1>GuardPath</h1>
+            <p class="tagline">AI-Powered Personal Safety &amp; Smart Route Planner</p>
+        </div>
+    </div>
+    <div style="color:white; margin-right:20px; display:flex; gap:15px; align-items:center;">
+        <span>Welcome, <strong>{{ name }}</strong></span>
+        <a href="{{ url_for('history') }}" style="color:#f1c40f; text-decoration:none;">Ride History</a>
+        <a href="{{ url_for('logout') }}" style="color:#e74c3c; text-decoration:none;">Logout</a>
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="panel form-panel">
+        <h2>Plan a Safer Route</h2>
+        <form id="route-form">
+            <div class="field-row">
+                <div class="field">
+                    <label for="source">Source</label>
+                    <select id="source" name="source" required>
+                        <option value="" disabled selected>Select source</option>
+                        {% for area in areas %}
+                        <option value="{{ area }}">{{ area }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="destination">Destination</label>
+                    <select id="destination" name="destination" required>
+                        <option value="" disabled selected>Select destination</option>
+                        {% for area in areas %}
+                        <option value="{{ area }}">{{ area }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="field-row">
+                <div class="field">
+                    <label>Travel Time</label>
+                    <div class="toggle-group" id="travel-time-group">
+                        <button type="button" class="toggle-btn active" data-value="day">&#9728; Day</button>
+                        <button type="button" class="toggle-btn" data-value="night">&#127769; Night</button>
+                    </div>
+                    <input type="hidden" name="travel_time" id="travel_time" value="day">
+                </div>
+                <div class="field">
+                    <label for="travel_mode">Travel Mode</label>
+                    <select id="travel_mode" name="travel_mode">
+                        <option value="walking">Walking</option>
+                        <option value="bicycle">Bicycle</option>
+                        <option value="public_transport">Public Transport</option>
+                        <option value="car">Car</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Find Safest Route</button>
+        </form>
+        <p id="form-error" class="form-error"></p>
+    </section>
+
+    <section class="panel map-panel">
+        <div class="map-heading-row">
+            <div>
+                <h2>GuardPath Live-Style Route Map</h2>
+                <p class="map-note">
+                    Street-map view powered by OpenStreetMap. Traffic colors are a prototype
+                    visualization of the traffic-risk values in the GuardPath dataset; they are
+                    not live traffic until a live traffic provider is connected. The selected
+                    route follows real road geometry and the vehicle/pointer animates according
+                    to route distance.
+                </p>
+            </div>
+            <div class="map-status" id="map-status">Ready</div>
+        </div>
+        <div class="map-wrap leaflet-wrap">
+            <div id="route-map"></div>
+            <div class="map-overlay-card">
+                <div><span class="traffic-dot low"></span> Low traffic</div>
+                <div><span class="traffic-dot medium"></span> Moderate traffic</div>
+                <div><span class="traffic-dot high"></span> Heavy traffic</div>
+                <div><span class="danger-dot"></span> Safety danger zone</div>
+                <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid #e2e8f0; font-weight: 700; font-size: 11px; color: #475569;">SAFE HAVENS (TAP TO DETOUR):</div>
+                <div><span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#2563eb; margin-right:6px; box-shadow:0 0 5px rgba(37,99,235,0.6);"></span> 🚓 Police Station</div>
+                <div><span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#ef4444; margin-right:6px; box-shadow:0 0 5px rgba(239,68,68,0.6);"></span> 🏥 Hospital</div>
+                <div><span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#f59e0b; margin-right:6px; box-shadow:0 0 5px rgba(245,158,11,0.6);"></span> 🚌 Bus Stand</div>
+            </div>
+        </div>
+        <p id="map-hint" class="map-hint">Select a source and destination, then find the safest route.</p>
+        <div class="map-controls">
+            <button type="button" id="start-simulation" class="secondary-btn" disabled>▶ Start trip</button>
+            <button type="button" id="pause-simulation" class="secondary-btn" disabled>⏸ Pause</button>
+            <button type="button" id="stop-simulation" class="secondary-btn" disabled>■ Stop</button>
+            <button type="button" id="reset-map" class="secondary-btn">↺ Reset map</button>
+            <span id="trip-progress" class="trip-progress">No trip active</span>
+            <div id="safety-poi-status" style="display: none; flex-wrap: wrap; gap: 15px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #334155;">
+                <span id="police-status" style="color: #60a5fa; font-weight: bold; font-size: 13px;">🚓 Police: -- km</span>
+                <span id="hospital-status" style="color: #f87171; font-weight: bold; font-size: 13px;">🏥 Hospital: -- km</span>
+                <span id="bus-status" style="color: #fbbf24; font-weight: bold; font-size: 13px;">🚌 Bus Stop: -- km</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel results-panel" id="results-panel" hidden>
+        <h2>Recommended Routes</h2>
+        <div id="results-summary" class="results-summary"></div>
+        <div id="results-list" class="results-list"></div>
+    </section>
+
+    <div id="loading" class="loading" hidden>Analyzing routes&hellip;</div>
+
+    <!-- NEW FABs for SOS, Hazards, Contacts, and Chatbot -->
+    <div style="position: fixed; bottom: 30px; left: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 1000;">
+        <button onclick="toggleChatbot()" style="background: #3b82f6; color: white; border: none; padding: 15px; border-radius: 50%; width: 60px; height: 60px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-size: 24px;" title="AI Assistant">💬</button>
+        <button onclick="document.getElementById('contacts-modal').style.display='flex'" style="background: var(--accent); color: white; border: none; padding: 15px; border-radius: 50%; width: 60px; height: 60px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-size: 24px;" title="Emergency Contacts">📞</button>
+        <button onclick="startHazardPicking()" style="background: #f59e0b; color: white; border: none; padding: 15px; border-radius: 50%; width: 60px; height: 60px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-size: 24px;" title="Report Hazard">🚧</button>
+        <button onclick="openSOSModal()" style="background: #ef4444; color: white; border: none; padding: 15px; border-radius: 50%; width: 60px; height: 60px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4); font-size: 16px; animation: pulse 2s infinite;" title="SOS Emergency">SOS</button>
+    </div>
+
+    <!-- Floating Chatbot Window -->
+    <div id="chatbot-window" style="display:none; position:fixed; bottom:100px; left:30px; width:350px; height:450px; background:white; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.2); z-index:2000; flex-direction:column; overflow:hidden;">
+        <div style="background: var(--primary); color:white; padding:15px; font-weight:bold; display:flex; justify-content:space-between; align-items:center;">
+            <span>🤖 GuardPath AI Assistant</span>
+            <span onclick="toggleChatbot()" style="cursor:pointer; font-size:20px;">&times;</span>
+        </div>
+        <div id="chat-history" style="flex:1; padding:15px; overflow-y:auto; background:#f8fafc; display:flex; flex-direction:column; gap:10px;">
+            <div style="background:#e2e8f0; color:#334155; padding:10px; border-radius:10px 10px 10px 0; align-self:flex-start; max-width:80%; font-size:14px;">
+                Hi! I can help you check the weather forecast or give safety advice. Ask me anything!
+            </div>
+        </div>
+        <div style="padding:10px; border-top:1px solid #e2e8f0; display:flex; gap:10px; background:white;">
+            <input type="text" id="chat-input" placeholder="Type a message..." style="flex:1; padding:10px; border:1px solid #cbd5e1; border-radius:20px; outline:none;" onkeypress="if(event.key==='Enter') sendChatMessage()">
+            <button onclick="sendChatMessage()" style="background:var(--accent); color:white; border:none; padding:10px 15px; border-radius:20px; cursor:pointer; font-weight:bold;">Send</button>
+        </div>
+    </div>
+
+    <!-- Emergency Contacts Modal -->
+    <div id="contacts-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index: 3000; justify-content:center; align-items:center; backdrop-filter: blur(5px);">
+        <div class="panel" style="width: 400px; margin: 0 auto; position: relative;">
+            <span onclick="document.getElementById('contacts-modal').style.display='none'" style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:20px; font-weight:bold;">&times;</span>
+            <h2 style="color: var(--accent); margin-bottom:15px;">📞 Emergency Contacts</h2>
+            <div style="background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #e2e8f0;">
+                <p style="margin: 0 0 10px 0; font-weight: bold; color: var(--primary);">Standard Emergency Numbers</p>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>🚑 Ambulance</span> <a href="tel:108" style="font-weight: bold; color: #ef4444; text-decoration: none;">108</a></div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>🚓 Police Control Room</span> <a href="tel:100" style="font-weight: bold; color: #ef4444; text-decoration: none;">100</a></div>
+                <div style="display: flex; justify-content: space-between;"><span>🚨 National Emergency</span> <a href="tel:112" style="font-weight: bold; color: #ef4444; text-decoration: none;">112</a></div>
+            </div>
+            
+            <div style="background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #e2e8f0;">
+                <p style="margin: 0 0 8px 0; font-weight: bold; color: var(--primary);">📧 Parent / Emergency Email</p>
+                <div style="display: flex; gap: 8px;">
+                    <input type="email" id="parent-email-input" placeholder="parent.email@example.com" style="flex:1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px;" value="">
+                    <button type="button" onclick="saveParentEmail()" style="background: var(--accent); color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px;">Save</button>
+                </div>
+                <span id="parent-email-saved" style="font-size: 12px; color: #10b981; display: none; margin-top: 4px; font-weight: 600;">✓ Saved for emergency dispatch!</span>
+            </div>
+
+            <div style="background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0;">
+                <p style="margin: 0 0 10px 0; font-weight: bold; color: var(--primary);">Personal SOS Contacts</p>
+                <div id="personal-contacts-list">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Family / Parents</span> <span style="color: var(--muted); font-size: 13px;">(Saved in Profile)</span></div>
+                </div>
+                <button onclick="addEmergencyContact()" style="width: 100%; padding: 10px; background: white; border: 1px dashed var(--accent); color: var(--accent); border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.2s;">+ Add New Emergency Contact</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOS Modal -->
+    <div id="sos-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index: 3000; justify-content:center; align-items:center; backdrop-filter: blur(5px);">
+        <div class="panel" style="width: 400px; margin: 0 auto; position: relative; border: 2px solid #ef4444;">
+            <span onclick="document.getElementById('sos-modal').style.display='none'" style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:20px; font-weight:bold;">&times;</span>
+            <h2 style="color: #ef4444; margin-bottom:15px;">🚨 Send SOS Alert</h2>
+            <form id="sos-form">
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase;">WhatsApp &amp; SMS Target Contact</div>
+                        <div id="sos-target-contact" style="font-size: 14px; font-weight: 700; color: var(--primary);">👤 Vaish (7975767868)</div>
+                    </div>
+                    <button type="button" onclick="document.getElementById('sos-modal').style.display='none'; document.getElementById('contacts-modal').style.display='flex';" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">Manage Contacts 📞</button>
+                </div>
+                <div class="field" style="margin-bottom:15px;">
+                    <label style="color: var(--text);">Contact Email ID</label>
+                    <input type="email" id="sos-email" required placeholder="trusted.contact@example.com">
+                </div>
+                <div class="field" style="margin-bottom:15px;">
+                    <label style="color: var(--text);">Emergency Message (Optional)</label>
+                    <input type="text" id="sos-msg" placeholder="Help, I am in danger! Need assistance.">
+                </div>
+                
+                <div class="field" style="margin-bottom:15px;">
+                    <label style="color: var(--text);">Voice Message (Optional)</label>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button type="button" id="record-btn" style="background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">🎤 Record</button>
+                        <button type="button" id="stop-record-btn" style="background: #64748b; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; display: none;">⏹ Stop</button>
+                        <span id="record-status" style="font-size: 13px; color: var(--muted);">No audio recorded</span>
+                    </div>
+                    <audio id="audio-preview" controls style="width: 100%; margin-top: 10px; display: none; height: 35px;"></audio>
+                </div>
+
+                <p style="font-size:12px; color:var(--muted); margin-bottom: 20px;">(Your live coordinates and voice message will be attached automatically to the alert email)</p>
+                <button type="submit" class="submit-btn" style="background: #ef4444; box-shadow: 0 4px 15px rgba(239,68,68,0.4);">Send Emergency Alert Now</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hazard Upload Modal -->
+    <div id="hazard-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index: 2000; justify-content:center; align-items:center; backdrop-filter: blur(5px);">
+        <div class="panel" style="width: 400px; margin: 0 auto; position: relative;">
+            <span onclick="cancelHazardPicking()" style="position:absolute; top:15px; right:20px; cursor:pointer; font-size:20px;">&times;</span>
+            <h2 style="margin-bottom:15px;">Report Road Hazard</h2>
+            <form id="hazard-form">
+                <div class="field" style="margin-bottom:15px;">
+                    <label>Description</label>
+                    <input type="text" id="hazard-desc" required placeholder="e.g., Road blocked by fallen tree">
+                </div>
+                <div class="field" style="margin-bottom:15px;">
+                    <label>Image Evidence</label>
+                    <input type="file" id="hazard-image" accept="image/*">
+                </div>
+                <p style="font-size:12px; color:gray;">(Your current location will be attached automatically)</p>
+                <button type="submit" class="submit-btn">Upload Hazard</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- SOS Instant Dispatch Modal (WhatsApp & SMS Option 1) -->
+    <div id="sos-dispatched-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.85); z-index: 5000; justify-content:center; align-items:center; backdrop-filter: blur(8px);">
+        <div class="panel" style="width: 440px; max-width: 90%; margin: 0 auto; text-align: center; border: 2px solid #ef4444; box-shadow: 0 15px 40px rgba(239,68,68,0.35); background: white; border-radius: 16px;">
+            <div style="font-size: 46px; margin-bottom: 8px;">🚨</div>
+            <h2 style="color: #ef4444; margin: 0 0 8px 0; font-size: 24px; font-weight: 800;">EMERGENCY SOS DISPATCHED!</h2>
+            <p id="sos-email-status" style="background: #d1fae5; color: #065f46; padding: 10px 14px; border-radius: 10px; font-size: 13px; font-weight: 700; margin-bottom: 20px; border: 1px solid #a7f3d0;">
+                ✓ Email Alert Sent to Parent / Guardian
+            </p>
+
+            <p style="font-size: 14px; color: var(--primary); margin-bottom: 16px; font-weight: 600;">
+                Immediate 1-Click Mobile SOS Dispatch:
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 22px;">
+                <a id="sos-whatsapp-btn" href="#" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 10px; background: #25D366; color: white; padding: 14px 20px; border-radius: 12px; font-size: 16px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 15px rgba(37,211,102,0.35); transition: 0.2s;">
+                    <span style="font-size: 20px;">💬</span> Open WhatsApp &amp; Send Distress Message
+                </a>
+
+                <a id="sos-sms-btn" href="#" style="display: flex; align-items: center; justify-content: center; gap: 10px; background: #2563eb; color: white; padding: 14px 20px; border-radius: 12px; font-size: 16px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 15px rgba(37,99,235,0.35); transition: 0.2s;">
+                    <span style="font-size: 20px;">📱</span> Open SMS App &amp; Send Direct Text
+                </a>
+            </div>
+
+            <button type="button" onclick="document.getElementById('sos-dispatched-modal').style.display='none'" class="secondary-btn" style="width: 100%; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer;">
+                Close Window
+            </button>
+        </div>
+    </div>
+
+    <!-- Safe Haven Detour / Change Destination Confirmation Modal -->
+    <div id="reroute-confirm-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15, 23, 42, 0.8); z-index: 5000; justify-content:center; align-items:center; backdrop-filter: blur(8px);">
+        <div class="panel" style="width: 440px; max-width: 90%; margin: 0 auto; text-align: center; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.35); background: white; padding: 28px 24px; border: 2px solid #3b82f6;">
+            <div id="reroute-icon-bubble" style="width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px auto; font-size: 36px; box-shadow: 0 8px 25px rgba(0,0,0,0.18);">
+                🏥
+            </div>
+            <h2 style="color: var(--primary); margin: 0 0 8px 0; font-size: 22px; font-weight: 800;">Change Destination?</h2>
+            <p style="font-size: 15px; color: #334155; margin-bottom: 8px;">
+                Do you want to divert your journey to<br><strong id="reroute-poi-name" style="color: #0f172a; font-size: 17px;">Manipal Hospital</strong>?
+            </p>
+            <div id="reroute-poi-badge" style="display: inline-block; background: #eff6ff; border: 1px solid #bfdbfe; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; color: #1d4ed8; margin-bottom: 18px;">
+                Safe Haven &bull; 1.2 km away
+            </div>
+            <p style="font-size: 13px; color: #64748b; line-height: 1.5; margin-bottom: 24px;">
+                GuardPath AI will recalculate the safest road route from your current position and guide you straight to this safe haven.
+            </p>
+            <div style="display: flex; gap: 12px;">
+                <button type="button" onclick="cancelReroute()" style="flex: 1; padding: 13px; border-radius: 12px; border: 1px solid #cbd5e1; background: #f8fafc; color: #475569; font-weight: 700; cursor: pointer; font-size: 14px; transition: 0.2s;">
+                    Keep Current Route
+                </button>
+                <button type="button" id="reroute-confirm-btn" onclick="confirmReroute()" style="flex: 1; padding: 13px; border-radius: 12px; border: none; background: #10b981; color: white; font-weight: 700; cursor: pointer; font-size: 14px; box-shadow: 0 4px 15px rgba(16,185,129,0.35); transition: 0.2s;">
+                    ✔ Yes, Take Me There
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Safety Check Modal (Mockup Step 10) -->
+    <div id="safety-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#111111; z-index: 4000; justify-content:center; align-items:center; flex-direction: column; color: white; text-align: center;">
+        <h1 style="font-size: 32px; margin-bottom: 10px;">Are You Safe?</h1>
+        <p id="safety-modal-reason" style="color: #a1a1aa; font-size: 16px; margin-bottom: 40px;">Vehicle stationary for 30 seconds. Please confirm your safety.</p>
+        
+        <div style="width: 150px; height: 150px; border-radius: 50%; border: 4px solid #ef4444; display: flex; justify-content: center; align-items: center; margin-bottom: 50px; flex-direction: column;">
+            <span id="safety-timer" style="font-size: 48px; font-weight: bold;">15</span>
+            <span style="font-size: 14px; color: #a1a1aa;">sec</span>
+        </div>
+        
+        <div style="display: flex; gap: 20px; width: 100%; max-width: 350px; padding: 0 20px;">
+            <button onclick="confirmSafe()" style="flex: 1; padding: 15px; border-radius: 12px; border: none; background: #10b981; color: white; font-size: 18px; font-weight: bold; cursor: pointer;">I'm Safe</button>
+            <button onclick="triggerSOS()" style="flex: 1; padding: 15px; border-radius: 12px; border: none; background: #ef4444; color: white; font-size: 18px; font-weight: bold; cursor: pointer;">I Need Help</button>
+        </div>
+    </div>
+
+    <!-- Guardian Mode Modal (Mockup Step 8) -->
+    <div id="guardian-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#111111; z-index: 4000; justify-content:center; align-items:center; flex-direction: column; color: white; text-align: center;">
+        <img src="{{ url_for('static', filename='images/logo.jpg') }}" style="width: 80px; border-radius: 20px; margin-bottom: 20px;">
+        <h1 style="font-size: 28px; margin-bottom: 30px;">Guardian Mode<br>Active</h1>
+        <ul style="list-style: none; padding: 0; margin-bottom: 50px; text-align: left; font-size: 18px; line-height: 2;">
+            <li><span style="color: #10b981; margin-right:10px;">✔</span> Monitoring your trip</li>
+            <li><span style="color: #10b981; margin-right:10px;">✔</span> Checking deviations</li>
+            <li><span style="color: #10b981; margin-right:10px;">✔</span> Ensuring your safety</li>
+        </ul>
+        <button onclick="document.getElementById('guardian-modal').style.display='none'" style="width: 100%; max-width: 300px; padding: 15px; border-radius: 12px; border: none; background: #ef4444; color: white; font-size: 18px; font-weight: bold; cursor: pointer;">Hide Overlay</button>
+    </div>
+
+    <!-- Trip Completed Modal (Mockup Step 12) -->
+    <div id="trip-completed-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#111111; z-index: 4000; justify-content:center; align-items:center; flex-direction: column; color: white; text-align: center;">
+        <div style="width: 100px; height: 100px; border-radius: 50%; background: #10b981; display: flex; justify-content: center; align-items: center; margin-bottom: 30px;">
+            <span style="font-size: 50px; color: white;">✔</span>
+        </div>
+        <h1 style="font-size: 28px; margin-bottom: 10px;">Journey Completed</h1>
+        <p style="color: #a1a1aa; font-size: 16px; margin-bottom: 40px;">You have reached your destination safely.</p>
+        <button onclick="document.getElementById('trip-completed-modal').style.display='none'" style="width: 100%; max-width: 300px; padding: 15px; border-radius: 12px; border: none; background: var(--accent); color: white; font-size: 18px; font-weight: bold; cursor: pointer;">Done</button>
+    </div>
+</main>
+
+<style>
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); box-shadow: 0 0 15px rgba(239,68,68,0.6); } 100% { transform: scale(1); } }
+</style>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+    const AREA_COORDS = {{ area_coords | tojson }};
+    const NETWORK_EDGES = {{ network_edges | tojson }};
+    const AREA_INFO = {{ area_info | tojson }};
+</script>
+
+<footer class="footer">
+    <p>Academic Prototype &middot; Safety model uses the project dataset. Street tiles/routing use OpenStreetMap/OSRM. Live traffic requires a traffic API.</p>
+</footer>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+<script>
+    // --- NEW ADD-ON LOGIC ---
+    let mapInstance = null; // Will be hooked from script.js
+    let safetyCheckInterval = null;
+    let countdownInterval = null;
+
+    // Hazard Picking & Upload Logic
+    let isPickingHazard = false;
+    let hazardLat = null;
+    let hazardLng = null;
+    let tempHazardMarker = null;
+
+    function startHazardPicking() {
+        if (!mapInstance) return alert('Map is not ready yet.');
+        isPickingHazard = true;
+        document.getElementById('route-map').style.cursor = 'crosshair';
+        document.getElementById('map-hint').innerHTML = '<strong style="color:#f59e0b;">Tap anywhere on the map to set the hazard location</strong>';
+    }
+
+    function cancelHazardPicking() {
+        document.getElementById('hazard-modal').style.display = 'none';
+        isPickingHazard = false;
+        document.getElementById('route-map').style.cursor = '';
+        document.getElementById('map-hint').innerText = 'Select a source and destination, then find the safest route.';
+        if (tempHazardMarker) {
+            mapInstance.removeLayer(tempHazardMarker);
+            tempHazardMarker = null;
+        }
+        hazardLat = null;
+        hazardLng = null;
+    }
+
+    setTimeout(() => {
+        if (typeof map !== 'undefined') {
+            mapInstance = map;
+            loadHazards();
+            
+            // Map click listener for hazards
+            mapInstance.on('click', function(e) {
+                if (isPickingHazard) {
+                    hazardLat = e.latlng.lat;
+                    hazardLng = e.latlng.lng;
+                    isPickingHazard = false;
+                    document.getElementById('route-map').style.cursor = '';
+                    document.getElementById('map-hint').innerText = 'Select a source and destination, then find the safest route.';
+                    
+                    if (tempHazardMarker) mapInstance.removeLayer(tempHazardMarker);
+                    tempHazardMarker = L.marker([hazardLat, hazardLng]).addTo(mapInstance);
+                    
+                    document.getElementById('hazard-modal').style.display = 'flex';
+                }
+            });
+        }
+    }, 1000);
+
+    document.getElementById('hazard-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (hazardLat === null || hazardLng === null) {
+            alert('Please pick a location on the map first.');
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append('description', document.getElementById('hazard-desc').value);
+        formData.append('lat', hazardLat);
+        formData.append('lng', hazardLng);
+        if(document.getElementById('hazard-image').files[0]) {
+            formData.append('image', document.getElementById('hazard-image').files[0]);
+        }
+
+        fetch('/upload_hazard', { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                alert('Hazard reported successfully! Community alerted.');
+                document.getElementById('hazard-modal').style.display = 'none';
+                document.getElementById('hazard-form').reset();
+                if (tempHazardMarker) {
+                    mapInstance.removeLayer(tempHazardMarker);
+                    tempHazardMarker = null;
+                }
+                hazardLat = null;
+                hazardLng = null;
+                loadHazards();
+            }
+        });
+    });
+
+    // Load Hazards
+    function loadHazards() {
+        fetch('/get_hazards')
+        .then(res => res.json())
+        .then(hazards => {
+            hazards.forEach(h => {
+                if(mapInstance) {
+                    let popupContent = `<b>Hazard:</b> ${h.description}<br><i>Reported by ${h.name}</i>`;
+                    if(h.image) popupContent += `<br><img src="/static/uploads/${h.image}" style="width:100%; margin-top:10px; border-radius:4px;">`;
+                    
+                    L.circleMarker([h.lat, h.lng], {
+                        radius: 8, fillColor: "#f59e0b", color: "#b45309", weight: 2, opacity: 1, fillOpacity: 0.8
+                    }).addTo(mapInstance).bindPopup(popupContent);
+                }
+            });
+        });
+    }
+
+    // SOS Modal & Voice Record Logic
+    let mediaRecorder;
+    let audioChunks = [];
+    let audioBlob = null;
+
+    function openSOSModal() {
+        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+        document.getElementById('sos-modal').style.display = 'flex';
+        audioBlob = null;
+        document.getElementById('record-status').innerText = 'No audio recorded';
+        document.getElementById('audio-preview').style.display = 'none';
+        document.getElementById('audio-preview').src = '';
+
+        let savedParent = window.parentEmail || localStorage.getItem('guardpath_parent_email') || 'krishnagopi5600@gmail.com';
+        let emailInput = document.getElementById('sos-email');
+        if (emailInput && !emailInput.value) emailInput.value = savedParent;
+
+        let contacts = getStoredContacts();
+        let primaryContact = contacts.length > 0 ? contacts[0] : { name: 'Emergency Contact', phone: '7975767868' };
+        let targetEl = document.getElementById('sos-target-contact');
+        if (targetEl) targetEl.innerText = `👤 ${primaryContact.name} (${primaryContact.phone})`;
+    }
+
+    document.getElementById('record-btn').addEventListener('click', async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+            
+            mediaRecorder.ondataavailable = e => {
+                if (e.data.size > 0) audioChunks.push(e.data);
+            };
+            
+            mediaRecorder.onstop = () => {
+                audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const preview = document.getElementById('audio-preview');
+                preview.src = audioUrl;
+                preview.style.display = 'block';
+                document.getElementById('record-status').innerText = 'Recording saved!';
+            };
+
+            mediaRecorder.start();
+            document.getElementById('record-btn').style.display = 'none';
+            document.getElementById('stop-record-btn').style.display = 'inline-block';
+            document.getElementById('record-status').innerText = 'Recording...';
+        } catch (err) {
+            alert('Microphone access denied or unavailable.');
+        }
+    });
+
+    document.getElementById('stop-record-btn').addEventListener('click', () => {
+        if(mediaRecorder && mediaRecorder.state === 'recording') {
+            mediaRecorder.stop();
+            mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        }
+        document.getElementById('stop-record-btn').style.display = 'none';
+        document.getElementById('record-btn').style.display = 'inline-block';
+        document.getElementById('record-btn').innerText = '🎤 Re-record';
+    });
+
+    document.getElementById('sos-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        let email = document.getElementById('sos-email').value;
+        let msg = document.getElementById('sos-msg').value || 'Emergency SOS Triggered!';
+        triggerSOS(email, msg, audioBlob);
+    });
+
+    // SOS Execution Logic (Option 1: 1-Click WhatsApp & SMS + Background Email)
+    function triggerSOS(email = '', msg = 'Emergency SOS Triggered', voiceBlob = null) {
+        if (navigator.vibrate) navigator.vibrate([500, 200, 500, 200, 1000]); // Intense SOS vibration pattern
+        let lat = 12.9716, lng = 77.5946;
+        
+        // 1. Immediately dismiss all blocking overlays so UI is never stuck
+        document.getElementById('safety-modal').style.display = 'none';
+        document.getElementById('sos-modal').style.display = 'none';
+        document.getElementById('guardian-modal').style.display = 'none';
+        if (countdownInterval) clearInterval(countdownInterval);
+        if (safetyCheckInterval) clearInterval(safetyCheckInterval);
+
+        // 2. Resolve destination email:
+        let targetEmail = email;
+        if (!targetEmail || targetEmail === 'No Email' || targetEmail === 'No Email Provided') {
+            targetEmail = window.parentEmail || localStorage.getItem('guardpath_parent_email') || 'krishnagopi5600@gmail.com';
+        }
+
+        // 3. Prepare One-Click WhatsApp & SMS Dispatch for Primary Contact
+        let contacts = getStoredContacts();
+        let primaryContact = contacts.length > 0 ? contacts[0] : { name: 'Emergency Contact', phone: '7975767868' };
+        let cleanPhone = primaryContact.phone.replace(/\D/g, '');
+        if (cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
+
+        let distressText = encodeURIComponent(`🚨 URGENT SOS ALERT! I am in danger and require immediate assistance!\nMy Live GPS Location: https://maps.google.com/?q=${lat},${lng}`);
+        let waUrl = `https://wa.me/${cleanPhone}?text=${distressText}`;
+        let smsUrl = `sms:${cleanPhone}?body=${distressText}`;
+
+        // Configure One-Click buttons on modal
+        let waBtn = document.getElementById('sos-whatsapp-btn');
+        if (waBtn) {
+            waBtn.href = waUrl;
+            waBtn.innerHTML = `<span style="font-size: 20px;">💬</span> Open WhatsApp & Send to ${primaryContact.name}`;
+        }
+        let smsBtn = document.getElementById('sos-sms-btn');
+        if (smsBtn) {
+            smsBtn.href = smsUrl;
+            smsBtn.innerHTML = `<span style="font-size: 20px;">📱</span> Open SMS App & Send to ${primaryContact.name}`;
+        }
+        let statusEl = document.getElementById('sos-email-status');
+        if (statusEl) {
+            statusEl.innerText = `✓ Email Alert Dispatched to: ${targetEmail}`;
+        }
+
+        // Show Instant Dispatch Modal
+        let dispatchModal = document.getElementById('sos-dispatched-modal');
+        if (dispatchModal) dispatchModal.style.display = 'flex';
+
+        // Auto-launch WhatsApp Web / App directly in a new tab!
+        try {
+            window.open(waUrl, '_blank');
+        } catch(e) {}
+
+        // 4. Background SMTP Email Dispatch
+        let formData = new FormData();
+        formData.append('lat', lat);
+        formData.append('lng', lng);
+        formData.append('email', targetEmail);
+        formData.append('message', msg);
+        if (voiceBlob) {
+            formData.append('voice_message', voiceBlob, 'sos_audio.webm');
+        }
+
+        fetch('/sos_alert', {
+            method: 'POST',
+            body: formData
+        }).catch(err => {
+            console.log('Background email dispatch error:', err);
+        });
+    }
+    window.triggerSOS = triggerSOS;
+
+    // Unexpected Stop / Check-in Logic (Simulated for Prototype)
+    let tripActive = false;
+
+    function stopSafetyMonitor(isArrival = false) {
+        tripActive = false;
+        if(safetyCheckInterval) clearInterval(safetyCheckInterval);
+        if(countdownInterval) clearInterval(countdownInterval);
+        document.getElementById('safety-modal').style.display = 'none';
+        document.getElementById('guardian-modal').style.display = 'none';
+        
+        if (isArrival) {
+            document.getElementById('trip-completed-modal').style.display = 'flex';
+        }
+    }
+
+    document.getElementById('start-simulation')?.addEventListener('click', () => {
+        stopSafetyMonitor(false); // clear any previous state
+        tripActive = true;
+        startSafetyMonitor();
+    });
+    document.getElementById('stop-simulation')?.addEventListener('click', () => stopSafetyMonitor(false));
+    
+    // Global hooks called by script.js
+    window.tripArrived = () => stopSafetyMonitor(true);
+    window.tripStopped = () => stopSafetyMonitor(false);
+
+    function showSafetyCheckModal(reason = "Vehicle stationary for 30 seconds. Please confirm your safety.") {
+        let modal = document.getElementById('safety-modal');
+        if (!modal) return;
+        let reasonEl = document.getElementById('safety-modal-reason');
+        if (reasonEl) reasonEl.innerText = reason;
+        modal.style.display = 'flex';
+        
+        let timeLeft = 30; // 30 seconds countdown
+        document.getElementById('safety-timer').innerText = timeLeft;
+        
+        if(countdownInterval) clearInterval(countdownInterval);
+        countdownInterval = setInterval(() => {
+            timeLeft--;
+            document.getElementById('safety-timer').innerText = timeLeft;
+            if(timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                triggerSOS();
+            }
+        }, 1000);
+    }
+    window.showSafetyCheckModal = showSafetyCheckModal;
+
+    function startSafetyMonitor() {
+        // Show Guardian Mode overlay briefly
+        document.getElementById('guardian-modal').style.display = 'flex';
+        setTimeout(() => {
+            if (tripActive) document.getElementById('guardian-modal').style.display = 'none';
+        }, 3000);
+
+        // Inactivity & unexpected stop monitor (triggers check every 30 seconds)
+        safetyCheckInterval = setInterval(() => {
+            if(!tripActive) {
+                stopSafetyMonitor(false);
+                return;
+            }
+            showSafetyCheckModal("Periodic Inactivity & Route Safety Check (30s)");
+        }, 30000); // 30 seconds
+    }
+
+    function getStoredContacts() {
+        try {
+            let data = localStorage.getItem('guardpath_contacts');
+            if (data) return JSON.parse(data);
+        } catch(e) {}
+        // Default seed including user's contact from photo
+        let defaults = [{ name: 'vaish', phone: '7975767868' }];
+        localStorage.setItem('guardpath_contacts', JSON.stringify(defaults));
+        return defaults;
+    }
+
+    function saveStoredContacts(contacts) {
+        localStorage.setItem('guardpath_contacts', JSON.stringify(contacts));
+    }
+
+    function renderEmergencyContacts() {
+        let list = document.getElementById("personal-contacts-list");
+        if (!list) return;
+        list.innerHTML = '';
+        
+        let contacts = getStoredContacts();
+        if (contacts.length === 0) {
+            list.innerHTML = '<div style="color: var(--muted); font-size: 13px; padding: 6px 0;">No personal contacts added yet. Click below to add one.</div>';
+            return;
+        }
+
+        contacts.forEach((c, index) => {
+            let cleanPhone = c.phone.replace(/\D/g, '');
+            if (cleanPhone.length === 10) cleanPhone = '91' + cleanPhone;
+            let msg = encodeURIComponent("🚨 EMERGENCY SOS! I am in danger. My live location: https://maps.google.com/?q=12.9716,77.5946");
+            let waLink = `https://wa.me/${cleanPhone}?text=${msg}`;
+            let smsLink = `sms:${cleanPhone}?body=${msg}`;
+
+            let div = document.createElement("div");
+            div.style.cssText = "display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 10px 12px; background: white; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05);";
+            div.innerHTML = `
+                <div>
+                    <span style="font-weight: 700; color: var(--primary);">👤 ${c.name}</span>
+                    <div style="font-size: 12px; color: var(--muted);">${c.phone}</div>
+                </div> 
+                <div style="display: flex; gap: 6px; align-items: center;">
+                    <a href="tel:${c.phone}" style="background: #f1f5f9; color: var(--accent); padding: 5px 8px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: bold;" title="Call">📞 Call</a>
+                    <a href="${waLink}" target="_blank" style="background: #25D366; color: white; padding: 5px 8px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: bold;" title="Send WhatsApp">💬 WA</a>
+                    <a href="${smsLink}" style="background: #2563eb; color: white; padding: 5px 8px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: bold;" title="Send SMS">📱 SMS</a>
+                    <button type="button" onclick="deleteEmergencyContact(${index})" style="background: transparent; border: none; color: #ef4444; cursor: pointer; font-size: 18px; font-weight: bold; padding: 0 4px; line-height: 1;" title="Delete Contact">&times;</button>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    }
+
+    function addEmergencyContact() {
+        let name = prompt("Enter contact name (e.g., Vaish / Mom):");
+        if (!name || !name.trim()) return;
+        let phone = prompt("Enter phone number (10 digits):");
+        if (!phone || !phone.trim()) return;
+        
+        let contacts = getStoredContacts();
+        contacts.push({ name: name.trim(), phone: phone.trim() });
+        saveStoredContacts(contacts);
+        renderEmergencyContacts();
+    }
+
+    function deleteEmergencyContact(index) {
+        let contacts = getStoredContacts();
+        contacts.splice(index, 1);
+        saveStoredContacts(contacts);
+        renderEmergencyContacts();
+    }
+
+    function toggleChatbot() {
+        let win = document.getElementById('chatbot-window');
+        win.style.display = win.style.display === 'none' || win.style.display === '' ? 'flex' : 'none';
+    }
+
+    async function sendChatMessage() {
+        let input = document.getElementById('chat-input');
+        let text = input.value.trim();
+        if(!text) return;
+        
+        let history = document.getElementById('chat-history');
+        
+        // Append user message
+        let userMsg = document.createElement("div");
+        userMsg.style.cssText = "background:var(--accent); color:white; padding:10px; border-radius:10px 10px 0 10px; align-self:flex-end; max-width:80%; font-size:14px;";
+        userMsg.textContent = text;
+        history.appendChild(userMsg);
+        
+        input.value = "";
+        history.scrollTop = history.scrollHeight;
+
+        // Fetch AI response
+        try {
+            let res = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            });
+            let data = await res.json();
+            
+            // Append AI message
+            let aiMsg = document.createElement("div");
+            aiMsg.style.cssText = "background:#e2e8f0; color:#334155; padding:10px; border-radius:10px 10px 10px 0; align-self:flex-start; max-width:80%; font-size:14px;";
+            aiMsg.textContent = data.response;
+            history.appendChild(aiMsg);
+            history.scrollTop = history.scrollHeight;
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function saveParentEmail() {
+        let emailInput = document.getElementById('parent-email-input');
+        if (!emailInput) return;
+        let email = emailInput.value.trim();
+        if (email) {
+            window.parentEmail = email;
+            localStorage.setItem('guardpath_parent_email', email);
+            let s = document.getElementById('parent-email-saved');
+            if (s) {
+                s.style.display = 'block';
+                setTimeout(() => { s.style.display = 'none'; }, 2500);
+            }
+        }
+    }
+
+    // Auto-sync parent email and emergency contacts from storage on load
+    document.addEventListener("DOMContentLoaded", () => {
+        let savedParent = localStorage.getItem('guardpath_parent_email') || 'krishnagopi5600@gmail.com';
+        window.parentEmail = savedParent;
+        let emailInput = document.getElementById('parent-email-input');
+        if (emailInput) emailInput.value = savedParent;
+        let sosInput = document.getElementById('sos-email');
+        if (sosInput && !sosInput.value) sosInput.value = savedParent;
+
+        // Render saved emergency contacts permanently
+        renderEmergencyContacts();
+    });
+
+    function confirmSafe() {
+        document.getElementById('safety-modal').style.display = 'none';
+        if(countdownInterval) clearInterval(countdownInterval);
+        let statusEl = document.getElementById('map-status');
+        if (statusEl) {
+            statusEl.textContent = "✓ Safety Confirmed · Monitoring Resumed";
+            setTimeout(() => {
+                if (statusEl && statusEl.textContent.includes("Safety Confirmed")) {
+                    statusEl.textContent = "Google Maps Navigation Mode Active";
+                }
+            }, 3000);
+        }
+    }
+</script>
+</body>
+</html>

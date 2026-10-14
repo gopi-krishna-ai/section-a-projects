@@ -1,0 +1,34 @@
+# ──────────────────────────────────────────────────────────
+#  AI-Assisted Smart Study Planner — Python Requirements
+# ──────────────────────────────────────────────────────────
+
+# Core Flask
+Flask
+Flask-CORS
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-JWT-Extended
+
+# Database
+SQLAlchemy
+# For PostgreSQL (production), uncomment:
+# psycopg2-binary
+
+# Password hashing
+Werkzeug
+
+# Data science / AI prediction
+numpy
+pandas
+scikit-learn
+
+# Optional: for visualization server-side (Matplotlib charts as PNG)
+# matplotlib
+
+# Utilities
+python-dotenv
+gunicorn
+
+# Development only
+pytest
+pytest-flask

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-gray-50 flex-grow py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Your Green Recommendations</h1>
+            <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">AI-curated sustainable choices based on your unique shopping profile and eco preferences.</p>
+            
+            <div class="mt-6 inline-flex bg-white rounded-full border border-gray-200 shadow-sm px-6 py-2 items-center gap-3">
+                <i class="fa-solid fa-robot text-green-600"></i>
+                <span class="text-sm font-medium text-gray-700">Currently recommending for: <strong>{{ user.name }}</strong> ({{ user.persona }})</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+            {% for item in recommendations %}
+            <div class="group relative bg-white border border-gray-200 rounded-lg shadow-sm flex flex-col overflow-hidden hover:shadow-lg transition-shadow">
+                
+                <div class="aspect-w-3 aspect-h-4 bg-gray-200 group-hover:opacity-75 sm:aspect-none sm:h-56 relative">
+                    <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" class="w-full h-full object-center object-cover sm:w-full sm:h-full">
+                    
+                    <div class="absolute top-2 right-2 bg-white px-2 py-1 rounded-full shadow flex items-center gap-1 border border-green-200">
+                        <i class="fa-solid fa-leaf text-green-500 text-xs"></i>
+                        <span class="text-xs font-bold text-green-700">{{ item.product.eco_score | round | int }}</span>
+                    </div>
+                </div>
+                
+                <div class="p-4 flex-1 flex flex-col border-b border-gray-100">
+                    <h3 class="text-sm font-medium text-gray-900">
+                        <a href="{{ url_for('product_details', product_id=item.product.id) }}">
+                            {{ item.product.name }}
+                        </a>
+                    </h3>
+                    <p class="text-sm text-gray-500 mb-2">{{ item.product.category }}</p>
+                    <p class="text-base font-medium text-gray-900 mt-auto">₹{{ item.product.price_inr }}</p>
+                </div>
+                
+                <!-- EXPLAINABILITY SECTION -->
+                <div class="bg-blue-50 p-3 flex flex-col gap-1 border-t border-blue-100">
+                    <div class="flex items-center gap-1 text-xs font-bold text-blue-800 uppercase tracking-wider mb-1">
+                        <i class="fa-solid fa-lightbulb"></i> Why this product?
+                    </div>
+                    <p class="text-xs text-blue-700 leading-tight">
+                        {{ item.reason }}
+                    </p>
+                </div>
+
+                <div class="p-3 bg-gray-50 border-t border-gray-200">
+                    <button onclick="addToCart('{{ item.product.id }}')" class="w-full relative z-10 px-3 py-2 bg-green-600 text-white hover:bg-green-700 rounded text-sm font-medium transition-colors shadow-sm">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-span-full text-center py-12">
+                <p class="text-gray-500">Not enough history to generate recommendations yet. Keep exploring!</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

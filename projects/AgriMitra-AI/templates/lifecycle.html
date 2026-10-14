@@ -1,0 +1,332 @@
+{% extends "base.html" %}
+{% block title %}AgriMitra AI | Crop Lifecycle{% endblock %}
+
+{% block content %}
+{% if current_user and current_user.userid == 'admin@agrimitra' %}
+
+<div style="padding: 30px;">
+    <h2><i class="fa-solid fa-seedling"></i> Lifecycle Knowledge Graph</h2>
+    <p style="color: #666; margin-bottom: 20px;">Analysis of the agronomic timeline and tracking database.</p>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; border-bottom: 4px solid #166534;">
+            <div style="font-size: 24px; color: #111; font-weight: bold;">4 Stages</div>
+            <div style="color: #666; font-size: 13px; text-transform: uppercase;">Per Crop</div>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; border-bottom: 4px solid #0284c7;">
+            <div style="font-size: 24px; color: #111; font-weight: bold;">Time-Series</div>
+            <div style="color: #666; font-size: 13px; text-transform: uppercase;">Tracking Method</div>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; border-bottom: 4px solid #ca8a04;">
+            <div style="font-size: 24px; color: #111; font-weight: bold;">Offline</div>
+            <div style="color: #666; font-size: 13px; text-transform: uppercase;">Data Storage</div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3 style="margin-top:0;"><i class="fa-solid fa-database"></i> Tracking Mechanism</h3>
+        <p><strong>Database Structure:</strong> The system utilizes standard browser `localStorage` combined with user ID session mapping to persist agricultural timelines across sessions.</p>
+        <p><strong>Supported Agronomic Profiles:</strong></p>
+        <ul style="color: #444; line-height: 1.6;">
+            <li><strong>Rice (Paddy):</strong> Sowing (0-15d) → Vegetative (15-60d) → Reproductive (60-90d) → Harvest (90-120d)</li>
+            <li><strong>Wheat:</strong> Germination (0-10d) → Tillering (10-40d) → Heading (40-90d) → Ripening (90-120d)</li>
+            <li><strong>Cotton:</strong> Planting (0-15d) → Squaring (15-45d) → Blooming (45-100d) → Defoliation (100-150d)</li>
+        </ul>
+        <p><strong>Actionable Triggers:</strong> At each stage transition, the frontend triggers contextual UI elements prompting farmers to adjust watering schedules and apply specific fertilizer blends based on the LightGBM models.</p>
+    </div>
+</div>
+
+{% else %}
+
+<style>
+.lifecycle-header {
+    background: linear-gradient(135deg, var(--c-primary), var(--c-primary-light));
+    color: white;
+    padding: var(--sp-8);
+    border-radius: var(--r-xl);
+    box-shadow: var(--sh-lg);
+    margin-bottom: var(--sp-7);
+    text-align: center;
+}
+.lifecycle-header h1 {
+    font-size: 3rem;
+    margin: 0;
+    text-transform: capitalize;
+}
+.lifecycle-header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-top: 10px;
+}
+
+.timeline {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto 50px;
+    padding: 20px 0;
+}
+.timeline::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    background-color: var(--c-primary-soft);
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    margin-left: -3px;
+    border-radius: 10px;
+}
+.timeline-item {
+    padding: 10px 40px;
+    position: relative;
+    background-color: inherit;
+    width: 50%;
+    box-sizing: border-box;
+}
+.timeline-item::after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    right: -17px;
+    background-color: white;
+    border: 4px solid var(--c-primary);
+    top: 15px;
+    border-radius: 50%;
+    z-index: 1;
+}
+.left { left: 0; }
+.right { left: 50%; }
+.right::after { left: -16px; }
+
+.timeline-content {
+    padding: 20px 30px;
+    background-color: var(--c-surface);
+    position: relative;
+    border-radius: var(--r-lg);
+    box-shadow: var(--sh-md);
+    transition: transform 0.3s;
+}
+.timeline-content:hover { transform: translateY(-5px); }
+.timeline-content h2 { margin-top: 0; color: var(--c-primary); }
+.timeline-content h4 { color: var(--c-text-soft); margin-bottom: 10px; }
+
+.nutrition-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 50px;
+}
+.nutrition-card {
+    background: var(--c-surface);
+    padding: 30px;
+    border-radius: var(--r-lg);
+    text-align: center;
+    box-shadow: var(--sh-md);
+}
+.nutrition-card h3 { color: var(--c-text-muted); font-size: 1.2rem; }
+.nutrition-card p { font-size: 2.5rem; color: var(--c-primary); font-weight: bold; margin: 10px 0 0; }
+
+.market-btn-container {
+    text-align: center;
+    margin-bottom: 50px;
+}
+.market-btn {
+    display: inline-block;
+    padding: 15px 40px;
+    background: var(--c-secondary);
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: var(--r-full);
+    transition: background 0.3s, transform 0.3s;
+}
+.market-btn:hover {
+    background: var(--c-secondary-dark);
+    transform: scale(1.05);
+}
+</style>
+
+<div class="lifecycle-header">
+    <h1>{{ crop }} Lifecycle & Workflow</h1>
+    <p>Follow these stages to ensure a healthy yield.</p>
+</div>
+
+<!-- NUTRITIONAL INFO -->
+<h2 style="text-align: center; color: var(--c-primary); margin-bottom: 30px;">Nutritional Value (Per 100g)</h2>
+<div class="nutrition-grid">
+    <div class="nutrition-card">
+        <h3>Protein</h3>
+        <p id="nutriProtein">12g</p>
+    </div>
+    <div class="nutrition-card">
+        <h3>Carbohydrates</h3>
+        <p id="nutriCarbs">70g</p>
+    </div>
+    <div class="nutrition-card">
+        <h3>Fiber</h3>
+        <p id="nutriFiber">10g</p>
+    </div>
+    <div class="nutrition-card">
+        <h3>Days to Yield</h3>
+        <p id="nutriDays">120</p>
+    </div>
+</div>
+
+<!-- TIMELINE -->
+<h2 style="text-align: center; color: var(--c-primary); margin-bottom: 30px;">Growth Stages</h2>
+<div class="timeline" id="timelineContainer">
+    <!-- JS populated -->
+</div>
+
+<!-- NEXT ACTION -->
+<div class="market-btn-container">
+    <a href="/market?crop={{ crop }}&lat={{ request.args.get('lat', '20.59') }}&lon={{ request.args.get('lon', '78.96') }}" class="market-btn">
+        Find Local Buyers & Markets <i class="fa-solid fa-map-location-dot"></i>
+    </a>
+</div>
+
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const cropName = "{{ crop }}".toLowerCase();
+    
+    // Mock Data based on crop types broadly
+    const mockData = {
+        protein: Math.floor(Math.random() * 20) + 2,
+        carbs: Math.floor(Math.random() * 60) + 10,
+        fiber: Math.floor(Math.random() * 15) + 1,
+        days: Math.floor(Math.random() * 90) + 60
+    };
+
+    document.getElementById('nutriProtein').textContent = mockData.protein + 'g';
+    document.getElementById('nutriCarbs').textContent = mockData.carbs + 'g';
+    document.getElementById('nutriFiber').textContent = mockData.fiber + 'g';
+    document.getElementById('nutriDays').textContent = mockData.days;
+
+    const stages = [
+        {
+            title: "Phase 1: Sowing (Weeks 1-2)",
+            time: "Weeks 1-2",
+            desc: `Prepare the soil thoroughly for <b>{{ crop }}</b>. Ensure the seedbed is moist but not flooded.
+                <div style="margin-top:10px; background:#dcfce7; padding:8px; border-radius:6px; color:#166534; font-size:0.9rem;">
+                    <b><i class="fa-solid fa-droplet"></i> Water:</b> Light irrigation every 2 days to maintain moisture.
+                </div>
+                <div style="margin-top:5px; background:#fef08a; padding:8px; border-radius:6px; color:#854d0e; font-size:0.9rem;">
+                    <b><i class="fa-solid fa-leaf"></i> Fertilizer:</b> Apply <b>{{ fert }}</b> at the time of sowing to provide initial nutrients.
+                </div>`
+        },
+        {
+            title: "Phase 2: Vegetative Growth (Weeks 3-6)",
+            time: "Weeks 3-6",
+            desc: `Rapid leaf and stem growth. The <b>{{ crop }}</b> plant needs maximum energy now.
+                <div style="margin-top:10px; background:#dcfce7; padding:8px; border-radius:6px; color:#166534; font-size:0.9rem;">
+                    <b><i class="fa-solid fa-droplet"></i> Water:</b> Moderate irrigation once every 5-7 days based on weather.
+                </div>
+                <div style="margin-top:5px; background:#fef08a; padding:8px; border-radius:6px; color:#854d0e; font-size:0.9rem;">
+                    <b><i class="fa-solid fa-leaf"></i> Fertilizer:</b> Apply a top dressing of <b>{{ fert }}</b> once every 15-20 days.
+                </div>`
+        },
+        {
+            title: "Phase 3: Flowering & Maturation (Weeks 7-10)",
+            time: "Weeks 7-10",
+            desc: `Critical stage for yield formation for <b>{{ crop }}</b>. Avoid water stress.
+                <div style="margin-top:10px; background:#dcfce7; padding:8px; border-radius:6px; color:#166534; font-size:0.9rem;">
+                    <b><i class="fa-solid fa-droplet"></i> Water:</b> Deep irrigation every 7-10 days. Do not let soil dry out.
+                </div>
+                <div style="margin-top:5px; background:#fef08a; padding:8px; border-radius:6px; color:#854d0e; font-size:0.9rem;">
+                    <b><i class="fa-solid fa-leaf"></i> Fertilizer:</b> Apply micronutrients/potash to boost quality. Monitor <b>{{ fert }}</b> levels.
+                </div>`
+        },
+        {
+            title: "Phase 4: Harvest (Week 11+)",
+            time: `Weeks 11-${Math.ceil(mockData.days/7)}`,
+            desc: `<b>{{ crop }}</b> dries out and prepares for harvest.
+                <div style="margin-top:10px; background:#dcfce7; padding:8px; border-radius:6px; color:#166534; font-size:0.9rem;">
+                    <b><i class="fa-solid fa-droplet"></i> Water:</b> Stop irrigation 10-15 days before harvest to allow drying.
+                </div>
+                <div style="margin-top:5px; background:#fef08a; padding:8px; border-radius:6px; color:#854d0e; font-size:0.9rem;">
+                    <b><i class="fa-solid fa-leaf"></i> Fertilizer:</b> Stop all fertilizers including <b>{{ fert }}</b>. Prepare for post-harvest.
+                </div>`
+        }
+    ];
+
+    const container = document.getElementById('timelineContainer');
+    
+    function renderTimeline(translatedStages) {
+        container.innerHTML = '';
+        translatedStages.forEach((stage, index) => {
+            const align = index % 2 === 0 ? 'left' : 'right';
+            const el = document.createElement('div');
+            el.className = `timeline-item ${align}`;
+            el.innerHTML = `
+                <div class="timeline-content">
+                    <h2>${stage.title}</h2>
+                    <h4><i class="fa-solid fa-clock"></i> ${stage.time}</h4>
+                    <p>${stage.desc}</p>
+                </div>
+            `;
+            container.appendChild(el);
+        });
+    }
+
+    renderTimeline(stages); // initial render
+
+    // Translate page content
+    document.addEventListener("agri:langchange", function(e) {
+        const lang = e.detail.lang;
+        
+        // Translate the static headers
+        const texts = [
+            `{{ crop }} Lifecycle & Workflow`,
+            `Follow these stages to ensure a healthy yield.`,
+            `Nutritional Value (Per 100g)`,
+            `Protein`, `Carbohydrates`, `Fiber`, `Days to Yield`,
+            `Growth Stages`,
+            `Find Local Buyers & Markets`
+        ];
+        
+        NLP.translate(texts, lang).then(out => {
+            document.querySelector('.lifecycle-header h1').innerHTML = out[0];
+            document.querySelector('.lifecycle-header p').innerHTML = out[1];
+            document.querySelectorAll('h2')[0].innerHTML = out[2];
+            
+            const cards = document.querySelectorAll('.nutrition-card h3');
+            if(cards.length === 4) {
+                cards[0].innerHTML = out[3];
+                cards[1].innerHTML = out[4];
+                cards[2].innerHTML = out[5];
+                cards[3].innerHTML = out[6];
+            }
+            
+            document.querySelectorAll('h2')[1].innerHTML = out[7];
+            
+            const btn = document.querySelector('.market-btn');
+            btn.innerHTML = out[8] + ' <i class="fa-solid fa-map-location-dot"></i>';
+        });
+
+        // Translate timeline content
+        const stageTexts = stages.map(s => s.title + "|||" + s.time + "|||" + s.desc);
+        NLP.translate(stageTexts, lang).then(out => {
+            const newStages = out.map(str => {
+                const parts = str.split("|||");
+                return {
+                    title: parts[0] || "",
+                    time: parts[1] || "",
+                    desc: parts[2] || ""
+                };
+            });
+            renderTimeline(newStages);
+        });
+    });
+
+    // trigger initial translation if already set
+    if (typeof getSavedLanguage === "function") {
+        document.dispatchEvent(new CustomEvent("agri:langchange", { detail: { lang: getSavedLanguage() } }));
+    }
+</script>
+{% endblock %}

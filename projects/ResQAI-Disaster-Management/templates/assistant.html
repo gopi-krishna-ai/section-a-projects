@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResQAI - AI Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light glass-nav">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold text-danger" href="/">
+                <i class="fa-solid fa-house-tsunami me-2"></i>ResQAI
+            </a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold text-secondary" href="/dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active text-primary fw-bold" href="/assistant"><i class="fa-solid fa-robot me-1"></i> Web Verification Assistant</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold text-secondary" href="/map"><i class="fa-solid fa-earth-americas me-1"></i> Global Map</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="d-flex ms-auto">
+                <a href="/logout" class="btn btn-outline-danger btn-sm fw-bold">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4 mb-4">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card glass-card">
+                    <div class="card-header glass-header fw-bold d-flex align-items-center">
+                        <i class="fa-solid fa-robot text-danger me-2"></i> ResQAI Intelligence Agent
+                        <span class="badge bg-success ms-auto pulse-badge"><i class="fa-solid fa-globe"></i> LIVE WEB SEARCH</span>
+                    </div>
+                    <div class="card-body p-4">
+                        
+                        <div class="chat-container bg-white shadow-sm" id="chatBox">
+                            <div class="chat-message ai">
+                                <div class="ai-icon"><i class="fa-solid fa-robot"></i></div>
+                                <div class="chat-bubble">
+                                    <strong>Hello! I am the ResQAI Web Verification Assistant.</strong><br><br>
+                                    My job is to verify disaster reports by searching live news channels and websites. 
+                                    Tell me about a disaster (e.g., <em>"Tell me about the 9/11 attacks"</em> or <em>"Any news on the recent Japan earthquake?"</em>) and I will provide structured proof, casualties, and verifiable links.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 d-flex gap-2">
+                            <input type="text" id="chatInput" class="form-control bg-light text-dark shadow-sm" placeholder="Ask about a disaster to verify it online..." style="border:1px solid #ced4da;">
+                            <button id="sendBtn" class="btn btn-primary px-4 fw-bold shadow-sm"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        document.getElementById('chatInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        function sendMessage() {
+            const inputField = document.getElementById('chatInput');
+            const message = inputField.value.trim();
+            if (!message) return;
+
+            appendMessage('user', message);
+            inputField.value = '';
+
+            const typingId = appendTypingIndicator();
+
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ message: message })
+            })
+            .then(res => res.json())
+            .then(data => {
+                removeElement(typingId);
+                appendMessage('ai', data.response);
+            })
+            .catch(err => {
+                removeElement(typingId);
+                appendMessage('ai', '<span class="text-danger fw-bold">Error: Could not connect to the search server.</span>');
+            });
+        }
+
+        function appendMessage(sender, text) {
+            const chatBox = document.getElementById('chatBox');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'chat-message ' + sender;
+
+            if (sender === 'ai') {
+                msgDiv.innerHTML = '<div class="ai-icon"><i class="fa-solid fa-robot"></i></div><div class="chat-bubble">' + text + '</div>';
+            } else {
+                msgDiv.innerHTML = '<div class="chat-bubble shadow-sm">' + text + '</div>';
+            }
+
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function appendTypingIndicator() {
+            const chatBox = document.getElementById('chatBox');
+            const msgDiv = document.createElement('div');
+            const id = 'typing-' + Date.now();
+            msgDiv.id = id;
+            msgDiv.className = 'chat-message ai';
+            msgDiv.innerHTML = '<div class="ai-icon"><i class="fa-solid fa-robot"></i></div><div class="chat-bubble text-muted"><i class="fa-solid fa-circle-notch fa-spin me-2"></i> Searching live internet databases...</div>';
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return id;
+        }
+
+        function removeElement(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+    </script>
+</body>
+</html>

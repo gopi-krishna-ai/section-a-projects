@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Assisted Smart Study Planner</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar-inner">
+        <div class="brand">
+            <span class="brand-icon">&#128218;</span>
+            <div>
+                <p class="eyebrow">AI + MACHINE LEARNING</p>
+                <h1>Smart Study Planner</h1>
+                <p class="tagline">A personalized study plan that adapts as your progress changes.</p>
+            </div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+            <a href="/tutor" style="background:#667eea; color:white; text-decoration:none; padding:8px 16px; border-radius:20px; font-weight:600; font-size:14px; box-shadow:0 2px 5px rgba(102,126,234,0.4);">
+                &#129302; AI Tutor
+            </a>
+            <div class="topbar-chip">&#10024; Adaptive planning</div>
+            <a href="/logout" style="color:white; text-decoration:none; font-size: 14px; margin-left: 15px; opacity: 0.8;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <section class="hero">
+        <div>
+            <p class="section-kicker">YOUR PERSONAL STUDY ASSISTANT</p>
+            <h2>Plan smarter. Study consistently. Stay ahead.</h2>
+            <p class="hero-copy">
+                Add your subjects, exam dates and available study time. The planner uses a Random Forest
+                priority model and Pomodoro sessions to decide what deserves more attention, then refreshes
+                the plan as you complete work.
+            </p>
+            <div class="hero-pills">
+                <span>AI priority</span>
+                <span>7-day schedule</span>
+                <span>Progress tracking</span>
+                <span>Smart recommendations</span>
+            </div>
+        </div>
+        <div class="hero-side">
+            <div class="hero-side-title">How to use</div>
+            <div class="use-step"><span>1</span><div><b>Add subjects</b><small>Enter exam date, topics, difficulty and weightage.</small></div></div>
+            <div class="use-step"><span>2</span><div><b>Set daily hours</b><small>Tell the planner how much time you can study each day.</small></div></div>
+            <div class="use-step"><span>3</span><div><b>Complete sessions</b><small>Use Done/Missed to keep the plan and recommendations current.</small></div></div>
+        </div>
+    </section>
+
+    <section class="stat-grid" id="summary-stats"></section>
+
+    <section class="panel panel-accent">
+        <div class="panel-heading">
+            <div>
+                <p class="section-kicker">BUILD YOUR PLAN</p>
+                <h2>Add a Subject</h2>
+            </div>
+            <span class="mini-hint">Start with your most important subjects</span>
+        </div>
+        <form id="subject-form">
+            <div class="field-row">
+                <div class="field">
+                    <label for="name">Subject name</label>
+                    <input type="text" id="name" name="name" placeholder="e.g. Data Structures" required>
+                </div>
+                <div class="field">
+                    <label for="exam_date">Exam date</label>
+                    <input type="date" id="exam_date" name="exam_date" required>
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label for="total_topics">Total topics</label>
+                    <input type="number" id="total_topics" name="total_topics" min="1" value="10" required>
+                </div>
+                <div class="field">
+                    <label for="completed_topics">Topics already done</label>
+                    <input type="number" id="completed_topics" name="completed_topics" min="0" value="0" required>
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label for="difficulty">Difficulty (1 easy - 5 hard)</label>
+                    <select id="difficulty" name="difficulty">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3" selected>3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="weightage">Exam weightage (1 low - 5 high)</label>
+                    <select id="weightage" name="weightage">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3" selected>3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn">Add Subject</button>
+        </form>
+        <p id="form-error" class="form-error"></p>
+    </section>
+
+    <section class="panel compact-panel">
+        <div class="panel-heading">
+            <div>
+                <p class="section-kicker">TIME BUDGET</p>
+                <h2>Daily Study Time</h2>
+            </div>
+            <span class="mini-hint">Pomodoro sessions are generated from this value</span>
+        </div>
+        <form id="settings-form" class="field-row">
+            <div class="field">
+                <label for="daily_hours">Available hours per day</label>
+                <input type="number" id="daily_hours" name="daily_hours" min="0.5" max="16" step="0.5"
+                       value="{{ view.settings.daily_hours }}">
+            </div>
+            <div class="field field-btn">
+                <button type="submit" class="submit-btn secondary">Update</button>
+            </div>
+        </form>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div>
+                <p class="section-kicker">AT A GLANCE</p>
+                <h2>Your Subjects</h2>
+            </div>
+            <span class="mini-hint">Priority is predicted from your current progress</span>
+        </div>
+        <div id="subjects-list" class="subjects-list"></div>
+        <div style="margin-top: 15px; padding: 15px; background: #ebf4ff; border-radius: 8px; border: 1px dashed #667eea;">
+            <h4>&#128196; AI Syllabus Extractor</h4>
+            <p style="font-size: 0.9em; color: #4a5568; margin-bottom: 10px;">Upload a document (PDF or TXT). The AI will read it, extract specific topics, and dynamically schedule them for you on exact days!</p>
+            <form id="upload-form" enctype="multipart/form-data" style="display: flex; gap: 10px; align-items: center;">
+                <input type="text" id="upload-subject" placeholder="Subject Name (e.g. Math)" required style="padding: 8px; border-radius: 4px; border: 1px solid #cbd5e0;">
+                <input type="file" id="upload-file" accept=".pdf,.txt" required>
+                <button type="submit" class="submit-btn" style="padding: 8px 16px;">Extract Topics</button>
+            </form>
+            <p id="upload-status" style="font-size: 0.9em; color: #667eea; margin-top: 5px; font-weight: bold;"></p>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div>
+                <p class="section-kicker">AI INSIGHTS</p>
+                <h2>AI Recommendations</h2>
+            </div>
+        </div>
+        <ul id="recommendations-list" class="recommendations-list"></ul>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div>
+                <p class="section-kicker">YOUR NEXT 7 DAYS</p>
+                <h2>This Week's Study Schedule</h2>
+            </div>
+            <span class="live-badge"><span class="live-dot"></span> Live plan</span>
+        </div>
+        <p class="map-note">Pomodoro sessions (25 min study + 5 min break), allocated by AI-predicted priority. Mark each session complete or missed as you go &mdash; the plan adapts automatically.</p>
+        <div id="schedule-grid" class="schedule-grid"></div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <div>
+                <p class="section-kicker">PROGRESS</p>
+                <h2>Progress Analytics</h2>
+            </div>
+        </div>
+        <div id="analytics-chart" class="analytics-chart"></div>
+    </section>
+
+</main>
+
+<script>
+    const INITIAL_VIEW = {{ view | tojson }};
+</script>
+
+<footer class="footer">
+    <p>Academic Prototype &middot; Random Forest priority model, local flat-file storage (no external APIs / database server)</p>
+</footer>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

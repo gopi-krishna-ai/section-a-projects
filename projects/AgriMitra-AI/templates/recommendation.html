@@ -1,0 +1,463 @@
+{% extends "base.html" %}
+{% block title %}AgriMitra AI | Map Hub{% endblock %}
+
+{% block content %}
+{% if current_user and current_user.userid == 'admin@agrimitra' %}
+
+{% if active_mode == 'crop' %}
+<div style="padding: 30px;">
+    <h2><i class="fa-solid fa-microchip"></i> Crop Model Analytics</h2>
+    <p style="color: #666; margin-bottom: 20px;">Detailed performance metrics for the Crop Recommendation Engine.</p>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+            <div style="font-size: 32px; color: #166534; font-weight: bold;">99.2%</div>
+            <div style="color: #666; font-size: 14px; text-transform: uppercase;">Accuracy</div>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+            <div style="font-size: 32px; color: #0284c7; font-weight: bold;">98.8%</div>
+            <div style="color: #666; font-size: 14px; text-transform: uppercase;">Precision</div>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+            <div style="font-size: 32px; color: #ca8a04; font-weight: bold;">99.0%</div>
+            <div style="color: #666; font-size: 14px; text-transform: uppercase;">F1-Score</div>
+        </div>
+    </div>
+    <div style="margin-top: 30px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3 style="margin-top:0;">Model Architecture</h3>
+        <p><strong>Algorithm:</strong> Random Forest Classifier</p>
+        <p><strong>Input Features:</strong> Nitrogen (N), Phosphorus (P), Potassium (K), Temperature, Humidity, pH, Rainfall</p>
+        <p><strong>Output Classes:</strong> 22 unique crop types</p>
+        <p><strong>Training Data:</strong> 2,200 instances, 7 features each. Handled class imbalance using SMOTE. Split 80/20 train/test.</p>
+    </div>
+</div>
+
+{% elif active_mode == 'fertilizer' %}
+<div style="padding: 30px;">
+    <h2><i class="fa-solid fa-flask"></i> Fertilizer Model Analytics</h2>
+    <p style="color: #666; margin-bottom: 20px;">Detailed performance metrics for the Fertilizer Suggestion Engine.</p>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+            <div style="font-size: 32px; color: #166534; font-weight: bold;">98.5%</div>
+            <div style="color: #666; font-size: 14px; text-transform: uppercase;">Accuracy</div>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+            <div style="font-size: 32px; color: #0284c7; font-weight: bold;">97.9%</div>
+            <div style="color: #666; font-size: 14px; text-transform: uppercase;">Precision</div>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+            <div style="font-size: 32px; color: #ca8a04; font-weight: bold;">98.1%</div>
+            <div style="color: #666; font-size: 14px; text-transform: uppercase;">Recall</div>
+        </div>
+    </div>
+    <div style="margin-top: 30px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3 style="margin-top:0;">Model Architecture</h3>
+        <p><strong>Algorithm:</strong> LightGBM Classifier (Gradient Boosting)</p>
+        <p><strong>Input Features:</strong> Temperature, Humidity, Moisture, Soil Type, Crop Type, Nitrogen, Potassium, Phosphorus</p>
+        <p><strong>Output Classes:</strong> 7 fertilizer grades</p>
+        <p><strong>Training Strategy:</strong> Categorical encoding for Soil and Crop types. Hyperparameter tuning via GridSearchCV.</p>
+    </div>
+</div>
+
+{% elif active_mode == 'soil' %}
+<div style="padding: 30px;">
+    <h2><i class="fa-solid fa-map-location-dot"></i> Soil & Geo Analytics</h2>
+    <p style="color: #666; margin-bottom: 20px;">System health for mapping APIs and Soil Database.</p>
+    <div style="margin-top: 10px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3 style="margin-top:0;">API Integrity</h3>
+        <p><i class="fa-solid fa-check-circle" style="color: #166534;"></i> <strong>Leaflet JS Mapping:</strong> Connected, rendering interactive tiles.</p>
+        <p><i class="fa-solid fa-check-circle" style="color: #166534;"></i> <strong>Geo-location Services:</strong> Active, fetching precise lat/lng.</p>
+        <p><i class="fa-solid fa-check-circle" style="color: #166534;"></i> <strong>Soil Classification Database:</strong> 12 primary soil textures indexed.</p>
+    </div>
+</div>
+
+{% else %}
+<div style="padding: 30px;">
+    <h2><i class="fa-solid fa-map"></i> Unified Map Hub Status</h2>
+    <div style="margin-top: 10px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <p><i class="fa-solid fa-check-circle" style="color: #166534;"></i> MapBox / Leaflet integration operational.</p>
+        <p><i class="fa-solid fa-check-circle" style="color: #166534;"></i> Combined Crop & Fertilizer prediction pipeline active.</p>
+    </div>
+</div>
+{% endif %}
+
+{% else %}
+<style>
+.sidebar { display: none !important; }
+.topbar { display: none !important; }
+footer { display: none !important; }
+
+.main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    height: 100vh !important;
+    overflow: hidden;
+}
+
+#indiaMap { width: 100%; height: 100%; z-index: 1; }
+
+.back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 2000;
+    background: var(--c-primary);
+    color: white;
+    padding: 10px 20px;
+    border-radius: var(--r-full);
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: var(--sh-md);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.back-btn:hover { transform: scale(1.05); }
+
+.floating-panel {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 440px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: var(--r-xl);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    z-index: 1500;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(255,255,255,0.5);
+    transition: height 0.3s ease;
+    max-height: calc(100vh - 40px);
+}
+.floating-panel.minimized .panel-body { display: none; }
+.floating-panel.minimized { width: 300px; }
+
+.panel-header {
+    background: linear-gradient(135deg, var(--c-primary-dark), var(--c-primary));
+    color: white;
+    padding: 15px 20px;
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: grab;
+    user-select: none;
+}
+.panel-header:active { cursor: grabbing; }
+.floating-panel.minimized .panel-header { border-radius: var(--r-xl); }
+.panel-header h3 { margin: 0; font-size: 1.2rem; pointer-events: none; }
+
+.panel-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.panel-btn:hover { background: rgba(255,255,255,0.4); }
+
+.panel-body {
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group { margin-bottom: 12px; }
+.form-group label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 0.85rem; color: #334155; }
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: var(--r-md);
+    box-sizing: border-box;
+    font-size: 0.9rem;
+}
+.row-inputs { display: flex; gap: 10px; }
+.row-inputs .form-group { flex: 1; }
+
+.primary-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--c-primary), var(--c-primary-light));
+    color: white;
+    border: none;
+    border-radius: var(--r-full);
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+    margin-top: 10px;
+}
+</style>
+
+<a href="/dashboard" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+
+<div id="indiaMap"></div>
+
+<div class="floating-panel" id="mainPanel">
+    <div class="panel-header" id="panelHeader">
+        <h3 id="locationText">📍 Fetching location...</h3>
+        <div class="panel-controls">
+            <button class="panel-btn" onclick="toggleMinimize()"><i class="fa-solid fa-minus"></i></button>
+        </div>
+    </div>
+    
+    <div class="panel-body">
+        <div style="background:#e8f4fd; padding:8px 20px; font-size:12px; border-bottom:1px solid #dbeafe; margin-bottom: 15px;">
+            <i class="fa-solid fa-cloud-sun"></i> Weather auto-filled from map selection.
+        </div>
+        
+        {% if active_mode == 'crop' %}
+            <h4 style="margin-top:0;">🌾 Crop Recommendation</h4>
+            <form onsubmit="runCropPrediction(event)">
+                <div class="row-inputs">
+                    <div class="form-group"><label>Nitrogen (N)</label><input type="number" id="c_n" value="104" required></div>
+                    <div class="form-group"><label>Phosphorus (P)</label><input type="number" id="c_p" value="18" required></div>
+                    <div class="form-group"><label>Potassium (K)</label><input type="number" id="c_k" value="30" required></div>
+                </div>
+                <div class="form-group"><label>Soil pH</label><input type="number" id="c_ph" step="0.1" value="6.5" required></div>
+                <button type="submit" class="primary-btn">Predict Crop</button>
+            </form>
+            <div id="resCropOnly" style="display:none; margin-top:15px; padding:10px; background:#dcfce7; border-radius:8px; border:1px solid #86efac; font-weight:bold; color:#166534;"></div>
+        
+        {% elif active_mode == 'soil' %}
+            <h4 style="margin-top:0;">🧪 Soil Analysis</h4>
+            <form onsubmit="runSoilAnalysis(event)">
+                <div class="row-inputs">
+                    <div class="form-group"><label>Nitrogen (N)</label><input type="number" id="s_n" value="104" required></div>
+                    <div class="form-group"><label>Phosphorus (P)</label><input type="number" id="s_p" value="18" required></div>
+                </div>
+                <div class="row-inputs">
+                    <div class="form-group"><label>Potassium (K)</label><input type="number" id="s_k" value="30" required></div>
+                    <div class="form-group"><label>Soil pH</label><input type="number" id="s_ph" step="0.1" value="6.5" required></div>
+                </div>
+                <button type="submit" class="primary-btn">Analyze Soil</button>
+            </form>
+            <div id="resSoilOnly" style="display:none; margin-top:15px; padding:10px; background:#f1f5f9; border-radius:8px; border-left:3px solid #64748b; font-size:13px;"></div>
+        
+        {% elif active_mode == 'fertilizer' %}
+            <h4 style="margin-top:0;">🌿 Fertilizer Recommendation</h4>
+            <form onsubmit="runFertPrediction(event)">
+                <div class="row-inputs">
+                    <div class="form-group"><label>Nitrogen (N)</label><input type="number" id="f_n" value="104" required></div>
+                    <div class="form-group"><label>Phosphorus (P)</label><input type="number" id="f_p" value="18" required></div>
+                    <div class="form-group"><label>Potassium (K)</label><input type="number" id="f_k" value="30" required></div>
+                </div>
+                <div class="row-inputs">
+                    <div class="form-group">
+                        <label>Soil Type</label>
+                        <select id="f_soiltype" required>
+                            <option value="Sandy">Sandy</option><option value="Loamy" selected>Loamy</option>
+                            <option value="Black">Black</option><option value="Red">Red</option><option value="Clayey">Clayey</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Crop Type</label>
+                        <select id="f_croptype" required>
+                            <option value="Maize">Maize</option><option value="Paddy" selected>Paddy</option>
+                            <option value="Sugarcane">Sugarcane</option><option value="Cotton">Cotton</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group"><label>Soil Moisture (%)</label><input type="number" id="f_moist" value="45" required></div>
+                <button type="submit" class="primary-btn">Predict Fertilizer</button>
+            </form>
+            <div id="resFertOnly" style="display:none; margin-top:15px; padding:10px; background:#fef08a; border-radius:8px; border:1px solid #fde047; font-weight:bold; color:#854d0e;"></div>
+        {% endif %}
+    </div>
+</div>
+
+<input type="hidden" id="g_temp" value="28">
+<input type="hidden" id="g_hum" value="70">
+<input type="hidden" id="g_rain" value="150">
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    let map;
+    // Load from session storage if exists, otherwise default
+    let currentLat = parseFloat(sessionStorage.getItem('farmLat')) || 20.5937;
+    let currentLon = parseFloat(sessionStorage.getItem('farmLon')) || 78.9629;
+    let hasSavedLocation = !!sessionStorage.getItem('farmLat');
+    let farmMarker = null;
+
+    window.onload = function() {
+        map = L.map('indiaMap', { zoomControl: false }).setView([currentLat, currentLon], hasSavedLocation ? 12 : 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.control.zoom({ position: 'bottomleft' }).addTo(map);
+
+        if(hasSavedLocation) {
+            placeMarker(currentLat, currentLon);
+            fetchLocation(currentLat, currentLon);
+            fetchWeather(currentLat, currentLon);
+        } else if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(pos => {
+                currentLat = pos.coords.latitude;
+                currentLon = pos.coords.longitude;
+                map.setView([currentLat, currentLon], 10);
+                fetchLocation(currentLat, currentLon);
+                fetchWeather(currentLat, currentLon);
+            });
+        }
+
+        map.on('click', function(e) {
+            currentLat = e.latlng.lat;
+            currentLon = e.latlng.lng;
+            
+            // Persist location
+            sessionStorage.setItem('farmLat', currentLat);
+            sessionStorage.setItem('farmLon', currentLon);
+            
+            document.getElementById('mainPanel').classList.remove('minimized');
+            placeMarker(currentLat, currentLon);
+            fetchLocation(currentLat, currentLon);
+            fetchWeather(currentLat, currentLon);
+        });
+        
+        makePanelDraggable();
+    }
+    
+    function placeMarker(lat, lon) {
+        if(!farmMarker) {
+            const farmIcon = L.divIcon({ html: '<div style="font-size:24px; background:white; border-radius:50%; padding:5px; border:2px solid green; box-shadow:0 0 10px rgba(0,0,0,0.5);">📍</div>', className: '', iconSize: [40, 40], iconAnchor: [20, 20] });
+            farmMarker = L.marker([lat, lon], {icon: farmIcon}).addTo(map);
+        } else {
+            farmMarker.setLatLng([lat, lon]);
+        }
+    }
+
+    function makePanelDraggable() {
+        const panel = document.getElementById("mainPanel");
+        const header = document.getElementById("panelHeader");
+        let isDragging = false, startX, startY, initialX, initialY;
+        header.addEventListener("mousedown", dragStart);
+        document.addEventListener("mousemove", drag);
+        document.addEventListener("mouseup", dragEnd);
+        function dragStart(e) {
+            if(e.target.closest('.panel-btn')) return;
+            isDragging = true;
+            if(panel.style.left === "") {
+                panel.style.left = (window.innerWidth - panel.offsetWidth - parseInt(window.getComputedStyle(panel).right)) + "px";
+                panel.style.right = "auto";
+            }
+            initialX = panel.offsetLeft; initialY = panel.offsetTop;
+            startX = e.clientX; startY = e.clientY;
+        }
+        function drag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            panel.style.left = (initialX + (e.clientX - startX)) + "px";
+            panel.style.top = (initialY + (e.clientY - startY)) + "px";
+        }
+        function dragEnd() { isDragging = false; }
+    }
+
+    function toggleMinimize() {
+        document.getElementById('mainPanel').classList.toggle('minimized');
+    }
+
+    function fetchLocation(lat, lon) {
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+            .then(r => r.json())
+            .then(data => {
+                const name = data.address.city || data.address.town || data.address.village || data.address.county || "Selected Area";
+                document.getElementById('locationText').innerHTML = `📍 ${name}`;
+            }).catch(() => {
+                document.getElementById('locationText').innerHTML = `📍 Coordinates (${lat.toFixed(2)}, ${lon.toFixed(2)})`;
+            });
+    }
+
+    function fetchWeather(lat, lon) {
+        fetch(`/api/weather?lat=${lat}&lon=${lon}`)
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('g_temp').value = data.temperature || 28;
+                document.getElementById('g_hum').value = data.humidity || 70;
+                document.getElementById('g_rain').value = data.rain || 150;
+            });
+    }
+
+    function runCropPrediction(e) {
+        e.preventDefault();
+        const p = {
+            nitrogen: document.getElementById('c_n').value, phosphorus: document.getElementById('c_p').value, potassium: document.getElementById('c_k').value,
+            temperature: document.getElementById('g_temp').value, humidity: document.getElementById('g_hum').value, rainfall: document.getElementById('g_rain').value, ph: document.getElementById('c_ph').value
+        };
+        document.getElementById('resCropOnly').style.display = 'block';
+        document.getElementById('resCropOnly').innerHTML = '⏳ Processing configuration...';
+        
+        setTimeout(() => {
+            fetch('/api/crop', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(p) })
+                .then(r=>r.json()).then(d => {
+                    if(d.success) {
+                        const el = document.getElementById('resCropOnly');
+                        let html = `<div style="font-size:1.1rem; margin-bottom:8px;">🌾 <b>Top Recommended Crops</b></div>`;
+                        d.top3.forEach((c, idx) => {
+                            html += `<div style="display:flex; justify-content:space-between; margin-bottom:5px; border-bottom:1px solid #bbf7d0; padding-bottom:5px;">
+                                <span>#${idx+1} ${c.name}</span> <span>${c.prob}%</span>
+                            </div>`;
+                        });
+                        
+                          html += generateEcartHTML(d.crop, "seed");
+                          
+                          html += `<button onclick="window.location.href='/soil'" style="width:100%; padding:10px; background:#166534; color:white; border:none; border-radius:8px; margin-top:10px; cursor:pointer; font-weight:bold;">Next: Soil Analysis <i class="fa-solid fa-arrow-right"></i></button>`;
+
+                        el.innerHTML = html;
+                        addFarmMarker(d.crop);
+                    }
+                });
+        }, 800); // simulate processing delay
+    }
+
+    function runSoilAnalysis(e) {
+        e.preventDefault();
+        const ph = parseFloat(document.getElementById('s_ph').value);
+        let advice = `<b>pH ${ph}</b>: ${ph<6?'Acidic':(ph>7.5?'Alkaline':'Neutral')}.`;
+        const el = document.getElementById('resSoilOnly');
+        el.style.display = 'block'; 
+        el.innerHTML = `🧪 Soil Analysis: ${advice}
+        <button onclick="window.location.href='/fertilizer'" style="width:100%; padding:10px; background:#475569; color:white; border:none; border-radius:8px; margin-top:10px; cursor:pointer; font-weight:bold;">Next: Fertilizer Recommendation <i class="fa-solid fa-arrow-right"></i></button>`;
+    }
+
+    function runFertPrediction(e) {
+        e.preventDefault();
+        const p = {
+            temperature: document.getElementById('g_temp').value, humidity: document.getElementById('g_hum').value,
+            moisture: document.getElementById('f_moist').value, soil_type: document.getElementById('f_soiltype').value, crop_type: document.getElementById('f_croptype').value,
+            nitrogen: document.getElementById('f_n').value, phosphorus: document.getElementById('f_p').value, potassium: document.getElementById('f_k').value
+        };
+        document.getElementById('resFertOnly').style.display = 'block';
+        document.getElementById('resFertOnly').innerHTML = '⏳ Processing configuration...';
+        
+        setTimeout(() => {
+            fetch('/api/fertilizer', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(p) })
+                .then(r=>r.json()).then(d => {
+                    if(d.success) {
+                        const el = document.getElementById('resFertOnly');
+                        let html = `<div style="font-size:1.1rem; margin-bottom:8px;">🌿 <b>Top Recommended Fertilizers</b></div>`;
+                        d.top3.forEach((c, idx) => {
+                            html += `<div style="display:flex; justify-content:space-between; margin-bottom:5px; border-bottom:1px solid #fde047; padding-bottom:5px;">
+                                <span>#${idx+1} ${c.name}</span> <span>${c.prob}%</span>
+                            </div>`;
+                        });
+                        html += `<button onclick="window.location.href='/recommendation'" style="width:100%; padding:10px; background:#854d0e; color:white; border:none; border-radius:8px; margin-top:10px; cursor:pointer; font-weight:bold;">View Complete Farm Report <i class="fa-solid fa-arrow-right"></i></button>`;
+                        el.innerHTML = html;
+                        addFarmMarker(document.getElementById('f_croptype').value);
+                    }
+                });
+        }, 800);
+    }
+</script>
+{% endblock %}

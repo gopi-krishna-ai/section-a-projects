@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudCost AI Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="brand-wrap">
+            <div class="brand-mark">AI</div>
+            <div>
+                <h1>CloudCost Optimizer</h1>
+                <p>MULTI-CLOUD AI MANAGEMENT</p>
+            </div>
+        </div>
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="switchTab('tab-home')">Ingestion</button>
+            <button class="tab-btn" onclick="switchTab('tab-cost')" id="btn-cost" disabled>Cost Predictor</button>
+            <button class="tab-btn" onclick="switchTab('tab-vm')" id="btn-vm" disabled>VM Optimization</button>
+            <button class="tab-btn" onclick="switchTab('tab-map')" id="btn-map" disabled>Cloud Region Map</button>
+            <button class="tab-btn" onclick="switchTab('tab-analytics')" id="btn-analytics" disabled>Analytics</button>
+            <button class="tab-btn" onclick="switchTab('tab-settings')">Settings</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- TAB 1: INGESTION -->
+        <div id="tab-home" class="panel active">
+            <h2>Data Ingestion & Integration</h2>
+            <p style="color: var(--muted);">Connect your cloud environments or upload billing exports.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; margin-bottom: 20px;">
+                <!-- Live Cloud Integrations -->
+                <div style="background: rgba(0,0,0,0.3); padding: 25px; border-radius: 12px; border: 1px solid var(--line);">
+                    <h3 style="margin-top: 0; color: var(--primary);">Connect Cloud Provider</h3>
+                    <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">Authenticate via API to stream live CPU/Billing metrics.</p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <button type="button" class="primary-btn" style="background: rgba(255, 153, 0, 0.1); border: 1px solid #ff9900; color: #ff9900; box-shadow: none;" onclick="alert('AWS IAM setup not configured in demo.')">+ Add AWS Account</button>
+                        <button type="button" class="primary-btn" style="background: rgba(0, 137, 214, 0.1); border: 1px solid #0089d6; color: #0089d6; box-shadow: none;" onclick="alert('Azure AD setup not configured in demo.')">+ Connect Azure Tenant</button>
+                        <button type="button" class="primary-btn" style="background: rgba(219, 68, 55, 0.1); border: 1px solid #db4437; color: #db4437; box-shadow: none;" onclick="alert('GCP Service Account setup not configured in demo.')">+ Link GCP Project</button>
+                    </div>
+                </div>
+
+                <!-- Static Data Upload -->
+                <div style="background: rgba(0,0,0,0.3); padding: 25px; border-radius: 12px; border: 1px solid var(--line);">
+                    <h3 style="margin-top: 0; color: var(--primary);">Upload Static Dataset</h3>
+                    <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">Upload historical AWS Cost & Usage Reports (CUR) or CSV billing exports.</p>
+                    
+                    <input type="file" accept=".csv, .json" style="margin-bottom: 15px;">
+                    <button type="button" class="primary-btn" style="background: rgba(255,255,255,0.1); color: #fff; box-shadow: none;" onclick="alert('File upload processing...')">Upload & Analyze File</button>
+                </div>
+            </div>
+
+            <!-- Demo Mode Block -->
+            <div style="background: rgba(59, 130, 246, 0.1); padding: 25px; border-radius: 12px; border: 1px dashed var(--primary); text-align: center; margin-bottom: 20px;">
+                <h3 style="margin-top: 0; color: #fff;">[ DEMO ENVIRONMENT ]</h3>
+                <p style="color: var(--muted); margin-bottom: 20px;">Skip the setup. Click below to instantly inject the 10 Built-In Multi-Cloud Demo Servers into the AI pipeline.</p>
+                <button type="button" class="primary-btn" style="width: auto; padding: 15px 40px; font-size: 16px;" onclick="syncDemos()">Launch AI Sync (10 Demos)</button>
+            </div>
+            
+            <div style="margin-top: 20px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 15px;">
+                <strong>Loaded AI Models:</strong> XGBoost (Cost Forecasting), Random Forest (Resource Classification), K-Means (Usage Clustering).
+            </div>
+            
+            <div id="loadingMsg" style="display: none; text-align: center; color: var(--primary); font-weight: bold; margin-top: 20px;">Synchronizing across AWS, Azure, and GCP...</div>
+        </div>
+
+        <!-- TAB 2: COST PREDICTOR -->
+        <div id="tab-cost" class="panel">
+            <h2>AI Cost Predictor</h2>
+            <p style="color: var(--muted);">XGBoost cost forecasting based on current vs optimized infrastructure.</p>
+            
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div class="stat-title">Current Monthly Run-Rate</div>
+                    <div class="stat-value" id="currentCost">$0</div>
+                </div>
+                <div class="stat-box" style="border-color: var(--safe); background: rgba(34, 197, 94, 0.1);">
+                    <div class="stat-title" style="color: var(--safe);">AI Optimized Rate</div>
+                    <div class="stat-value" id="optCost" style="color: var(--safe);">$0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-title">Identified Cloud Waste</div>
+                    <div class="stat-value" id="wasteCost" style="color: var(--danger);">$0</div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; border: 1px solid var(--line);">
+                    <h3 style="margin-top: 0; color: var(--primary);">Annual Projection</h3>
+                    <p style="color: var(--muted); font-size: 14px;">If AI recommendations are implemented immediately, your projected annual savings will be:</p>
+                    <div style="font-size: 36px; font-weight: bold; color: var(--safe);" id="annualSavings">$0</div>
+                </div>
+                <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; border: 1px solid var(--line);">
+                    <h3 style="margin-top: 0; color: var(--primary);">How It Works</h3>
+                    <p style="color: var(--muted); font-size: 14px;">Our XGBoost algorithm evaluates historical billing data alongside real-time CPU/RAM usage to identify zombie instances, over-provisioned databases, and idle environments that can be downsized or stopped entirely during off-hours.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: VM OPTIMIZATION -->
+        <div id="tab-vm" class="panel">
+            <h2>VM Optimization Engine</h2>
+            <p style="color: var(--muted);">AI classification of virtual machines with recommended actions.</p>
+            
+            <div class="stat-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 20px;">
+                <div class="stat-box" style="padding: 10px;">
+                    <div class="stat-title" style="font-size: 11px;">Total VMs Scanned</div>
+                    <div class="stat-value" style="font-size: 24px;" id="totalVms">10</div>
+                </div>
+                <div class="stat-box" style="padding: 10px; border-color: var(--danger);">
+                    <div class="stat-title" style="font-size: 11px; color: var(--danger);">Idle VMs Found</div>
+                    <div class="stat-value" style="font-size: 24px; color: var(--danger);" id="idleVms">0</div>
+                </div>
+                <div class="stat-box" style="padding: 10px; border-color: var(--warn);">
+                    <div class="stat-title" style="font-size: 11px; color: var(--warn);">Underutilized</div>
+                    <div class="stat-value" style="font-size: 24px; color: var(--warn);" id="underVms">0</div>
+                </div>
+                <div class="stat-box" style="padding: 10px; border-color: var(--safe);">
+                    <div class="stat-title" style="font-size: 11px; color: var(--safe);">Optimal</div>
+                    <div class="stat-value" style="font-size: 24px; color: var(--safe);" id="optVms">0</div>
+                </div>
+            </div>
+            
+            <div style="overflow-x: auto; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid var(--line);">
+                <table style="min-width: 900px;">
+                    <thead>
+                        <tr>
+                            <th>Instance ID</th>
+                            <th>Provider / Region</th>
+                            <th>Config (RAM/Storage)</th>
+                            <th>CPU Load</th>
+                            <th>Monthly Cost</th>
+                            <th>AI Status</th>
+                            <th>Recommended Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vmTableBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 4: CLOUD MAP -->
+        <div id="tab-map" class="panel">
+            <h2>Multi-Cloud Region Map (India)</h2>
+            <p style="color: var(--muted);">Geographic distribution of your servers. Click the map to plan a new deployment.</p>
+            
+            <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 20px;">
+                <div id="map" style="margin-top: 0;"></div>
+                
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--line); border-radius: 12px; padding: 20px;">
+                        <h4 style="margin-top: 0; color: var(--primary);">Regional Spend</h4>
+                        <ul style="list-style: none; padding: 0; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.8;">
+                            <li>AWS Mumbai: <b>$470</b></li>
+                            <li>GCP Delhi: <b>$475</b></li>
+                            <li>Azure Chennai: <b>$850</b></li>
+                            <li>Azure Pune: <b>$275</b></li>
+                        </ul>
+                    </div>
+                    <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); border-radius: 12px; padding: 20px;">
+                        <h4 style="margin-top: 0; color: var(--danger);">Critical Region</h4>
+                        <p style="margin: 0; font-size: 13px;">GCP Delhi is currently exhibiting the highest average CPU load and significant scaling costs. Consider expanding to Mumbai.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: ANALYTICS -->
+        <div id="tab-analytics" class="panel">
+            <h2>Advanced Resource Analytics</h2>
+            <p style="color: var(--muted);">Interactive K-Means clustering and utilization metrics.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; border: 1px solid var(--line);">
+                    <h4 style="margin-top: 0; text-align: center; color: var(--primary);">Cloud Spend by Provider</h4>
+                    <canvas id="providerChart" style="max-height: 250px;"></canvas>
+                </div>
+                <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; border: 1px solid var(--line);">
+                    <h4 style="margin-top: 0; text-align: center; color: var(--danger);">Optimization Potential (Waste)</h4>
+                    <canvas id="wasteChart" style="max-height: 250px;"></canvas>
+                </div>
+            </div>
+            
+            <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; border: 1px solid var(--line);">
+                <h4 style="margin-top: 0; color: var(--primary);">CPU Utilization vs Cost Clustering (K-Means)</h4>
+                <canvas id="scatterChart" style="max-height: 300px;"></canvas>
+            </div>
+        </div>
+
+        <!-- TAB 6: SETTINGS -->
+        <div id="tab-settings" class="panel">
+            <h2>Advanced Configuration</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background: rgba(0,0,0,0.3); padding: 25px; border-radius: 12px; border: 1px solid var(--line);">
+                    <h3 style="margin-top: 0; color: var(--primary);">Budget Controls</h3>
+                    <label style="color: var(--muted); display: block; margin-bottom: 5px;">Monthly Budget Alert Limit ($)</label>
+                    <input type="number" value="5000">
+                    
+                    <label style="color: var(--muted); display: block; margin-bottom: 5px; margin-top: 15px;">AI Aggressiveness (Auto-Shutdowns)</label>
+                    <select>
+                        <option>Conservative (Manual Approval Only)</option>
+                        <option selected>Moderate (Auto-shutdown Idle VMs)</option>
+                        <option>Aggressive (Auto-downsize underutilized VMs)</option>
+                    </select>
+                </div>
+                
+                <div style="background: rgba(0,0,0,0.3); padding: 25px; border-radius: 12px; border: 1px solid var(--line);">
+                    <h3 style="margin-top: 0; color: var(--primary);">Optimization Exclusions</h3>
+                    <label style="color: var(--muted); display: block; margin-bottom: 5px;">Ignore VMs with tags (comma separated)</label>
+                    <input type="text" value="prod, core-db, do-not-touch">
+                    
+                    <label style="color: var(--muted); display: block; margin-bottom: 5px; margin-top: 15px;">Notification Webhook (Slack/Teams)</label>
+                    <input type="text" placeholder="https://hooks.slack.com/services/...">
+                </div>
+            </div>
+            
+            <button type="button" class="primary-btn" style="margin-top: 20px;" onclick="alert('Configuration Saved')">Save Global Settings</button>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Tab Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            if(tabId === 'tab-map' && map) {
+                setTimeout(() => map.invalidateSize(), 100);
+            }
+        }
+
+        // Global State
+        let serverData = [];
+        let providerChartObj = null;
+        let wasteChartObj = null;
+        let scatterChartObj = null;
+
+        // Chart Theme Defaults
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+
+        function renderCharts(data) {
+            // Aggregate Provider Spend
+            let providerSpend = { 'AWS': 0, 'Azure': 0, 'GCP': 0, 'Custom-Deployed': 0 };
+            data.vms.forEach(vm => {
+                if(providerSpend[vm.provider] !== undefined) providerSpend[vm.provider] += vm.cost;
+                else providerSpend['Custom-Deployed'] += vm.cost;
+            });
+            
+            // Scatter Plot Data
+            let scatterData = data.vms.map(vm => ({
+                x: vm.cpu,
+                y: vm.cost,
+                r: vm.status === 'Idle' ? 10 : 6
+            }));
+            let scatterColors = data.vms.map(vm => 
+                vm.status === 'Idle' ? '#ef4444' : 
+                (vm.status === 'Optimal' ? '#22c55e' : 
+                (vm.status === 'Overloaded' ? '#8b5cf6' : '#f59e0b'))
+            );
+
+            // Destroy old charts if they exist
+            if(providerChartObj) providerChartObj.destroy();
+            if(wasteChartObj) wasteChartObj.destroy();
+            if(scatterChartObj) scatterChartObj.destroy();
+
+            // 1. Provider Bar Chart
+            providerChartObj = new Chart(document.getElementById('providerChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['AWS', 'Azure', 'GCP', 'Custom'],
+                    datasets: [{
+                        label: 'Monthly Spend ($)',
+                        data: [providerSpend['AWS'], providerSpend['Azure'], providerSpend['GCP'], providerSpend['Custom-Deployed']],
+                        backgroundColor: ['#ff9900', '#0089d6', '#db4437', '#3b82f6']
+                    }]
+                },
+                options: { maintainAspectRatio: false }
+            });
+
+            // 2. Waste Doughnut Chart
+            wasteChartObj = new Chart(document.getElementById('wasteChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Optimized Run-Rate', 'Identified Waste'],
+                    datasets: [{
+                        data: [data.optimized_total, data.waste],
+                        backgroundColor: ['#22c55e', '#ef4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { maintainAspectRatio: false, cutout: '70%' }
+            });
+
+            // 3. Scatter Chart (K-Means viz)
+            scatterChartObj = new Chart(document.getElementById('scatterChart'), {
+                type: 'bubble',
+                data: {
+                    datasets: [{
+                        label: 'VM Clustering',
+                        data: scatterData,
+                        backgroundColor: scatterColors
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'CPU Utilization (%)' }, min: 0, max: 100 },
+                        y: { title: { display: true, text: 'Monthly Cost ($)' } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // Map Logic
+        var map = L.map('map').setView([20.5937, 78.9629], 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+        var currentMarkers = [];
+
+        function plotServers() {
+            currentMarkers.forEach(m => map.removeLayer(m));
+            currentMarkers = [];
+
+            serverData.forEach(vm => {
+                let color = vm.status === 'Optimal' ? 'green' : (vm.status === 'Idle' ? 'red' : (vm.status === 'Overloaded' ? 'purple' : 'orange'));
+                let m = L.circleMarker([vm.lat, vm.lon], {
+                    color: color,
+                    fillColor: color,
+                    fillOpacity: 0.7,
+                    radius: 8
+                }).addTo(map).bindPopup(`
+                    <b>${vm.id}</b><br>
+                    Provider: ${vm.provider}<br>
+                    CPU: ${vm.cpu}%<br>
+                    Status: <span style="color:${color}">${vm.status}</span>
+                `);
+                currentMarkers.push(m);
+            });
+        }
+
+        // Map Click (Plan new deployment)
+        map.on('click', async function(e) {
+            let cpu = Math.floor(Math.random() * 100);
+            let cost = Math.floor(Math.random() * 200 + 50);
+            
+            // Add a loading marker temporarily
+            let m = L.marker([e.latlng.lat, e.latlng.lng]).addTo(map).bindPopup("Provisioning AI Node...").openPopup();
+            currentMarkers.push(m);
+            
+            const formData = new FormData();
+            formData.append('id', 'custom-node-' + Math.floor(Math.random() * 1000));
+            formData.append('provider', 'Custom-Deployed');
+            formData.append('region', 'Clicked-Location');
+            formData.append('lat', e.latlng.lat);
+            formData.append('lon', e.latlng.lng);
+            formData.append('cpu', cpu);
+            formData.append('cost', cost);
+            formData.append('ram', '32GB');
+            formData.append('storage', '500GB SSD');
+            
+            try {
+                await fetch('/api/add_vm', { method: 'POST', body: formData });
+                // Instantly re-sync the entire dashboard to reflect the new server
+                await syncDemos();
+                
+                // Show a success message
+                setTimeout(() => alert("New server successfully provisioned and analyzed by AI! Check the Analytics and Cost tabs to see the live updates."), 500);
+            } catch(err) {
+                console.error(err);
+            }
+        });
+
+        // Sync Demos
+        async function syncDemos() {
+            document.getElementById('loadingMsg').style.display = 'block';
+            try {
+                const response = await fetch('/api/analyze_cloud', { method: 'POST' });
+                const data = await response.json();
+                document.getElementById('loadingMsg').style.display = 'none';
+
+                // Unlock tabs
+                document.getElementById('btn-cost').disabled = false;
+                document.getElementById('btn-vm').disabled = false;
+                document.getElementById('btn-map').disabled = false;
+                document.getElementById('btn-analytics').disabled = false;
+
+                // Cost Predictor
+                document.getElementById('currentCost').innerText = "$" + data.current_total;
+                document.getElementById('optCost').innerText = "$" + data.optimized_total;
+                document.getElementById('wasteCost').innerText = "$" + data.waste;
+                document.getElementById('annualSavings').innerText = "$" + (data.waste * 12).toLocaleString();
+
+                // VM Table
+                const tbody = document.getElementById('vmTableBody');
+                tbody.innerHTML = '';
+                serverData = data.vms;
+                
+                let idleCount = 0;
+                let underCount = 0;
+                let optCount = 0;
+                
+                data.vms.forEach(vm => {
+                    let badgeClass = 'badge-opt';
+                    if (vm.status === 'Idle') { badgeClass = 'badge-idle'; idleCount++; }
+                    else if (vm.status === 'Underutilized') { badgeClass = 'badge-under'; underCount++; }
+                    else if (vm.status === 'Optimal') optCount++;
+                    else if (vm.status === 'Overloaded') badgeClass = 'badge-over';
+
+                    let actionColor = vm.action === 'None' ? 'var(--muted)' : 'var(--primary)';
+                    if(vm.action.includes('Shutdown')) actionColor = 'var(--danger)';
+
+                    let row = `<tr>
+                        <td style="font-family:monospace; font-weight:bold;">${vm.id}</td>
+                        <td>${vm.provider} (${vm.region})</td>
+                        <td style="font-size: 13px; color: var(--muted);"><span style="color:#fff;">${vm.ram}</span> RAM | <span style="color:#fff;">${vm.storage}</span></td>
+                        <td>
+                            <div style="background:rgba(255,255,255,0.1); border-radius:4px; height:6px; width:100%; margin-bottom:5px;">
+                                <div style="background:${vm.cpu > 80 ? 'var(--danger)' : 'var(--primary)'}; height:100%; width:${vm.cpu}%; border-radius:4px;"></div>
+                            </div>
+                            <span style="font-size:12px; color:var(--muted)">${vm.cpu}% Load</span>
+                        </td>
+                        <td style="font-weight:bold;">$${vm.cost}</td>
+                        <td><span class="badge ${badgeClass}">${vm.status}</span></td>
+                        <td style="color:${actionColor}; font-weight:bold; font-size:13px;">${vm.action}</td>
+                    </tr>`;
+                    tbody.innerHTML += row;
+                });
+                
+                // Update table top stats
+                document.getElementById('idleVms').innerText = idleCount;
+                document.getElementById('underVms').innerText = underCount;
+                document.getElementById('optVms').innerText = optCount;
+
+                // Render Analytics Charts
+                renderCharts(data);
+
+                // Map
+                plotServers();
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('loadingMsg').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

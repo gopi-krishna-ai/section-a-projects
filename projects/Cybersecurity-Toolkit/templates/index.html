@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12 text-center">
+        <h1 class="fw-bold display-4 mb-3"><span class="text-info">Cyber</span> Security Toolkit</h1>
+        <p class="text-secondary lead">Comprehensive analysis, scanning, and protection tools.</p>
+    </div>
+</div>
+
+<div class="row justify-content-center mb-5">
+    <div class="col-md-4">
+        <div class="card glass-panel text-center py-4">
+            <h5 class="text-secondary">Total Scans</h5>
+            <h2 class="text-info display-5 fw-bold mb-0">{{ total_scans }}</h2>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card glass-panel text-center py-4">
+            <h5 class="text-secondary">Threats Detected</h5>
+            <h2 class="text-danger display-5 fw-bold mb-0">{{ total_malware }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Password Tool -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card glass-panel h-100">
+            <div class="card-body text-center p-4">
+                <div class="fs-1 text-primary mb-3"><i class="fas fa-key"></i></div>
+                <h4>Password Analysis</h4>
+                <p class="text-secondary small mb-4">Check the strength and complexity of your passwords.</p>
+                <a href="{{ url_for('password_check') }}" class="btn btn-outline-info w-100">Analyze Password</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Gen -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card glass-panel h-100">
+            <div class="card-body text-center p-4">
+                <div class="fs-1 text-success mb-3"><i class="fas fa-random"></i></div>
+                <h4>Password Generator</h4>
+                <p class="text-secondary small mb-4">Generate highly secure cryptographic passwords.</p>
+                <a href="{{ url_for('password_gen') }}" class="btn btn-outline-success w-100">Generate</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hash Generator -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card glass-panel h-100">
+            <div class="card-body text-center p-4">
+                <div class="fs-1 text-warning mb-3"><i class="fas fa-file-signature"></i></div>
+                <h4>File Hash Generator</h4>
+                <p class="text-secondary small mb-4">Calculate MD5, SHA1, and SHA256 hashes of files.</p>
+                <a href="{{ url_for('file_hash') }}" class="btn btn-outline-warning w-100">Calculate Hash</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Network Scan -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card glass-panel h-100">
+            <div class="card-body text-center p-4">
+                <div class="fs-1 text-info mb-3"><i class="fas fa-network-wired"></i></div>
+                <h4>Network Scanner</h4>
+                <p class="text-secondary small mb-4">Scan targets for open ports and vulnerabilities.</p>
+                <a href="{{ url_for('network_scan') }}" class="btn btn-outline-info w-100">Scan Network</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- URL Check -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card glass-panel h-100">
+            <div class="card-body text-center p-4">
+                <div class="fs-1 text-danger mb-3"><i class="fas fa-link"></i></div>
+                <h4>URL Analysis</h4>
+                <p class="text-secondary small mb-4">Check links for suspicious patterns and risks.</p>
+                <a href="{{ url_for('url_check') }}" class="btn btn-outline-danger w-100">Check URL</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phishing Detect -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card glass-panel h-100">
+            <div class="card-body text-center p-4">
+                <div class="fs-1 text-danger mb-3"><i class="fas fa-fish"></i></div>
+                <h4>Phishing Detector</h4>
+                <p class="text-secondary small mb-4">AI-powered phishing website detection.</p>
+                <a href="{{ url_for('phishing_detect') }}" class="btn btn-outline-danger w-100">Detect Phishing</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

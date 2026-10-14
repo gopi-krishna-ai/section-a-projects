@@ -1,0 +1,737 @@
+/* ===========================================
+   AGRIMITRA AI - DASHBOARD & APP LAYOUT
+   Built on tokens from theme.css
+   =========================================== */
+
+body{
+    background:var(--c-bg);
+    color:var(--c-text);
+}
+
+/* ===========================
+      MAIN CONTAINER
+=========================== */
+
+.container{
+    display:flex;
+    min-height:100vh;
+}
+
+/* ===========================
+      SIDEBAR
+=========================== */
+
+.sidebar{
+    width:250px;
+    background:linear-gradient(rgba(34, 139, 34, 0.85), rgba(0, 100, 0, 0.9)), url('/static/images/complete_farm.jpg');
+    background-size:cover;
+    background-position:center;
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    padding:var(--sp-6) 0;
+    position:fixed;
+    height:100vh;
+    transition:width 0.3s ease;
+    flex-shrink:0;
+    overflow-y:auto;
+    overflow-x:hidden;
+    box-shadow:4px 0 15px rgba(0,0,0,.15);
+    z-index:100;
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:var(--sp-9);
+    display:block;
+    text-decoration:none;
+    color:inherit;
+}
+
+.logo img{
+    width:90px;
+    margin-bottom:var(--sp-3);
+}
+
+.logo h2{
+    font-size:var(--fs-h2);
+    font-weight:bold;
+    margin:0;
+}
+
+.sidebar ul{
+    list-style:none;
+    padding:0;
+    margin:0;
+}
+
+.sidebar li{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:var(--sp-4);
+    margin-bottom:10px;
+    border-radius:var(--r-md);
+    cursor:pointer;
+    transition:transform var(--dur) var(--ease),background var(--dur) var(--ease);
+    font-size:17px;
+    user-select:none;
+}
+
+.sidebar li:hover{
+    background:rgba(255,255,255,.18);
+    transform:translateX(6px);
+}
+
+.sidebar li:focus-visible{
+    outline:3px solid rgba(255,255,255,.7);
+    outline-offset:-2px;
+}
+
+.sidebar li.active{
+    background:#fff;
+    color:var(--c-primary);
+    font-weight:600;
+}
+
+.sidebar i{
+    width:24px;
+    text-align:center;
+}
+
+/* ===========================
+      MAIN CONTENT
+=========================== */
+
+.main-content{
+    margin-left:270px;
+    width:calc(100% - 270px);
+    max-width:1280px;
+    padding:var(--sp-8);
+}
+
+/* ===========================
+      TOP BAR
+=========================== */
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:var(--sp-8);
+    flex-wrap:wrap;
+    gap:var(--sp-5);
+}
+
+.topbar h1{
+    color:var(--c-primary);
+    font-size:var(--fs-display);
+    margin:0;
+    line-height:1.2;
+}
+
+.topbar p{
+    margin:var(--sp-2) 0 0;
+    color:var(--c-text-soft);
+    font-size:17px;
+}
+
+#location{
+    color:var(--c-primary-dark);
+    font-weight:600;
+}
+
+/* ===========================
+      TOP RIGHT
+=========================== */
+
+.top-right{
+    display:flex;
+    align-items:center;
+    gap:var(--sp-5);
+}
+
+.top-right select{
+    padding:10px 18px;
+    border-radius:var(--r-md);
+    border:none;
+    background:var(--c-surface);
+    box-shadow:var(--sh-sm);
+    font-size:var(--fs-body);
+    font-family:var(--font-family);
+    cursor:pointer;
+    color:var(--c-text);
+}
+
+.profile-img{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid var(--c-primary-lighter);
+}
+
+/* ===========================
+      HERO SECTION
+=========================== */
+
+.hero{
+    background:linear-gradient(120deg,var(--c-primary),var(--c-primary-light));
+    color:#fff;
+    padding:var(--sp-8);
+    border-radius:var(--r-xl);
+    margin-bottom:var(--sp-7);
+    box-shadow:var(--sh-lg);
+}
+
+.hero h2{
+    font-size:var(--fs-display);
+    margin:0 0 var(--sp-3);
+    line-height:1.25;
+}
+
+.hero p{
+    font-size:18px;
+    opacity:.95;
+    margin:0;
+    line-height:1.6;
+}
+
+/* ===========================
+      WEATHER CARD
+=========================== */
+
+.weather-card{
+    background:var(--c-surface);
+    border-radius:var(--r-xl);
+    padding:var(--sp-7);
+    margin-bottom:var(--sp-7);
+    box-shadow:var(--sh-md);
+}
+
+.weather-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:var(--sp-7);
+    gap:var(--sp-4);
+    flex-wrap:wrap;
+}
+
+.weather-header h2{
+    color:var(--c-primary);
+    font-size:var(--fs-h2);
+    margin:0;
+}
+
+#weatherStatus{
+    background:var(--c-success-tint);
+    color:var(--c-success);
+    padding:8px 18px;
+    border-radius:var(--r-full);
+    font-weight:600;
+    font-size:var(--fs-sm);
+}
+
+.weather-main{
+    display:flex;
+    gap:var(--sp-8);
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+.temp-box{
+    text-align:center;
+    min-width:220px;
+}
+
+.temp-box img{
+    width:90px;
+}
+
+.temp-box h1{
+    font-size:60px;
+    color:var(--c-primary);
+    margin:var(--sp-2) 0;
+    line-height:1.1;
+}
+
+.temp-box p{
+    font-size:var(--fs-h3);
+    color:var(--c-text-muted);
+    margin:0;
+}
+
+/* ===========================
+      WEATHER GRID
+=========================== */
+
+.weather-grid{
+    flex:1;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    gap:18px;
+}
+
+.weather-item{
+    background:var(--c-surface-soft);
+    border-radius:var(--r-lg);
+    padding:22px;
+    text-align:center;
+    transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+    border:1px solid var(--c-border-soft);
+}
+
+.weather-item:hover{
+    transform:translateY(-6px);
+    box-shadow:var(--sh-sm);
+}
+
+.weather-item i{
+    font-size:28px;
+    color:var(--c-primary-lighter);
+    margin-bottom:var(--sp-3);
+}
+
+.weather-item h3{
+    color:var(--c-text-muted);
+    font-size:var(--fs-body);
+    margin:0 0 10px;
+}
+
+.weather-item p{
+    font-size:var(--fs-h2);
+    font-weight:bold;
+    color:var(--c-primary);
+    margin:0;
+}
+
+/* ===========================================
+   AI RECOMMENDATION CARD
+=========================================== */
+
+.ai-card{
+    background:var(--c-surface);
+    border-radius:var(--r-xl);
+    padding:var(--sp-7);
+    margin-bottom:var(--sp-7);
+    box-shadow:var(--sh-md);
+    border-left:8px solid var(--c-primary-light);
+}
+
+.card-header h2{
+    color:var(--c-primary);
+    margin:0 0 18px;
+    font-size:var(--fs-h2);
+}
+
+.card-body{
+    font-size:18px;
+    color:var(--c-text-soft);
+    line-height:1.8;
+}
+
+/* ===========================================
+      TIPS & NEWS
+=========================================== */
+
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
+    gap:var(--sp-6);
+    margin-bottom:var(--sp-7);
+}
+
+.info-card{
+    background:var(--c-surface);
+    border-radius:var(--r-lg);
+    padding:var(--sp-6);
+    box-shadow:var(--sh-md);
+    transition:transform var(--dur) var(--ease);
+}
+
+.info-card:hover{
+    transform:translateY(-6px);
+}
+
+.info-card h2{
+    color:var(--c-primary);
+    margin:0 0 18px;
+    font-size:var(--fs-h3);
+}
+
+.info-card p{
+    font-size:17px;
+    line-height:1.8;
+    color:var(--c-text-soft);
+    margin:0;
+}
+
+.news-list{
+    margin:0 0 0 var(--sp-5);
+    padding:0;
+}
+
+.news-list li{
+    margin-bottom:var(--sp-3);
+    color:#444;
+    line-height:1.7;
+}
+
+/* ===========================================
+      FEATURE CARDS
+=========================================== */
+
+.features{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:var(--sp-6);
+    margin-bottom:var(--sp-8);
+}
+
+.feature-card{
+    background:var(--c-surface);
+    border-radius:var(--r-xl);
+    padding:var(--sp-6);
+    text-align:center;
+    box-shadow:var(--sh-md);
+    transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card:hover{
+    transform:translateY(-8px);
+    box-shadow:var(--sh-lg);
+}
+
+.feature-card img{
+    width:90px;
+    height:90px;
+    object-fit:contain;
+    margin-bottom:var(--sp-3);
+}
+
+.feature-icon{
+    font-size:60px;
+    color:var(--c-primary-light);
+    margin-bottom:var(--sp-3);
+    display:block;
+}
+
+.feature-card h3{
+    color:var(--c-primary);
+    margin:0 0 10px;
+    font-size:var(--fs-h3);
+    position: relative;
+    z-index: 2;
+}
+
+.feature-card p{
+    color:var(--c-text-muted);
+    line-height:1.6;
+    margin:0;
+    min-height:55px;
+    position: relative;
+    z-index: 2;
+}
+
+/* ===========================================
+      MAP STYLES
+=========================================== */
+
+.map-section {
+    background: var(--c-surface);
+    border-radius: var(--r-xl);
+    padding: var(--sp-7);
+    margin-bottom: var(--sp-7);
+    box-shadow: var(--sh-md);
+}
+
+.map-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--sp-5);
+    flex-wrap: wrap;
+    gap: var(--sp-4);
+}
+
+.map-header h2 {
+    color: var(--c-primary);
+    font-size: var(--fs-h2);
+    margin: 0;
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+}
+
+.search-box input {
+    padding: 10px 15px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md);
+    outline: none;
+    font-size: var(--fs-body);
+}
+
+.search-box button {
+    padding: 10px 20px;
+    background: var(--c-primary);
+    color: white;
+    border: none;
+    border-radius: var(--r-md);
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.search-box button:hover {
+    background: var(--c-primary-dark);
+}
+
+#map {
+    height: 350px;
+    width: 100%;
+    border-radius: var(--r-lg);
+    border: 1px solid var(--c-border);
+    z-index: 1; /* Keep leaflet under sidebar */
+}
+
+/* ===========================================
+      BUTTON
+=========================================== */
+
+.feature-btn{
+    margin-top:var(--sp-5);
+    padding:12px 28px;
+    border:none;
+    border-radius:var(--r-full);
+    background:var(--c-primary-light);
+    color:#fff;
+    font-size:var(--fs-body);
+    font-family:var(--font-family);
+    font-weight:500;
+    cursor:pointer;
+    transition:background var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+
+.feature-btn:hover{
+    background:var(--c-primary);
+    transform:scale(1.05);
+}
+
+.feature-btn:active{
+    transform:scale(.98);
+}
+
+/* ===========================================
+      QUICK STATS
+=========================================== */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:var(--sp-5);
+    margin-bottom:var(--sp-8);
+}
+
+.stat-card{
+    background:var(--c-surface);
+    border-radius:var(--r-lg);
+    padding:var(--sp-6);
+    text-align:center;
+    box-shadow:var(--sh-md);
+    transition:transform var(--dur) var(--ease);
+}
+
+.stat-card:hover{
+    transform:translateY(-5px);
+}
+
+.stat-card h2{
+    font-size:40px;
+    margin:0 0 10px;
+    color:var(--c-primary);
+    line-height:1.1;
+}
+
+.stat-card h3{
+    color:var(--c-primary);
+    margin:0 0 10px;
+    font-size:var(--fs-body);
+}
+
+.stat-card p{
+    font-size:22px;
+    font-weight:bold;
+    color:var(--c-text-soft);
+    margin:0;
+}
+
+/* ===========================================
+      FOOTER
+=========================================== */
+
+footer{
+    margin-top:var(--sp-9);
+    text-align:center;
+    padding:var(--sp-5);
+    color:var(--c-text-muted);
+    font-size:var(--fs-body);
+}
+
+/* ===========================================
+      SCROLLBAR
+=========================================== */
+
+::-webkit-scrollbar{
+    width:10px;
+    height:10px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:var(--c-primary-light);
+    border-radius:var(--r-full);
+}
+
+::-webkit-scrollbar-thumb:hover{
+    background:var(--c-primary);
+}
+
+::-webkit-scrollbar-track{
+    background:var(--c-primary-soft);
+}
+
+/* ===========================================
+      RESPONSIVE DESIGN
+=========================================== */
+
+@media(max-width:992px){
+
+    .sidebar{
+        width:90px;
+        padding:var(--sp-5) var(--sp-4);
+    }
+
+    .sidebar h2{
+        display:none;
+    }
+
+    .sidebar span{
+        display:none;
+    }
+
+    .sidebar li{
+        justify-content:center;
+        gap:0;
+        padding:var(--sp-4);
+    }
+
+    .main-content{
+        margin-left:90px;
+        width:calc(100% - 90px);
+    }
+
+}
+
+@media(max-width:768px){
+
+    .main-content{
+        margin-left:0;
+        width:100%;
+        padding:var(--sp-5);
+    }
+
+    .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+        overflow:visible;
+    }
+
+    .sidebar .logo{
+        margin-bottom:var(--sp-4);
+    }
+
+    .sidebar ul{
+        display:flex;
+        flex-wrap:wrap;
+        gap:var(--sp-1);
+    }
+
+    .sidebar li{
+        margin-bottom:0;
+        flex:1 1 auto;
+        min-width:calc(25% - 6px);
+        justify-content:center;
+        padding:var(--sp-3) var(--sp-2);
+        font-size:var(--fs-xs);
+    }
+
+    .sidebar li:hover{
+        transform:none;
+    }
+
+    .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .top-right{
+        width:100%;
+        justify-content:space-between;
+    }
+
+    .weather-main{
+        flex-direction:column;
+    }
+
+    .hero h2{
+        font-size:var(--fs-h2);
+    }
+
+    .features{
+        grid-template-columns:1fr;
+    }
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .info-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:480px){
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .topbar h1{
+        font-size:var(--fs-h1);
+    }
+
+    .hero{
+        padding:var(--sp-6);
+    }
+
+    .hero h2{
+        font-size:22px;
+    }
+
+    .weather-card{
+        padding:var(--sp-5);
+    }
+
+    .weather-grid{
+        grid-template-columns:1fr;
+    }
+
+}

@@ -1,0 +1,9 @@
+Flask
+scikit-learn
+pandas
+numpy
+nltk
+imbalanced-learn
+lime
+PyPDF2
+werkzeug

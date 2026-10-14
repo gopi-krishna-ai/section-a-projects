@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}AgriMitra AI | Crop Recommendation{% endblock %}
+
+{% block content %}
+{% if current_user and current_user.userid == 'admin@agrimitra' %}
+
+<div style="padding: 30px;">
+    <h2><i class="fa-solid fa-microchip"></i> Crop Model Analytics</h2>
+    <p style="color: #666; margin-bottom: 20px;">Detailed performance metrics for the Crop Recommendation Engine.</p>
+    
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+            <div style="font-size: 32px; color: #166534; font-weight: bold;">99.2%</div>
+            <div style="color: #666; font-size: 14px; text-transform: uppercase;">Accuracy</div>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+            <div style="font-size: 32px; color: #0284c7; font-weight: bold;">98.8%</div>
+            <div style="color: #666; font-size: 14px; text-transform: uppercase;">Precision</div>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+            <div style="font-size: 32px; color: #ca8a04; font-weight: bold;">99.0%</div>
+            <div style="color: #666; font-size: 14px; text-transform: uppercase;">F1-Score</div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3 style="margin-top:0;">Model Architecture</h3>
+        <p><strong>Algorithm:</strong> Random Forest Classifier</p>
+        <p><strong>Input Features:</strong> Nitrogen (N), Phosphorus (P), Potassium (K), Temperature, Humidity, pH, Rainfall</p>
+        <p><strong>Output Classes:</strong> 22 unique crop types (Rice, Maize, Jute, Cotton, Coconut, Papaya, Orange, Apple, Muskmelon, Watermelon, Grapes, Mango, Banana, Pomegranate, Lentil, Blackgram, Mungbean, Mothbeans, Pigeonpeas, Kidneybeans, Chickpea, Coffee)</p>
+        <p><strong>Training Data:</strong> 2,200 instances, 7 features each. Handled class imbalance using SMOTE. Split 80/20 train/test.</p>
+    </div>
+</div>
+
+{% else %}
+
+
+<div class="page-title" id="pageTitle">Crop Recommendation</div>
+<p class="page-subtitle" id="pageSubtitle">
+    Enter your soil and weather values to get a machine-learning crop suggestion.
+</p>
+
+<div class="form-card">
+    <h3><i class="fa-solid fa-seedling"></i> <span id="formTitle">Soil & Weather Values</span></h3>
+
+    <form id="cropForm">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold" id="lblNitrogen">Nitrogen (N)</label>
+                <input type="number" step="any" name="nitrogen" id="nitrogen" class="form-control" placeholder="e.g. 50" value="104" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold" id="lblPhosphorus">Phosphorus (P)</label>
+                <input type="number" step="any" name="phosphorus" id="phosphorus" class="form-control" placeholder="e.g. 50" value="18" required>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold" id="lblPotassium">Potassium (K)</label>
+                <input type="number" step="any" name="potassium" id="potassium" class="form-control" placeholder="e.g. 50" value="30" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold" id="lblPh">Soil pH</label>
+                <input type="number" step="any" name="ph" id="ph" class="form-control" placeholder="e.g. 6.5" value="6.5" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label class="form-label fw-bold" id="lblTemperature">Temperature (°C)</label>
+                <input type="number" step="any" name="temperature" id="temperature" class="form-control" placeholder="e.g. 25" value="28" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label fw-bold" id="lblHumidity">Humidity (%)</label>
+                <input type="number" step="any" name="humidity" id="humidity" class="form-control" placeholder="e.g. 60" value="70" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label fw-bold" id="lblRainfall">Rainfall (mm)</label>
+                <input type="number" step="any" name="rainfall" id="rainfall" class="form-control" placeholder="e.g. 100" value="150" required>
+            </div>
+        </div>
+
+        <button type="submit" class="primary-btn" id="submitBtn">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>Get Crop Recommendation</span>
+        </button>
+    </form>
+</div>
+
+<div class="error-box hidden" id="errorBox"></div>
+
+<div class="hidden" id="resultArea">
+
+    <div class="result-card">
+        <h3 id="resultTitle">Recommended Crop</h3>
+        <div class="result-main" id="resultCrop">-</div>
+        <div class="result-conf" id="resultConf">Model confidence: -</div>
+    </div>
+
+    <div class="summary-card">
+        <h4 id="summaryTitle">Your Input Summary</h4>
+        <div class="summary-grid" id="summaryGrid"></div>
+    </div>
+
+    <div class="info-box success">
+        <i class="fa-solid fa-circle-info"></i>
+        <span id="modelNote"></span>
+    </div>
+
+
+    <!-- E-Commerce Section -->
+    <div class="result-card" id="ecartSection" style="margin-top: 20px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #22c55e;">
+        <h4 style="color: #166534; font-weight: bold; margin-bottom: 15px;"><i class="fa-solid fa-store"></i> Buy Premium Seeds</h4>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+            <div style="flex: 0 0 120px; height: 120px; border-radius: 10px; overflow: hidden; background: white; border: 1px solid #bbf7d0; display: flex; justify-content: center; align-items: center;">
+                <img id="ecartImg" src="" alt="Seeds" style="max-width: 100%; max-height: 100%; object-fit: cover;">
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+                <h5 id="ecartTitle" style="margin-bottom: 5px; font-weight: 600; font-size: 1.1rem; color: #15803d;"></h5>
+                <p id="ecartDesc" style="font-size: 0.9rem; color: #166534; margin-bottom: 10px;">High-yield, disease-resistant seeds tailored for your soil.</p>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <span style="text-decoration: line-through; color: #ef4444; font-size: 0.9rem;">₹<span id="ecartOldPrice"></span></span>
+                    <span style="font-size: 1.2rem; font-weight: bold; color: #15803d;">₹<span id="ecartNewPrice"></span></span>
+                    <span style="background: #22c55e; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">Save 15% (AgriMitra Exclusive)</span>
+                </div>
+                <button onclick="showToast('Added to Cart successfully!', 'success')" style="background: #166534; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s;"><i class="fa-solid fa-cart-shopping"></i> Purchase Now</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/crop.js') }}?v=3"></script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{
+  "subjects": {},
+  "settings": {
+    "daily_hours": 1.0
+  },
+  "missed_log": [
+    {
+      "date": "2026-08-22",
+      "subject": "Python"
+    },
+    {
+      "date": "2026-08-22",
+      "subject": "ml"
+    },
+    {
+      "date": "2026-08-22",
+      "subject": "ml"
+    },
+    {
+      "date": "2026-08-22",
+      "subject": "Machine Learning"
+    },
+    {
+      "date": "2026-08-22",
+      "subject": "Machine Learning"
+    }
+  ]
+}

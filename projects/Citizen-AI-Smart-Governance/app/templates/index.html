@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-white">
+    <!-- Hero Section -->
+    <div class="relative bg-blue-50 overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="relative z-10 pb-8 bg-blue-50 sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
+                <main class="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
+                    <div class="sm:text-center lg:text-left">
+                        <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+                            <span class="block xl:inline">Government Services,</span>
+                            <span class="block text-blue-600 xl:inline">Made Easier.</span>
+                        </h1>
+                        <p class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                            One place to understand, complete and track your essential government applications with our intelligent multilingual AI assistant.
+                        </p>
+                        <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
+                            <div class="rounded-md shadow">
+                                <a href="{{ url_for('auth.login') }}" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:py-4 md:text-lg md:px-10">
+                                    Start an Application
+                                </a>
+                            </div>
+                            <div class="mt-3 sm:mt-0 sm:ml-3">
+                                <a href="#services" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200 md:py-4 md:text-lg md:px-10">
+                                    Explore Services
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+        <div class="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 bg-blue-100 flex items-center justify-center p-8">
+            <div class="text-center">
+                <div class="inline-block p-4 bg-white rounded-lg shadow-lg mb-4 text-left border-l-4 border-blue-500">
+                    <p class="text-sm text-gray-500 mb-1">Citizen AI Assistant</p>
+                    <p class="text-gray-800">"Enter your full legal name exactly as it appears on your supporting document."</p>
+                </div>
+                <div class="flex flex-col space-y-4 items-center">
+                    <div class="bg-white p-3 rounded shadow w-64 text-center text-sm font-medium"><i class="fa-solid fa-user text-blue-500 mr-2"></i>Choose Service</div>
+                    <i class="fa-solid fa-arrow-down text-blue-300"></i>
+                    <div class="bg-white p-3 rounded shadow w-64 text-center text-sm font-medium border-2 border-blue-400"><i class="fa-solid fa-robot text-blue-500 mr-2"></i>AI Guidance & Validation</div>
+                    <i class="fa-solid fa-arrow-down text-blue-300"></i>
+                    <div class="bg-white p-3 rounded shadow w-64 text-center text-sm font-medium"><i class="fa-solid fa-file-pdf text-blue-500 mr-2"></i>Download / Submit</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- What is Citizen AI -->
+    <div class="py-12 bg-white" id="services">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:text-center">
+                <h2 class="text-base text-blue-600 font-semibold tracking-wide uppercase">Services</h2>
+                <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                    What is Citizen AI?
+                </p>
+                <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+                    Citizen AI brings commonly needed government-service application assistance into one guided platform.
+                </p>
+            </div>
+
+            <div class="mt-10">
+                <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+                    
+                    <!-- AADHAAR -->
+                    <div class="bg-white overflow-hidden shadow rounded-lg border border-gray-100 hover:shadow-md transition">
+                        <div class="px-4 py-5 sm:p-6 text-center">
+                            <i class="fa-solid fa-id-card text-4xl text-blue-500 mb-4"></i>
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">Aadhaar</h3>
+                            <p class="mt-2 text-sm text-gray-500">Guided Aadhaar application assistance.</p>
+                        </div>
+                    </div>
+
+                    <!-- PAN -->
+                    <div class="bg-white overflow-hidden shadow rounded-lg border border-gray-100 hover:shadow-md transition">
+                        <div class="px-4 py-5 sm:p-6 text-center">
+                            <i class="fa-solid fa-credit-card text-4xl text-green-500 mb-4"></i>
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">PAN Card</h3>
+                            <p class="mt-2 text-sm text-gray-500">Complete and validate your PAN application.</p>
+                        </div>
+                    </div>
+
+                    <!-- VOTER ID -->
+                    <div class="bg-white overflow-hidden shadow rounded-lg border border-gray-100 hover:shadow-md transition">
+                        <div class="px-4 py-5 sm:p-6 text-center">
+                            <i class="fa-solid fa-check-to-slot text-4xl text-purple-500 mb-4"></i>
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">Voter ID</h3>
+                            <p class="mt-2 text-sm text-gray-500">Get guided assistance for voter registration.</p>
+                        </div>
+                    </div>
+
+                    <!-- DRIVING LICENCE -->
+                    <div class="bg-white overflow-hidden shadow rounded-lg border border-gray-100 hover:shadow-md transition">
+                        <div class="px-4 py-5 sm:p-6 text-center">
+                            <i class="fa-solid fa-car text-4xl text-orange-500 mb-4"></i>
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">Driving Licence</h3>
+                            <p class="mt-2 text-sm text-gray-500">Understand and complete your learner/driving licence application.</p>
+                        </div>
+                    </div>
+
+                    <!-- SCHOLARSHIP -->
+                    <div class="bg-white overflow-hidden shadow rounded-lg border border-gray-100 hover:shadow-md transition">
+                        <div class="px-4 py-5 sm:p-6 text-center">
+                            <i class="fa-solid fa-graduation-cap text-4xl text-yellow-500 mb-4"></i>
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">Scholarship</h3>
+                            <p class="mt-2 text-sm text-gray-500">Complete scholarship applications with guided assistance.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Privacy Warning -->
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 max-w-7xl mx-auto my-8">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <i class="fa-solid fa-triangle-exclamation text-yellow-400"></i>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-yellow-700">
+            <strong>Prototype Warning:</strong> Citizen AI is a prototype assistance platform. Do not upload real identity documents while testing unless you understand how your local deployment stores and processes files. Final document issuance and official verification are performed by the respective government authority.
+          </p>
+        </div>
+      </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-gray-50 flex-grow py-8 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Left Panel: Product Details -->
+            <div class="w-full lg:w-1/3 flex flex-col gap-4">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden p-6 flex flex-col items-center">
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" class="w-full h-auto object-cover rounded-xl shadow-sm max-h-[400px]">
+                    <div class="w-full mt-6 text-left">
+                        <h2 class="text-2xl font-bold text-gray-900">{{ product.name }}</h2>
+                        <p class="text-sm text-gray-500 font-semibold uppercase tracking-wider mb-2">{{ product.category }}</p>
+                        <p class="text-3xl font-extrabold text-emerald-600 mb-6">₹{{ product.price_inr }}</p>
+                        
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <i class="fa-solid fa-leaf mr-1"></i> Eco Score: {{ product.eco_score | int }}
+                            </span>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                                <i class="fa-solid fa-shield mr-1"></i> Durable
+                            </span>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700 border border-purple-200">
+                                <i class="fa-solid fa-recycle mr-1"></i> Sustainable
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-emerald-50 rounded-2xl border border-emerald-100 p-4 flex gap-3 text-sm text-emerald-800">
+                    <i class="fa-solid fa-leaf text-2xl mt-1 text-emerald-600"></i>
+                    <p>Your customization request will be handled through Green Gen AI, keeping sustainability in mind.</p>
+                </div>
+            </div>
+
+            <!-- Right Panel: Chatbot Interface -->
+            <div class="w-full lg:w-2/3 bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-[700px]">
+                
+                <!-- Chat Header -->
+                <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-4 bg-gray-50/50 rounded-t-2xl">
+                    <div class="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center text-purple-700 text-xl shadow-sm">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-gray-900">Green Gen AI Customization</h3>
+                        <p class="text-sm text-gray-500">Tell us your design idea — colour, pattern, text, style and more.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                        <span class="text-sm font-medium text-gray-500">Online</span>
+                    </div>
+                </div>
+
+                <!-- Chat Messages -->
+                <div id="chat-messages" class="flex-1 p-6 overflow-y-auto flex flex-col gap-6">
+                    <!-- Bot Welcome -->
+                    <div class="flex gap-4 max-w-[85%]">
+                        <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 text-purple-700 mt-1">
+                            <i class="fa-solid fa-robot text-sm"></i>
+                        </div>
+                        <div class="bg-gray-50 rounded-2xl rounded-tl-sm p-4 text-gray-700 shadow-sm border border-gray-100">
+                            <p class="mb-3">Hi! 👋 I'm Green Gen AI, your customization assistant. Tell me how you'd like to customize your product.</p>
+                            <p class="font-semibold text-sm mb-2">For example:</p>
+                            <ul class="list-disc pl-5 space-y-1 text-sm text-gray-600">
+                                <li>"I want pink colour"</li>
+                                <li>"Make it dark blue with floral pattern"</li>
+                                <li>"Print my name on it"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="p-4 border-t border-gray-100 bg-white rounded-b-2xl">
+                    <form id="chat-form" class="relative flex items-center">
+                        <input type="text" id="chat-input" placeholder="Type your customization request..." class="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-full py-3 px-6 pr-14 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-400">
+                        <button type="submit" id="send-btn" class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-purple-600 hover:bg-purple-700 text-white rounded-full flex items-center justify-center transition-colors focus:outline-none">
+                            <i class="fa-solid fa-paper-plane text-sm"></i>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const chatMessages = document.getElementById('chat-messages');
+    const sendBtn = document.getElementById('send-btn');
+    
+    // Add user message to UI
+    function appendUserMessage(text) {
+        const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        const html = `
+            <div class="flex gap-4 max-w-[85%] self-end flex-row-reverse">
+                <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0 text-emerald-700 mt-1">
+                    <i class="fa-solid fa-user text-sm"></i>
+                </div>
+                <div class="flex flex-col items-end">
+                    <div class="bg-emerald-50 rounded-2xl rounded-tr-sm p-4 text-emerald-900 shadow-sm border border-emerald-100 inline-block">
+                        <p>${text}</p>
+                    </div>
+                    <span class="text-xs text-gray-400 mt-1">${time} <i class="fa-solid fa-check-double text-blue-400 ml-1"></i></span>
+                </div>
+            </div>
+        `;
+        chatMessages.insertAdjacentHTML('beforeend', html);
+        scrollToBottom();
+    }
+    
+    // Add bot loading bubble
+    function appendBotLoading() {
+        const id = 'loading-' + Date.now();
+        const html = `
+            <div id="${id}" class="flex gap-4 max-w-[95%]">
+                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 text-purple-700 mt-1 shadow-sm">
+                    <i class="fa-solid fa-robot text-sm"></i>
+                </div>
+                <div class="bg-gray-50 rounded-2xl rounded-tl-sm p-5 shadow-sm border border-gray-200 message-content w-full overflow-hidden">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></span>
+                        <span class="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+                        <span class="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></span>
+                    </div>
+                </div>
+            </div>
+        `;
+        chatMessages.insertAdjacentHTML('beforeend', html);
+        scrollToBottom();
+        return id;
+    }
+    
+    // Replace loading bubble with actual HTML response
+    function replaceBotMessage(id, htmlContent) {
+        const el = document.getElementById(id);
+        if (el) {
+            const contentDiv = el.querySelector('.message-content');
+            contentDiv.innerHTML = htmlContent;
+        }
+        scrollToBottom();
+    }
+    
+    function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    function resetChat() {
+        chatInput.value = '';
+        chatInput.focus();
+    }
+    
+    // Add custom product to cart
+    function addCustomToCart(productId, charge, promptText) {
+        fetch('/api/cart/add_custom', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                product_id: productId, 
+                color: promptText, // saving the whole prompt here for cart display
+                custom_charge: charge
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                // Update cart count icon in navbar
+                const countEls = document.querySelectorAll('.cart-count');
+                countEls.forEach(el => {
+                    el.textContent = data.cart_count;
+                    el.classList.remove('hidden');
+                });
+                
+                // Add success message in chat
+                const id = appendBotLoading();
+                setTimeout(() => {
+                    replaceBotMessage(id, `
+                        <p class="text-emerald-700 font-bold flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check"></i> Added to Cart!
+                        </p>
+                        <p class="mt-2 text-sm">Your customized product has been successfully added to your cart.</p>
+                        <a href="/cart" class="mt-3 inline-block bg-emerald-100 text-emerald-800 px-4 py-2 rounded-lg font-bold text-sm">View Cart & Checkout</a>
+                    `);
+                }, 500);
+            }
+        });
+    }
+    
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const text = chatInput.value.trim();
+        if (!text) return;
+        
+        chatInput.value = '';
+        chatInput.disabled = true;
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i>';
+        
+        appendUserMessage(text);
+        const loadingId = appendBotLoading();
+        
+        try {
+            const response = await fetch('/api/customize_chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text, product_id: '{{ product.id }}' })
+            });
+            const data = await response.json();
+            
+            // Artificial delay to make it feel like AI is "thinking"
+            setTimeout(() => {
+                replaceBotMessage(loadingId, data.html);
+                chatInput.disabled = false;
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane text-sm"></i>';
+                chatInput.focus();
+            }, 800);
+            
+        } catch (error) {
+            replaceBotMessage(loadingId, "<p class='text-red-500'>Sorry, I encountered an error. Please try again.</p>");
+            chatInput.disabled = false;
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane text-sm"></i>';
+        }
+    });
+</script>
+{% endblock %}

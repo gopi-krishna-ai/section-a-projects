@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriVision — Automated Weed Detection</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<header class="hero">
+  <nav class="nav"><div class="brand"><span class="logo">🌿</span><div><strong>AgriVision</strong><small>Smart Crop & Weed Detection</small></div></div><span class="model-pill">YOLOv8 • Computer Vision</span></nav>
+  <div class="hero-grid">
+    <div><p class="eyebrow">PRECISION AGRICULTURE</p><h1>Detect weeds before they become a problem.</h1><p class="hero-copy">Upload a crop-field image and the trained YOLO model identifies crop and weed regions, highlights them with bounding boxes, and reports confidence scores.</p>
+      <div class="hero-points"><span>✓ Fast image analysis</span><span>✓ Local/offline inference</span><span>✓ Crop vs weed localization</span></div></div>
+    <div class="how-card"><h3>How this helps farmers</h3><p>Targeted weed detection can support selective spraying, reduce unnecessary chemical use, and help identify field areas that need attention.</p><div class="steps"><div><b>1</b><span>Capture field image</span></div><div><b>2</b><span>Run YOLO detection</span></div><div><b>3</b><span>Review weed locations</span></div></div></div>
+  </div>
+</header>
+<main class="container">
+<section class="panel upload-panel"><div class="section-heading"><div><p class="eyebrow dark">ANALYSIS</p><h2>Analyze a field image</h2><p>JPG or PNG up to 16 MB. Clear, well-lit field photos usually give more reliable detections.</p></div><span class="status">● Model ready</span></div>
+<form id="upload-form"><div class="dropzone" id="dropzone"><div class="drop-icon">↥</div><h3>Drag & drop your image here</h3><p>or choose an image from your computer</p><input type="file" id="image" name="image" accept="image/jpeg,image/png" required><label class="browse-btn" for="image">Choose field image</label><p id="file-name" class="file-name">No image selected</p></div><div id="preview-wrap" class="preview-wrap" hidden><img id="preview" alt="Selected field preview"><div><b>Ready for analysis</b><p id="preview-meta"></p></div></div><button type="submit" class="submit-btn"><span>Detect weeds</span><span>→</span></button></form><p id="form-error" class="form-error"></p><div id="loading" class="loading" hidden><span class="spinner"></span><div><b>Analyzing image…</b><small>YOLO is locating crop and weed objects.</small></div></div></section>
+<section class="results-grid" id="results-panel" hidden><div class="panel result-visual"><div class="section-heading"><div><p class="eyebrow dark">RESULT</p><h2>Detection overview</h2></div><button id="new-analysis" class="ghost-btn">New image</button></div><img id="result-image" class="result-image" alt="Annotated detection result"></div>
+<div class="panel result-data"><div class="metric-grid"><div class="metric"><small>Detected objects</small><strong id="total-count">0</strong></div><div class="metric weed-metric"><small>Weeds</small><strong id="count-weed">0</strong></div><div class="metric crop-metric"><small>Crops</small><strong id="count-crop">0</strong></div></div><div class="insight" id="insight"></div><h3>Detection details</h3><div class="table-wrap"><table class="detections-table"><thead><tr><th>#</th><th>Class</th><th>Confidence</th></tr></thead><tbody id="detections-body"></tbody></table></div></div></section>
+<section class="info-grid"><div class="panel"><p class="eyebrow dark">PROJECT</p><h2>What is this system?</h2><p>This academic prototype applies YOLO object detection to agricultural images. Instead of only classifying an image, it locates individual crop and weed objects with bounding boxes and confidence scores.</p></div><div class="panel"><p class="eyebrow dark">USE CASES</p><h2>Where can it be used?</h2><p>Field scouting, crop monitoring, early weed identification, selective spraying support, and classroom demonstrations of AI-based precision agriculture.</p></div><div class="panel"><p class="eyebrow dark">MODEL</p><h2>What is measured?</h2><p>Each prediction includes the detected class, confidence score, and bounding-box coordinates. The dashboard summarizes crop and weed counts for the uploaded image.</p></div></section>
+</main><footer>AgriVision • Automated Weed Detection System Using YOLO • Academic Prototype</footer>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body></html>

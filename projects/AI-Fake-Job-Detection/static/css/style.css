@@ -1,0 +1,192 @@
+:root {
+    --primary: #4c4cff;
+    --primary2: #6a5cff;
+    --ink: #172033;
+    --muted: #697386;
+    --line: #e5e9f0;
+    --shadow: 0 14px 45px rgba(0,0,0,0.1);
+    --positive: #1b9c6c;
+    --negative: #d9485f;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--ink);
+    /* High-quality books/library background */
+    background: linear-gradient(rgba(18, 23, 42, 0.7), rgba(18, 23, 42, 0.8)), 
+                url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover fixed;
+    min-height: 100vh;
+}
+
+/* Navbar / Topbar */
+.topbar {
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(18, 23, 42, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+.brand-wrap {
+    display: flex;
+    gap: 13px;
+    align-items: center;
+}
+.brand-mark {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #7066ff, #4c4cff);
+    font-weight: 800;
+    font-size: 20px;
+}
+.topbar h1 {
+    margin: 0;
+    font-size: 22px;
+}
+
+/* Tabs */
+.tab-buttons {
+    display: flex;
+    gap: 15px;
+}
+.tab-btn {
+    border: 0;
+    background: transparent;
+    padding: 10px 18px;
+    border-radius: 12px;
+    color: #cbd0dd;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.tab-btn:hover {
+    color: #fff;
+}
+.tab-btn.active {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
+
+/* Main Container */
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+.panel {
+    /* Glassmorphism Panel */
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 22px;
+    padding: 40px;
+    box-shadow: var(--shadow);
+    display: none; /* Hidden by default for tabs */
+    animation: fadeIn 0.4s ease;
+}
+.panel.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Forms & Inputs */
+textarea, input[type="text"], input[type="file"] {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    font: inherit;
+    margin-bottom: 15px;
+}
+textarea:focus, input:focus {
+    outline: none;
+    border-color: #b7b8ff;
+    box-shadow: 0 0 0 4px #eef0ff;
+}
+
+/* Buttons */
+.primary-btn {
+    border: 0;
+    border-radius: 12px;
+    padding: 14px 24px;
+    font-weight: 800;
+    font-size: 16px;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--primary), var(--primary2));
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(76,76,255,0.2);
+    width: 100%;
+    transition: 0.3s;
+}
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(76,76,255,0.3);
+}
+
+/* Custom UI Elements */
+.confidence-box {
+    text-align: center;
+    margin: 20px 0;
+}
+.confidence-score {
+    font-size: 64px;
+    font-weight: 900;
+}
+.score-positive { color: var(--positive); }
+.score-negative { color: var(--negative); }
+
+.key-boxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+.key-box {
+    background: #fff3f5;
+    border: 1px solid #efb4bd;
+    color: var(--negative);
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.skill-chip {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: #eef0ff;
+    color: var(--primary);
+    font-weight: 700;
+    margin: 5px;
+}
+.skill-chip.missing {
+    background: #fff3f5;
+    color: var(--negative);
+}
+.skill-chip.found {
+    background: #effaf5;
+    color: var(--positive);
+}
+
+#map {
+    height: 400px;
+    width: 100%;
+    border-radius: 12px;
+    margin-top: 20px;
+    border: 1px solid var(--line);
+}

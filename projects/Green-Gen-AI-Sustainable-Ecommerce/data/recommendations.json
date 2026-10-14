@@ -1,0 +1,138 @@
+{
+    "1": [
+        {
+            "product_id": "PROD_0092",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0027",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0100",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0067",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0050",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0008",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0004",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0109",
+            "reason": "Popular sustainable choice for new users."
+        }
+    ],
+    "2": [
+        {
+            "product_id": "PROD_0092",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0027",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0100",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0067",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0050",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0008",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0004",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0109",
+            "reason": "Popular sustainable choice for new users."
+        }
+    ],
+    "3": [
+        {
+            "product_id": "PROD_0092",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0027",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0100",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0067",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0050",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0008",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0004",
+            "reason": "Popular sustainable choice for new users."
+        },
+        {
+            "product_id": "PROD_0109",
+            "reason": "Popular sustainable choice for new users."
+        }
+    ],
+    "4": [
+        {
+            "product_id": "PROD_0008",
+            "reason": "Greener alternative to your typical choices! You normally choose products with ~91 Eco Score, this is 97."
+        },
+        {
+            "product_id": "PROD_0004",
+            "reason": "Greener alternative to your typical choices! You normally choose products with ~91 Eco Score, this is 97."
+        },
+        {
+            "product_id": "PROD_0013",
+            "reason": "Because you frequently view products in the Computers category."
+        },
+        {
+            "product_id": "PROD_0018",
+            "reason": "Because you frequently view products in the Computers category."
+        },
+        {
+            "product_id": "PROD_0007",
+            "reason": "Because you frequently view products in the Computers category."
+        },
+        {
+            "product_id": "PROD_0020",
+            "reason": "Because you frequently view products in the Computers category."
+        },
+        {
+            "product_id": "PROD_0016",
+            "reason": "Because you frequently view products in the Computers category."
+        },
+        {
+            "product_id": "PROD_0012",
+            "reason": "Because you frequently view products in the Computers category."
+        }
+    ]
+}

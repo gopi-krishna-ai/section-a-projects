@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-gray-50 flex-grow">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-8">Your Green Cart</h1>
+        
+        {% if cart_items %}
+        <div class="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
+            <div class="lg:col-span-8">
+                <div class="bg-white shadow rounded-lg overflow-hidden border border-gray-200">
+                    <ul role="list" class="divide-y divide-gray-200">
+                        {% for item in cart_items %}
+                        <li class="flex py-6 px-4 sm:px-6">
+                            <div class="flex-shrink-0">
+                                <img src="{{ item.img }}" alt="{{ item.product.name }}" class="w-24 h-24 rounded-md object-center object-cover sm:w-32 sm:h-32 border border-gray-100">
+                            </div>
+
+                            <div class="ml-4 flex-1 flex flex-col sm:ml-6">
+                                <div>
+                                    <div class="flex justify-between">
+                                        <h4 class="text-sm">
+                                            <a href="{{ url_for('product_details', product_id=item.product.id) }}" class="font-medium text-gray-700 hover:text-gray-800">{{ item.product.name }}</a>
+                                        </h4>
+                                        <p class="ml-4 text-sm font-medium text-gray-900">₹{{ item.final_price | round | int }}</p>
+                                    </div>
+                                    <p class="mt-1 text-sm text-gray-500">{{ item.product.category }}</p>
+                                    {% if item.is_custom %}
+                                    <div class="mt-2 text-xs text-indigo-600 space-y-1">
+                                        <p><span class="font-medium">Custom Color:</span> {{ item.custom_data.color }}</p>
+                                        <p><span class="font-medium">Custom Size:</span> {{ item.custom_data.size }}</p>
+                                        <p><span class="font-medium">Custom Weight:</span> {{ item.custom_data.weight }}</p>
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">
+                                            Custom Design
+                                        </span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="mt-4 flex-1 flex items-end justify-between">
+                                    <p class="flex items-center text-sm text-gray-700 space-x-2">
+                                        <span>Qty {{ item.quantity }}</span>
+                                    </p>
+                                    <div class="flex items-center gap-2 bg-green-50 px-2 py-1 rounded text-xs font-medium border border-green-100">
+                                        <i class="fa-solid fa-leaf text-green-600"></i>
+                                        <span class="text-green-800">Eco Score: {{ item.product.eco_score | round | int }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Order summary -->
+            <div class="mt-16 bg-white rounded-lg px-4 py-6 sm:p-6 lg:p-8 lg:mt-0 lg:col-span-4 border border-gray-200 shadow-sm">
+                <h2 class="text-lg font-medium text-gray-900">Order Summary</h2>
+
+                <dl class="mt-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <dt class="text-sm text-gray-600">Subtotal</dt>
+                        <dd class="text-sm font-medium text-gray-900">₹{{ total_price | round(2) }}</dd>
+                    </div>
+                    
+                    <div class="border-t border-gray-200 pt-4 flex items-center justify-between">
+                        <dt class="flex text-sm text-gray-600">
+                            <span>Cart Sustainability</span>
+                        </dt>
+                        <dd class="text-sm font-medium text-green-700 bg-green-50 px-2 py-1 rounded border border-green-200 flex items-center gap-1">
+                            Avg Score: {{ avg_eco | round | int }}/100
+                        </dd>
+                    </div>
+                    
+                    <div class="border-t border-gray-200 pt-4 flex items-center justify-between">
+                        <dt class="text-base font-medium text-gray-900">Order Total</dt>
+                        <dd class="text-base font-medium text-gray-900">₹{{ total_price | round(2) }}</dd>
+                    </div>
+                </dl>
+
+                <div class="mt-6">
+                    <form action="{{ url_for('checkout') }}" method="POST">
+                        <button type="submit" class="w-full bg-green-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            Checkout
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="mt-4 text-center text-xs text-gray-500">
+                    <p>Completing this order will earn you {{ avg_eco | round | int }} Green Points!</p>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center py-24 bg-white rounded-lg border border-gray-200">
+            <i class="fa-solid fa-cart-arrow-down text-6xl text-gray-300 mb-4"></i>
+            <h2 class="text-xl font-medium text-gray-900">Your cart is empty</h2>
+            <p class="mt-2 text-gray-500">Looks like you haven't added any sustainable products yet.</p>
+            <a href="{{ url_for('product_catalog') }}" class="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+                Continue Shopping
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

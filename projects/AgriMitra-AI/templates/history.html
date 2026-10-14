@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}AgriMitra AI | History{% endblock %}
+
+{% block content %}
+
+<div class="page-title" id="pageTitle">Prediction History</div>
+<p class="page-subtitle" id="pageSubtitle">
+    Your past crop and fertilizer recommendations.
+</p>
+
+<div class="table-wrap">
+    <div id="loadingText" class="loading-skeleton" role="status" aria-label="Loading history">
+        <div class="skeleton skeleton-row w60"></div>
+        <div class="skeleton skeleton-row w40"></div>
+        <div class="skeleton skeleton-row w60"></div>
+        <div class="skeleton skeleton-row w40"></div>
+    </div>
+
+    <div class="empty-state hidden" id="emptyState">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        <p id="emptyText"></p>
+        <br>
+        <a href="{{ url_for('crop_page') }}" class="primary-btn" style="text-decoration:none;margin-top:10px;" id="emptyCta">Go to Crop Recommendation</a>
+    </div>
+
+    <table class="hidden" id="historyTable">
+        <thead>
+            <tr>
+                <th id="thTime">Date & Time</th>
+                <th id="thCrop">Crop</th>
+                <th id="thFert">Fertilizer</th>
+                <th id="thLang">Language</th>
+            </tr>
+        </thead>
+        <tbody id="historyBody"></tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/history.js') }}"></script>
+{% endblock %}

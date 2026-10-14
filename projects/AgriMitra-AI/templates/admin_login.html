@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriMitra Admin Gateway</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #f8fafc;
+        }
+        .admin-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+        .admin-icon {
+            font-size: 48px;
+            color: #38bdf8;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+        p {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .input-group input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: #0284c7;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        .btn-submit:hover {
+            background: #0369a1;
+        }
+        .error-msg {
+            color: #ef4444;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .footer-link {
+            display: block;
+            margin-top: 25px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.2s;
+        }
+        .footer-link:hover {
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-card">
+        <i class="fa-solid fa-shield-halved admin-icon"></i>
+        <h1>Admin Gateway</h1>
+        <p>Restricted Access Area</p>
+
+        <div id="errorBox" class="error-msg">Invalid credentials.</div>
+
+        <form id="adminLoginForm">
+            <div class="input-group">
+                <label>Admin ID</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-user-lock"></i>
+                    <input type="text" id="userid" name="userid" placeholder="Enter admin ID" required>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Passcode</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-key"></i>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-submit">Authenticate</button>
+        </form>
+        
+        <a href="/" class="footer-link"><i class="fa-solid fa-arrow-left"></i> Return to Main Portal</a>
+    </div>
+
+    <script>
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errBox = document.getElementById('errorBox');
+            errBox.style.display = 'none';
+
+            const userid = document.getElementById('userid').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const res = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userid, password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    window.location.href = '/admin';
+                } else {
+                    errBox.textContent = data.message;
+                    errBox.style.display = 'block';
+                }
+            } catch(e) {
+                errBox.textContent = 'Server connection failed.';
+                errBox.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

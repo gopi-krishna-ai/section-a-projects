@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Full Screen Hero -->
+<div class="relative bg-cover bg-center min-h-screen flex items-center justify-center" style="background-image: url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&q=80&w=2000');">
+    <div class="absolute inset-0 bg-black opacity-60"></div>
+    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+        <h1 class="text-5xl md:text-7xl font-extrabold text-white mb-6 drop-shadow-md tracking-tight">
+            Welcome to <span class="text-green-400">Green Gen AI</span>
+        </h1>
+        <p class="mt-4 text-xl md:text-2xl text-gray-200 mb-10 font-light">
+            An AI-Powered Sustainable E-Commerce Platform promoting eco-friendly shopping, recycling incentives, and personalized product experiences.
+        </p>
+        <div class="flex justify-center space-x-4">
+            <a href="{{ url_for('login_page') }}" class="px-10 py-4 border border-transparent text-lg font-semibold rounded-full text-white bg-green-600 hover:bg-green-700 shadow-lg transition-transform transform hover:-translate-y-1">
+                Get Started
+            </a>
+            <a href="#how-it-works" class="px-10 py-4 border border-white text-lg font-semibold rounded-full text-white hover:bg-white hover:text-green-900 shadow-lg transition-colors">
+                Learn More
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Project Details Section -->
+<div id="how-it-works" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center mb-16">
+            <h2 class="text-base text-green-600 font-bold tracking-wide uppercase">The Problem & The Solution</h2>
+            <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                Why Green Gen AI?
+            </p>
+            <p class="mt-4 max-w-3xl text-lg text-gray-500 mx-auto">
+                The growing demand for sustainable shopping has highlighted the limitations of conventional e-commerce platforms, which rarely provide clear environmental information or recycling incentives. We assign an <strong>Eco Score</strong> to every product, enabling you to identify environmentally responsible options easily.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-20">
+            <div>
+                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800" alt="Tech and Sustainability" class="rounded-xl shadow-2xl object-cover h-96 w-full">
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">How Our Recommendation Engine Works</h3>
+                <ol class="list-decimal pl-5 text-lg text-gray-600 space-y-4">
+                    <li>We log user interactions like viewing products, adding to the cart, and purchasing.</li>
+                    <li>Our Machine Learning model pulls product data (category, material, process) and computes a <strong>TF-IDF matrix</strong>.</li>
+                    <li>We calculate the <strong>Cosine Similarity</strong> between all products in the catalog.</li>
+                    <li>The system identifies your favorite categories and average preferred Eco Score.</li>
+                    <li>It ranks similar products and generates a personalized list of greener recommendations, explaining exactly <em>why</em> they were chosen.</li>
+                </ol>
+            </div>
+        </div>
+        
+        <!-- Features Grid -->
+        <div class="mt-20">
+            <h3 class="text-3xl font-extrabold text-center text-gray-900 mb-12">Core Features</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-gray-50 p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
+                    <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-leaf text-2xl text-green-600"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Transparent Eco Score</h4>
+                    <p class="text-gray-600">Every product is evaluated on a 0-100 scale using metrics like material sustainability, recyclability, carbon footprint, and packaging type.</p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="bg-gray-50 p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
+                    <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-brain text-2xl text-green-600"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Explainable AI</h4>
+                    <p class="text-gray-600">The AI doesn't just list products; it explains why a product is recommended (e.g., "Greener alternative to your typical choices").</p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="bg-gray-50 p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
+                    <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-recycle text-2xl text-green-600"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Recycle & Earn</h4>
+                    <p class="text-gray-600">Submit requests to return used products. Once verified, earn "Green Points" to encourage a circular economy.</p>
+                </div>
+                
+                <!-- Feature 4 -->
+                <div class="bg-gray-50 p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
+                    <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-cube text-2xl text-green-600"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">3D Customization</h4>
+                    <p class="text-gray-600">Real-time 3D product visualization, allowing you to modify colors and materials directly in the browser before purchasing.</p>
+                </div>
+                
+                <!-- Feature 5 -->
+                <div class="bg-gray-50 p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
+                    <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-chart-pie text-2xl text-green-600"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Sustainability Dashboard</h4>
+                    <p class="text-gray-600">Track your environmental impact, average order Eco Score, and recycling contributions over time directly from your profile.</p>
+                </div>
+                
+                <!-- Feature 6 -->
+                <div class="bg-gray-50 p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
+                    <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-server text-2xl text-green-600"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-3">Offline & Self-Contained</h4>
+                    <p class="text-gray-600">Powered by local ML models and a predefined dataset of 1,500 products, ensuring complete privacy and speed.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

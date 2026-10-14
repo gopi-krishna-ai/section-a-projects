@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GuardPath AI - History</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+<body>
+
+<header class="topbar">
+    <div class="brand">
+        <img src="{{ url_for('static', filename='images/logo.jpg') }}" class="brand-icon" alt="GuardPath Logo">
+        <div>
+            <h1>GuardPath</h1>
+            <p class="tagline">AI-Powered Personal Safety &amp; Smart Route Planner</p>
+        </div>
+    </div>
+    <div style="color:white; margin-right:20px;">
+        Logged in as: <strong>{{ name }} ({{ role }})</strong>
+    </div>
+</header>
+
+<main class="container">
+    <div class="nav-links">
+        {% if role == 'admin' %}
+            <a href="{{ url_for('admin_dashboard') }}">&larr; Back to Admin Dashboard</a>
+        {% else %}
+            <a href="{{ url_for('map_view') }}">&larr; Back to Map</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}" style="color: #e74c3c;">Logout</a>
+    </div>
+
+    {% for u, rides in history_data.items() %}
+    <section class="panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+            <h2 style="margin: 0;">Ride History: {{ u }}</h2>
+            <span style="background: rgba(94, 53, 177, 0.1); color: var(--accent); padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 13px;">
+                Total Trips: {{ rides|length }}
+            </span>
+        </div>
+        
+        {% if rides and rides|length > 0 %}
+        <div style="overflow-x: auto;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date & Time</th>
+                    <th>Source</th>
+                    <th>Destination</th>
+                    <th>Mode</th>
+                    <th>Time</th>
+                    <th>Suggestion Used</th>
+                    <th>Safety Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ride in rides %}
+                <tr>
+                    <td style="font-weight: 600; white-space: nowrap;">📅 {{ ride.date }}</td>
+                    <td><strong>{{ ride.source }}</strong></td>
+                    <td><strong>{{ ride.destination }}</strong></td>
+                    <td style="text-transform: capitalize;">
+                        {% if ride.mode == 'walking' %}🚶 Walking{% else %}🚗 Driving{% endif %}
+                    </td>
+                    <td style="text-transform: capitalize;">
+                        {% if ride.time == 'night' %}🌙 Night{% else %}☀️ Day{% endif %}
+                    </td>
+                    <td>
+                        <span class="badge {% if 'Safe' in ride.suggestion_used %}safe{% else %}short{% endif %}">
+                            {{ ride.suggestion_used }}
+                        </span>
+                    </td>
+                    <td>
+                        <strong style="color: {% if ride.safety_score >= 70 %}var(--safe){% elif ride.safety_score >= 50 %}var(--moderate){% else %}var(--unsafe){% endif %}; font-size: 15px;">
+                            {{ ride.safety_score }}/100
+                        </strong>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 50px 20px; color: var(--muted);">
+            <div style="font-size: 40px; margin-bottom: 12px;">🚗</div>
+            <p style="font-size: 16px; font-weight: 600; color: var(--primary); margin-bottom: 8px;">No ride history recorded yet for this account.</p>
+            <p style="font-size: 14px; margin-bottom: 20px;">Use the GuardPath route planner to find safe routes and record your first trip!</p>
+            <a href="{{ url_for('map_view') }}" class="primary-btn" style="display: inline-block; text-decoration: none; padding: 12px 24px; border-radius: 10px;">Go to Live Map</a>
+        </div>
+        {% endif %}
+    </section>
+    {% endfor %}
+</main>
+
+</body>
+</html>

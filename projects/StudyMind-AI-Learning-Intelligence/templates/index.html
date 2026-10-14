@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyMind — AI Learning Workspace</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand-block">
+    <div class="brand-mark">✦</div>
+    <div>
+      <h1>StudyMind</h1>
+      <p>AI learning workspace for notes, PDFs, search, and open-ended questions</p>
+    </div>
+  </div>
+  <div class="status-row">
+    <span class="status-pill {{ 'ok' if ocr_available else 'muted' }}">OCR {{ 'ready' if ocr_available else 'unavailable' }}</span>
+    <span class="status-pill" id="llm-status">Local AI checking…</span>
+    <a href="/logout" class="status-pill" style="text-decoration:none; color:inherit; cursor:pointer;" title="Logout">
+      Logout 🚪
+    </a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">YOUR PERSONAL STUDY COPILOT</span>
+    <h2>Turn scattered study material into an interactive learning workspace.</h2>
+    <p>Upload your notes or PDFs, ask questions grounded in your documents, or switch to Local AI for general questions, explanations, examples, and problem solving.</p>
+    <div class="hero-points">
+      <span>✓ Document understanding</span><span>✓ Semantic search</span><span>✓ Open-ended AI</span><span>✓ Offline local LLM option</span>
+    </div>
+  </div>
+  <div class="hero-flow">
+    <div class="flow-step"><b>01</b><span>Upload</span><small>PDF, image, notes</small></div>
+    <div class="flow-line"></div>
+    <div class="flow-step"><b>02</b><span>Understand</span><small>OCR + embeddings</small></div>
+    <div class="flow-line"></div>
+    <div class="flow-step"><b>03</b><span>Ask</span><small>Docs + Local AI</small></div>
+  </div>
+</section>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="library">Library</button>
+  <button class="tab-btn" data-tab="study">Study Pack</button>
+  <button class="tab-btn" data-tab="ask">Ask AI</button>
+  <button class="tab-btn" data-tab="practice">Practice</button>
+  <button class="tab-btn" data-tab="accuracy">Accuracy</button>
+</nav>
+
+<main class="container">
+<section class="tab-panel active" id="tab-library">
+  <div class="stats-grid">
+    <div class="stat-card"><span>Documents</span><strong id="stat-docs">0</strong><small>in your workspace</small></div>
+    <div class="stat-card"><span>OCR</span><strong>{{ 'Ready' if ocr_available else 'Off' }}</strong><small>for scanned pages</small></div>
+    <div class="stat-card"><span>Semantic search</span><strong>ON</strong><small>meaning-based retrieval</small></div>
+    <div class="stat-card"><span>Local AI</span><strong id="stat-llm">Checking</strong><small>general Q&amp;A with Ollama</small></div>
+  </div>
+  <div class="panel upload-panel">
+    <div class="section-heading"><div><span class="eyebrow">START HERE</span><h3>Build your study library</h3><p>Upload a document once; summaries, concepts, search, flashcards, and grounded answers are generated from it.</p></div></div>
+    <div class="upload-zone" id="upload-zone">
+      <input type="file" id="file-input" accept=".pdf,.png,.jpg,.jpeg,.bmp,.tif,.tiff,.txt,.md" hidden>
+      <div class="upload-orb">↑</div><b>Drop a document here or click to browse</b><small>PDF, PNG, JPG, TXT or MD · up to 25 MB</small>
+    </div>
+    <p id="upload-status" class="status"></p><p id="upload-error" class="error"></p>
+  </div>
+  <div class="panel"><div class="section-heading"><div><h3>Your documents</h3><p>Choose a document in Study Pack or Ask AI to work with its contents.</p></div></div><div id="doc-list" class="doc-list"></div></div>
+</section>
+
+<section class="tab-panel" id="tab-study">
+  <div class="panel control-panel"><div class="field grow"><label class="fld-label">Document</label><select id="study-doc"></select></div><button class="btn" id="study-btn">Generate study pack</button></div>
+  <p id="study-error" class="error"></p>
+  <div id="study-output" hidden>
+    <div class="two-col">
+      <div class="panel"><div class="panel-head"><h3>AI Summary</h3><span class="tag">T5</span></div><p class="note">A generated overview of the selected material.</p><div id="summary-abstractive" class="summary-box"></div></div>
+      <div class="panel"><div class="panel-head"><h3>Key Sentences</h3><span class="tag">extractive</span></div><p class="note">Most central sentences selected from the document.</p><ul id="summary-extractive" class="bullet-list"></ul></div>
+    </div>
+    <div class="panel"><div class="panel-head"><h3>Key Concepts</h3><span class="tag">interactive</span></div><p class="note">Click a concept for a simplified document-grounded explanation.</p><div id="concept-chips" class="concept-chips"></div><div id="explain-box" class="explain-box" hidden></div></div>
+    <div class="two-col"><div class="panel"><h3>Topic Organisation</h3><div id="topic-list"></div></div><div class="panel"><h3>Likely Exam Topics</h3><div id="exam-list"></div></div></div>
+    <div class="panel"><h3>Suggested Revision Plan</h3><div id="plan-list" class="plan-list"></div></div>
+  </div>
+</section>
+
+<section class="tab-panel" id="tab-ask">
+  <div class="panel ask-panel">
+    <div class="section-heading"><div><span class="eyebrow">INTELLIGENT Q&amp;A</span><h3>Ask anything</h3><p>Use your library as evidence, or switch off document grounding to ask the local LLM general questions.</p></div></div>
+    <div class="mode-row">
+      <label class="toggle"><input type="checkbox" id="use-docs" checked><span></span> Use uploaded documents when relevant</label>
+      <span class="ai-badge" id="ask-mode-badge">Docs + Local AI</span>
+    </div>
+    <div class="field-row"><div class="field grow"><label class="fld-label">Document scope</label><select id="ask-doc"><option value="">All documents</option></select></div></div>
+    <div class="quick-prompts" id="quick-prompts">
+      <button data-q="Explain this topic in simple terms">Explain simply</button><button data-q="Give me a real-world example">Give an example</button><button data-q="What are the most important points for an exam?">Exam points</button><button data-q="What is the difference between the main concepts?">Compare concepts</button>
+    </div>
+    <div class="chat-input-row"><textarea id="ask-input" rows="3" placeholder="Ask a question… e.g. Explain supervised learning like I am a beginner."></textarea><button class="btn ask-submit" id="ask-btn">Ask AI ↗</button></div>
+    <p id="ask-error" class="error"></p><div id="answer-box" hidden></div>
+  </div>
+  <div class="panel"><div class="panel-head"><div><h3>Semantic Search</h3><p class="note">Find the most relevant passages without requiring exact keywords.</p></div><span class="tag">MiniLM</span></div><div class="field-row"><input type="text" id="search-input" class="grow" placeholder="Search your library by meaning…"><button class="btn secondary" id="search-btn">Search</button></div><div id="search-results" class="search-results"></div></div>
+</section>
+
+<section class="tab-panel" id="tab-practice">
+  <div class="panel control-panel"><div class="field grow"><label class="fld-label">Document</label><select id="practice-doc"></select></div><button class="btn" id="practice-btn">Build practice set</button></div>
+  <div class="two-col" id="practice-output" hidden><div class="panel"><h3>Flashcards</h3><p class="note">Click a card to reveal the answer.</p><div id="flashcards" class="flashcards"></div></div><div class="panel"><h3>Practice Quiz</h3><div id="quiz" class="quiz"></div><div id="quiz-score" class="quiz-score" hidden></div></div></div>
+</section>
+
+<section class="tab-panel" id="tab-accuracy">
+  <div class="panel"><div class="section-heading"><div><span class="eyebrow">TRANSPARENT EVALUATION</span><h3>Measured Question-Answering Accuracy</h3><p>Benchmark figures are shown only when the supplied benchmark has been run.</p></div></div><div id="benchmark-box"></div></div>
+</section>
+</main>
+
+<div id="loading" class="loading" hidden><span class="spinner"></span> Working…</div>
+<div id="toast" class="toast" hidden></div>
+<footer class="footer">StudyMind · MiniLM semantic retrieval · DistilBERT extractive QA · T5 summarisation · Optional Ollama Local AI</footer>
+<script>const BENCHMARK = {{ benchmark | tojson }};</script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body></html>

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}AgriMitra AI | AI Assistant{% endblock %}
+
+{% block content %}
+{% if current_user and current_user.userid == 'admin@agrimitra' %}
+
+<div style="padding: 30px;">
+    <h2><i class="fa-solid fa-robot"></i> LLM Assistant Health</h2>
+    <div style="margin-top: 10px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <p><i class="fa-solid fa-check-circle" style="color: #166534;"></i> LLM Backend Connected.</p>
+        <p>Usage: 145/500 API calls remaining this month.</p>
+    </div>
+</div>
+
+{% else %}
+
+
+<div class="page-title" id="pageTitle">AI Assistant</div>
+<p class="page-subtitle" id="pageSubtitle">
+    Ask farming questions in your language. Text or voice both work.
+</p>
+
+<div class="chat-card">
+    <div class="chat-box" id="chatBox"></div>
+
+    <div class="chat-examples">
+        <button type="button" class="chat-example" data-example="Which crop is good for my soil?"><span aria-hidden="true">🌾</span> <span class="chat-example-text">Which crop is good for my soil?</span></button>
+        <button type="button" class="chat-example" data-example="When should I irrigate?"><span aria-hidden="true">💧</span> <span class="chat-example-text">When should I irrigate?</span></button>
+        <button type="button" class="chat-example" data-example="How to control pests?"><span aria-hidden="true">🐛</span> <span class="chat-example-text">How to control pests?</span></button>
+    </div>
+
+    <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="Type your farming question..." autocomplete="off">
+        <button type="button" class="chat-btn mic" id="micBtn" title="Voice input" aria-label="Voice input">
+            <i class="fa-solid fa-microphone"></i>
+        </button>
+        <button type="button" class="chat-btn" id="speakBtn" title="Speak answer" aria-label="Speak answer">
+            <i class="fa-solid fa-volume-high"></i>
+        </button>
+        <button type="button" class="chat-btn" id="sendBtn" aria-label="Send message">
+            <i class="fa-solid fa-paper-plane"></i>
+        </button>
+        <button type="button" class="chat-btn" id="clearBtn" title="Clear chat" aria-label="Clear chat">
+            <i class="fa-solid fa-broom"></i>
+        </button>
+    </div>
+</div>
+
+<div class="info-box">
+    <i class="fa-solid fa-circle-info"></i>
+    <span id="assistantNote">
+        The assistant answers from a curated knowledge base of general farming guidance.
+        It is not a replacement for a local agriculture officer.
+    </span>
+</div>
+
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/assistant.js') }}"></script>
+{% endblock %}

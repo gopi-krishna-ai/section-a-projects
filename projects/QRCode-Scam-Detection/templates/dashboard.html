@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Security Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+<body>
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="brand-wrap">
+            <div class="brand-mark">QR</div>
+            <div>
+                <h1 style="color: var(--primary);">Threat Dashboard</h1>
+                <p>AI ML SCAM DETECTION</p>
+            </div>
+        </div>
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="switchTab('tab-scan')">Scanner</button>
+            <button class="tab-btn" onclick="switchTab('tab-report')" id="btn-report" disabled>AI Report</button>
+            <button class="tab-btn" onclick="switchTab('tab-history')">Scan History</button>
+            <button class="tab-btn" onclick="switchTab('tab-map')">Local Threat Map</button>
+            <button class="tab-btn" onclick="switchTab('tab-feedback')">Feedback</button>
+            <button class="tab-btn" onclick="switchTab('tab-settings')">Settings</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- TAB 1: SCANNER -->
+        <div id="tab-scan" class="panel active">
+            <h2>TARGET ACQUISITION</h2>
+            <p style="color: var(--muted); font-family: monospace;">Use LIVE CAMERA, Upload a suspicious QR Code, or paste the extracted URL for immediate AI analysis.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <!-- LIVE SCANNER -->
+                <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--primary); padding: 20px; border-radius: 8px;">
+                    <h3 style="color: var(--primary); font-family: monospace; margin-top: 0;">> LIVE CAMERA FEED</h3>
+                    <div id="qr-reader" style="width: 100%; min-height: 250px; background: #000; margin-bottom: 15px; color: #fff;"></div>
+                </div>
+                
+                <!-- MANUAL FALLBACK -->
+                <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--line); padding: 20px; border-radius: 8px;">
+                    <form id="scanForm">
+                        <h3 style="color: var(--primary); font-family: monospace; margin-top: 0;">> MANUAL OVERRIDE</h3>
+                        <label style="font-family: monospace; color: var(--primary); display: block; margin-bottom: 5px;">> UPLOAD QR IMAGE</label>
+                        <input type="file" id="qr_image" accept=".png,.jpg,.jpeg">
+                        
+                        <div style="text-align: center; margin: 15px 0; font-family: monospace; color: var(--muted);">-- OR --</div>
+                        
+                        <label style="font-family: monospace; color: var(--primary); display: block; margin-bottom: 5px;">> PASTE DECODED URL</label>
+                        <input type="text" id="url_text" placeholder="https://...">
+                        
+                        <button type="button" class="primary-btn" onclick="scanQR()" style="margin-top:20px;">EXECUTE ANALYSIS</button>
+                    </form>
+                </div>
+            </div>
+            <div id="loadingMsg" style="display: none; text-align: center; margin-top: 20px; font-family: monospace; color: var(--primary);">[ DECODING AND RUNNING MACHINE LEARNING MODELS... ]</div>
+        </div>
+
+        <!-- TAB 2: AI REPORT -->
+        <div id="tab-report" class="panel">
+            <h2>THREAT ASSESSMENT REPORT</h2>
+            
+            <div style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; border: 1px solid var(--line); margin-bottom: 20px;">
+                <span style="font-family: monospace; color: var(--muted);">> TARGET_URL: </span>
+                <span id="targetUrl" style="color: #fff; font-family: monospace; word-break: break-all;"></span>
+            </div>
+
+            <div class="risk-box" id="riskBox">
+                <h3 style="margin-top:0;">RISK LEVEL</h3>
+                <div class="risk-text" id="riskLevel">PENDING</div>
+                <div style="font-family: monospace; margin-top: 10px;">CONFIDENCE SCORE: <span id="confidenceScore" style="color: #fff; font-weight: bold; font-size: 18px;">0</span>%</div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <h3>> EXTRACTED RISK FACTORS</h3>
+                <div class="factor-list" id="factorList">
+                    <!-- populated via js -->
+                </div>
+            </div>
+            
+            <div id="paymentActions" style="display: none; margin-top: 30px; border-top: 1px dashed var(--line); padding-top: 20px;">
+                <!-- Populated dynamically via JS -->
+            </div>
+        </div>
+
+        <!-- TAB 3: SCAN HISTORY -->
+        <div id="tab-history" class="panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); padding-bottom: 15px; margin-bottom: 20px;">
+                <h2 style="border: none; padding: 0; margin: 0;">SCAN DATABASE</h2>
+                <button class="primary-btn" style="width: auto; padding: 10px 20px; font-size: 12px;" onclick="alert('Exporting to CSV...')">EXPORT CSV</button>
+            </div>
+            
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Target URL</th>
+                            <th>Classification</th>
+                            <th>Confidence</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        <tr>
+                            <td>2026-09-22 10:15:00</td>
+                            <td>https://secure-bank-alert.net/login</td>
+                            <td><span style="color: var(--malicious);">MALICIOUS</span></td>
+                            <td>98%</td>
+                        </tr>
+                        <tr>
+                            <td>2026-09-22 09:42:11</td>
+                            <td>https://www.google.com</td>
+                            <td><span style="color: var(--safe);">SAFE</span></td>
+                            <td>99%</td>
+                        </tr>
+                        <tr>
+                            <td>2026-09-21 16:20:05</td>
+                            <td>http://free-bitcoin-giveaway.org/claim</td>
+                            <td><span style="color: var(--malicious);">MALICIOUS</span></td>
+                            <td>92%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 4: THREAT MAP -->
+        <div id="tab-map" class="panel">
+            <h2>LOCAL THREAT MAP</h2>
+            <p style="color: var(--muted); font-family: monospace;">Search a city or click the map to report where you physically found a fake QR code (e.g. on a parking meter).</p>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <input type="text" id="citySearch" placeholder="> ENTER LOCATION (e.g., Delhi Market)" style="margin-bottom: 0;">
+                <button type="button" class="primary-btn" style="width: auto; white-space: nowrap;" onclick="searchCity()">LOCATE THREATS</button>
+            </div>
+            
+            <div id="map"></div>
+        </div>
+
+        <!-- TAB 5: FEEDBACK -->
+        <div id="tab-feedback" class="panel">
+            <h2>MODEL FEEDBACK LOOP</h2>
+            <p style="color: var(--muted); font-family: monospace;">Did the AI misclassify a URL? Submit a correction to retrain the model.</p>
+            
+            <form id="feedbackForm">
+                <label style="font-family: monospace; color: var(--primary); display: block; margin-bottom: 5px;">> URL IN QUESTION</label>
+                <input type="text" id="fb_url" placeholder="https://...">
+                
+                <label style="font-family: monospace; color: var(--primary); display: block; margin-bottom: 5px;">> CORRECT CLASSIFICATION</label>
+                <select id="fb_class" style="width: 100%; padding: 15px; border-radius: 8px; border: 1px solid var(--line); background: rgba(0,0,0,0.5); color: var(--primary); font-family: monospace; margin-bottom: 15px; outline: none;">
+                    <option value="safe">It is SAFE (False Positive)</option>
+                    <option value="malicious">It is MALICIOUS (False Negative)</option>
+                </select>
+                
+                <button type="button" class="primary-btn" onclick="submitFeedback()">SUBMIT TO DB</button>
+            </form>
+            <div id="feedbackResult" style="display: none; margin-top: 15px; font-family: monospace; color: var(--primary); text-align: center;"></div>
+        </div>
+
+        <!-- TAB 6: SETTINGS -->
+        <div id="tab-settings" class="panel">
+            <h2>SYSTEM CONFIGURATION</h2>
+            
+            <div style="background: rgba(0,0,0,0.3); padding: 25px; border-radius: 8px; border: 1px solid var(--line);">
+                <label style="font-weight: bold; display: block; margin-bottom: 15px; font-family: monospace;">
+                    > AI STRICTNESS THRESHOLD: <span id="thValue" style="color: var(--primary);">75</span>%
+                </label>
+                <input type="range" id="thresholdSlider" min="50" max="99" value="75" oninput="document.getElementById('thValue').innerText = this.value">
+                <p style="color: var(--muted); font-size: 13px; font-family: monospace;">If confidence score is below this, flag as SUSPICIOUS instead of MALICIOUS.</p>
+                <button type="button" class="primary-btn" style="margin-top: 15px;" onclick="alert('Configuration Saved.')">SAVE PARAMS</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Tab Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            if(tabId === 'tab-map' && map) {
+                setTimeout(() => map.invalidateSize(), 100);
+            }
+        }
+
+        // Feedback Logic
+        async function submitFeedback() {
+            try {
+                const response = await fetch('/api/submit_feedback', { method: 'POST' });
+                const data = await response.json();
+                document.getElementById('feedbackResult').innerText = "[ " + data.message + " ]";
+                document.getElementById('feedbackResult').style.display = 'block';
+                document.getElementById('feedbackForm').reset();
+            } catch(err) { console.error(err); }
+        }
+
+        // AI Scan Logic
+        async function scanQR() {
+            const formData = new FormData();
+            formData.append('url_text', document.getElementById('url_text').value);
+            
+            const fileInput = document.getElementById('qr_image');
+            if (fileInput.files.length > 0) {
+                formData.append('qr_image', fileInput.files[0]);
+            }
+
+            document.getElementById('loadingMsg').style.display = 'block';
+
+            try {
+                const response = await fetch('/api/scan_qr', { method: 'POST', body: formData });
+                const data = await response.json();
+                document.getElementById('loadingMsg').style.display = 'none';
+
+                if(data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                // Unlock tabs
+                document.getElementById('btn-report').disabled = false;
+
+                // Report Tab
+                document.getElementById('targetUrl').innerText = data.url;
+                
+                const rBox = document.getElementById('riskBox');
+                const rLevel = document.getElementById('riskLevel');
+                rBox.className = 'risk-box risk-' + data.risk_level;
+                rLevel.innerText = data.risk_level;
+                
+                document.getElementById('confidenceScore').innerText = data.confidence;
+
+                const fList = document.getElementById('factorList');
+                fList.innerHTML = '';
+                data.risk_factors.forEach(f => {
+                    let color = data.risk_level === 'SAFE' ? 'var(--safe)' : (data.risk_level === 'SUSPICIOUS' ? 'var(--suspicious)' : 'var(--malicious)');
+                    fList.innerHTML += `<span class="factor-tag" style="color: ${color}; border-color: ${color}; background: transparent;">[ ${f} ]</span>`;
+                });
+
+                // Add to history table
+                const tbody = document.getElementById('historyTableBody');
+                const row = `<tr>
+                    <td>${new Date().toISOString().replace('T', ' ').substring(0, 19)}</td>
+                    <td>${data.url}</td>
+                    <td><span style="color: ${data.risk_level === 'SAFE' ? 'var(--safe)' : 'var(--malicious)'};">${data.risk_level}</span></td>
+                    <td>${data.confidence}%</td>
+                </tr>`;
+                tbody.insertAdjacentHTML('afterbegin', row);
+
+                // Check Risk Level
+                const pActions = document.getElementById('paymentActions');
+                if (data.risk_level === 'MALICIOUS' || data.risk_level === 'SUSPICIOUS') {
+                    pActions.style.display = 'none';
+                    // Switch to Report Tab first to show the danger
+                    document.getElementById('btn-report').click();
+                    setTimeout(() => {
+                        if(confirm("THREAT DETECTED! Would you like to report this location on the Threat Map?")) {
+                            switchTab('tab-map');
+                        }
+                    }, 1000);
+                } else {
+                    // Safe -> Show Payment Options
+                    pActions.style.display = 'block';
+                    
+                    let gpayUrl = data.url;
+                    let phonepeUrl = data.url;
+                    
+                    if (!data.url.startsWith('upi://')) {
+                        // Mock a UPI intent if it's just a normal URL for demonstration
+                        gpayUrl = 'upi://pay?pa=demo@okhdfcbank&pn=Demo&am=1';
+                        phonepeUrl = 'phonepe://pay?pa=demo@ybl&pn=Demo&am=1';
+                    } else {
+                        // If it's already a UPI url, format appropriately if needed
+                        gpayUrl = data.url;
+                        phonepeUrl = data.url.replace('upi://', 'phonepe://');
+                    }
+
+                    pActions.innerHTML = `
+                        <h4 style="color:var(--safe); font-family: monospace; margin-top: 0;">> SECURE CONNECTION VERIFIED</h4>
+                        <button class="primary-btn" style="background:#fff; color:#000; width:auto; margin-right:10px" onclick="window.location.href='${data.url}'">Open Link</button>
+                        <button class="primary-btn" style="background:#5f6368; width:auto; margin-right:10px" onclick="window.location.href='${gpayUrl}'">Pay via GPay</button>
+                        <button class="primary-btn" style="background:#5e2a84; width:auto;" onclick="window.location.href='${phonepeUrl}'">Pay via PhonePe</button>
+                    `;
+                    document.getElementById('btn-report').click();
+                }
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('loadingMsg').style.display = 'none';
+            }
+        }
+
+        // Map Logic
+        var map = L.map('map').setView([20.5937, 78.9629], 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+        var currentMarkers = [];
+
+        function plotThreatData(lat, lon, locationName) {
+            currentMarkers.forEach(m => map.removeLayer(m));
+            currentMarkers = [];
+            map.setView([lat, lon], 14);
+
+            // Mock Reported QR Scams
+            const scamPoints = [
+                {lat: lat, lon: lon, title: "Reported Fake Parking QR"},
+                {lat: lat + 0.005, lon: lon + 0.005, title: "Malicious Poster QR"}
+            ];
+            
+            scamPoints.forEach(loc => {
+                let m = L.circle([loc.lat, loc.lon], {
+                    color: 'var(--malicious)',
+                    fillColor: 'var(--malicious)',
+                    fillOpacity: 0.5,
+                    radius: 200
+                }).addTo(map).bindPopup(`<b style="color:red; font-family:monospace;">[ THREAT DETECTED ]</b><br>${loc.title}<br>Near ${locationName}`).openPopup();
+                currentMarkers.push(m);
+            });
+        }
+
+        function searchCity() {
+            let city = document.getElementById('citySearch').value;
+            if(!city) return;
+
+            fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(city + ', India'))
+                .then(r => r.json())
+                .then(data => {
+                    if(data.length > 0) plotThreatData(parseFloat(data[0].lat), parseFloat(data[0].lon), city);
+                    else alert("Location not found");
+                });
+        }
+
+        // Click to Pin Logic
+        map.on('click', function(e) {
+            let threatName = prompt("Enter the name of the building or area to mark as a QR Threat:");
+            
+            if (threatName && threatName.trim() !== "") {
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        let city = "Unknown Sector";
+                        if(data.address) city = data.address.road || data.address.city || city;
+                        
+                        // Add custom marker without clearing existing ones
+                        let m = L.circle([e.latlng.lat, e.latlng.lng], {
+                            color: 'var(--malicious)',
+                            fillColor: 'var(--malicious)',
+                            fillOpacity: 0.7,
+                            radius: 150
+                        }).addTo(map).bindPopup(`<b style="color:red; font-family:monospace;">[ CUSTOM THREAT MARKED ]</b><br>${threatName.toUpperCase()}<br>Near ${city}`).openPopup();
+                        
+                        currentMarkers.push(m);
+                    })
+                    .catch(() => {
+                        // Fallback if reverse geocode fails
+                        let m = L.circle([e.latlng.lat, e.latlng.lng], {
+                            color: 'var(--malicious)',
+                            fillColor: 'var(--malicious)',
+                            fillOpacity: 0.7,
+                            radius: 150
+                        }).addTo(map).bindPopup(`<b style="color:red; font-family:monospace;">[ CUSTOM THREAT MARKED ]</b><br>${threatName.toUpperCase()}`).openPopup();
+                        currentMarkers.push(m);
+                    });
+            }
+        });
+
+        // HTML5-QRCode Live Camera Logic
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "qr-reader",
+            { fps: 15, qrbox: {width: 250, height: 250}, rememberLastUsedCamera: true },
+            /* verbose= */ false
+        );
+
+        html5QrcodeScanner.render((decodedText, decodedResult) => {
+            // Success callback
+            html5QrcodeScanner.clear(); // stops scanning
+            document.getElementById('url_text').value = decodedText;
+            scanQR();
+        }, (errorMessage) => {
+            // Ignore parse errors while scanning
+        });
+    </script>
+</body>
+</html>

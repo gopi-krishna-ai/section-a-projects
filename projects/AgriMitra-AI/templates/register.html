@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AgriMitra AI | Register</title>
+<link rel="stylesheet" href="{{ url_for('static',filename='css/theme.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='css/register.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="register-container">
+<div class="register-image">
+<img src="{{ url_for('static',filename='images/farmer.png') }}" alt="Farmer">
+<div class="image-overlay">
+<img src="{{ url_for('static',filename='images/logo.png') }}" class="logo" alt="AgriMitra AI">
+<h1>AgriMitra AI</h1>
+<p id="imageText">Smart Farming • Better Decisions • Better Future</p>
+</div>
+</div>
+
+<div class="register-box">
+<div class="top-bar">
+<select id="language">
+<option value="en">🌐 English</option>
+<option value="kn">🌐 ಕನ್ನಡ</option>
+<option value="hi">🌐 हिन्दी</option>
+<option value="te">🌐 తెలుగు</option>
+<option value="ta">🌐 தமிழ்</option>
+</select>
+</div>
+
+<div class="form-header">
+<img src="{{ url_for('static',filename='images/logo.png') }}" class="mobile-logo" alt="AgriMitra AI">
+<h2 id="registerTitle">Create Your Account</h2>
+<p id="registerSubtitle">Join AgriMitra AI and make smarter farming decisions.</p>
+</div>
+
+<form id="registerForm">
+<div class="input-group">
+<label id="nameLabel">Full Name</label>
+<div class="input-box">
+<i class="fa-solid fa-user"></i>
+<input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
+</div>
+</div>
+
+<div class="input-group">
+<label id="useridLabel">User ID</label>
+<div class="input-box">
+<i class="fa-solid fa-id-card"></i>
+<input type="text" id="userid" name="userid" placeholder="Create a user ID" required>
+</div>
+</div>
+
+<div class="input-group">
+<label id="emailLabel">Email</label>
+<div class="input-box">
+<i class="fa-solid fa-envelope"></i>
+<input type="email" id="email" name="email" placeholder="Enter your email" required>
+</div>
+</div>
+
+<div class="input-group">
+<label id="phoneLabel">Phone Number</label>
+<div class="input-box">
+<i class="fa-solid fa-phone"></i>
+<input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+</div>
+</div>
+
+<div class="input-group">
+<label id="passwordLabel">Password</label>
+<div class="input-box">
+<i class="fa-solid fa-lock"></i>
+<input type="password" id="password" name="password" placeholder="Create a password" required>
+<i class="fa-solid fa-eye password-toggle" onclick="togglePassword('password',this)"></i>
+</div>
+</div>
+
+<div class="input-group">
+<label id="confirmLabel">Confirm Password</label>
+<div class="input-box">
+<i class="fa-solid fa-lock"></i>
+<input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+<i class="fa-solid fa-eye password-toggle" onclick="togglePassword('confirmPassword',this)"></i>
+</div>
+</div>
+
+<div class="input-group">
+<label id="preferredLanguageLabel">Preferred Language</label>
+<div class="input-box select-box">
+<i class="fa-solid fa-language"></i>
+<select id="preferredLanguage" name="language">
+<option value="en">English</option>
+<option value="kn">ಕನ್ನಡ</option>
+<option value="hi">हिन्दी</option>
+<option value="te">తెలుగు</option>
+<option value="ta">தமிழ்</option>
+</select>
+</div>
+</div>
+
+<div id="message" role="alert" aria-live="polite"></div>
+
+<button type="submit" id="registerButton">
+<i class="fa-solid fa-user-plus"></i>
+<span>Create Account</span>
+</button>
+</form>
+
+<p class="login-link">
+<span id="alreadyAccount">Already have an account?</span>
+<a href="/login" id="loginLink">Login</a>
+</p>
+</div>
+</div>
+
+<script src="{{ url_for('static',filename='js/register.js') }}"></script>
+</body>
+</html>

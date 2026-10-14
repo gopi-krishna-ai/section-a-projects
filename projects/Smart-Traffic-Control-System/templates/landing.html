@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bright">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Traffic Flow - Intelligent Control System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        // Apply saved theme immediately before render to avoid flash
+        (function() {
+            const saved = localStorage.getItem('traffic_theme') || 'bright';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="topbar">
+        <a href="{{ url_for('index') }}" class="brand-wrap">
+            <div class="brand-mark">AI</div>
+            <div>
+                <h1>Smart Traffic Flow</h1>
+                <p>Intelligent Urban Mobility & Signal Management</p>
+            </div>
+        </a>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle Theme">
+                <span id="themeIcon">☀️</span>
+                <span id="themeLabel">Bright Mode</span>
+            </button>
+            <a href="{{ url_for('image_detection') }}" class="secondary-btn" style="padding: 10px 18px; font-size: 13px;">
+                <span>Image Vehicle AI</span> 📸
+            </a>
+            <a href="{{ url_for('four_way_control') }}" class="secondary-btn" style="padding: 10px 18px; font-size: 13px; color: var(--positive); border-color: rgba(16, 185, 129, 0.4);">
+                <span>4-Way Signal Arena</span> 🚦
+            </a>
+            <a href="{{ url_for('register') }}" class="secondary-btn" style="padding: 10px 18px; font-size: 13px;">
+                <span>Register</span> 📝
+            </a>
+            <a href="{{ url_for('login') }}" class="primary-btn" style="padding: 10px 22px; font-size: 14px;">
+                <span>Sign In / Launch</span> →
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Hero & Key Boxes Container -->
+    <main class="container" style="max-width: 1200px;">
+        
+        <!-- Hero Section -->
+        <div class="panel" style="display: block; text-align: center; padding: 48px 30px; margin-bottom: 35px;">
+            <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 9999px; background: var(--badge-bg); color: var(--badge-color); font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 20px;">
+                <span>⚡ Powered by Computer Vision & Random Forest ML</span>
+            </div>
+            
+            <h1 class="gradient-title" style="font-size: clamp(2.5rem, 5vw, 3.8rem); margin: 0 0 16px 0; font-weight: 900; line-height: 1.15; letter-spacing: -1px;">
+                Intelligent Traffic Control System
+            </h1>
+            
+            <p style="font-size: 1.25rem; max-width: 760px; margin: 0 auto 32px auto; color: var(--muted); line-height: 1.6;">
+                Autonomous vehicle flow detection, dynamic green wave timing prediction, and live congestion mapping to eliminate urban gridlocks.
+            </p>
+
+            <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+                <a href="{{ url_for('login') }}" class="primary-btn" style="padding: 16px 36px; font-size: 1.1rem;">
+                    <span>Launch System Dashboard</span> 🚦
+                </a>
+                <a href="#features-section" class="secondary-btn" style="padding: 16px 28px; font-size: 1.05rem;">
+                    <span>Explore Key Modules</span> ↓
+                </a>
+            </div>
+        </div>
+
+        <!-- Section Title -->
+        <div id="features-section" style="text-align: center; margin-top: 40px; margin-bottom: 10px;">
+            <div style="display: inline-block; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--primary);">
+                Key System Architectures
+            </div>
+            <h2 style="font-size: 2.2rem; font-weight: 800; margin: 8px 0 10px 0;">
+                Core Intelligent Features
+            </h2>
+            <p style="color: var(--muted); max-width: 650px; margin: 0 auto; font-size: 1rem;">
+                Each module operates synchronously to deliver autonomous traffic regulation and live administrative intelligence.
+            </p>
+        </div>
+
+        <!-- KEY FEATURE BOXES GRID -->
+        <div class="key-box-grid">
+
+            <!-- Box 0: 4-Way Quad Intersection Control -->
+            <div class="key-box box-signals" style="border-color: rgba(16, 185, 129, 0.4);">
+                <div class="key-box-header">
+                    <div class="key-icon" style="background: var(--green-gradient);">🚥</div>
+                    <span class="key-badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">Quad-Direction AI</span>
+                </div>
+                <h3>4-Way Smart Signal Balancing</h3>
+                <p>
+                    Places physical virtual traffic lights on all 4 quadrants (<strong>UP, DOWN, LEFT, RIGHT</strong>) around live intersection video. YOLO detects vehicle queues across North, South, West, East, assigning <strong>GREEN</strong> to the heaviest queue while holding other arms at <strong>RED</strong>.
+                </p>
+                <div class="key-box-footer">
+                    <span class="key-metric-tag">🚦 4-Direction Dynamic Wave</span>
+                    <a href="{{ url_for('four_way_control') }}" style="color: var(--positive); text-decoration: none; font-weight: 800;">Open Arena →</a>
+                </div>
+            </div>
+
+            <!-- Box 1: Dynamic Signals -->
+            <div class="key-box box-signals">
+                <div class="key-box-header">
+                    <div class="key-icon">🚦</div>
+                    <span class="key-badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">Adaptive Control</span>
+                </div>
+                <h3>Dynamic Signal Automation</h3>
+                <p>
+                    Replaces static timers with autonomous density-driven signals. Automatically shifts virtual traffic signals between <strong>RED</strong> and <strong>GREEN</strong> based on active congestion limits to clear bottlenecks instantly.
+                </p>
+                <div class="key-box-footer">
+                    <span class="key-metric-tag">🟢 Live Green/Red Phase Switch</span>
+                    <span style="color: var(--positive);">Active</span>
+                </div>
+            </div>
+
+            <!-- Box 2: ML Optimal Green-Time -->
+            <div class="key-box box-ml">
+                <div class="key-box-header">
+                    <div class="key-icon">🧠</div>
+                    <span class="key-badge" style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6;">Machine Learning</span>
+                </div>
+                <h3>Optimal Green-Time AI</h3>
+                <p>
+                    A trained <strong>Random Forest Regressor</strong> analyzes real-time vehicle counts, time of day (rush hour vs standard), and weather conditions to dynamically forecast optimal signal duration in seconds.
+                </p>
+                <div class="key-box-footer">
+                    <span class="key-metric-tag">⏱️ Dynamic Second Calculations</span>
+                    <span style="color: #8b5cf6;">Scikit-Learn</span>
+                </div>
+            </div>
+
+            <!-- Box 3: YOLO Vision Engine -->
+            <div class="key-box box-vision">
+                <div class="key-box-header">
+                    <div class="key-icon">👁️</div>
+                    <span class="key-badge" style="background: rgba(2, 132, 199, 0.15); color: #0284c7;">Computer Vision</span>
+                </div>
+                <h3>Multi-Class Vehicle Counting</h3>
+                <p>
+                    Simulates YOLO object detection across live surveillance and uploaded video streams, continuously parsing and classifying cars, two-wheelers, buses, and commercial haulers with peak frame detection.
+                </p>
+                <div class="key-box-footer">
+                    <span class="key-metric-tag">🎯 Multi-Class Segmentation</span>
+                    <span style="color: var(--primary);">450 Frames / 30 FPS</span>
+                </div>
+            </div>
+
+            <!-- Box 4: Interactive Congestion Map -->
+            <div class="key-box box-map">
+                <div class="key-box-header">
+                    <div class="key-icon">🗺️</div>
+                    <span class="key-badge" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">GIS Heatmap</span>
+                </div>
+                <h3>City Congestion GIS Map</h3>
+                <p>
+                    Interactive Leaflet GIS mapping interface allowing authorities to search any metropolitan area (e.g. Mumbai, Bangalore, Delhi) to pinpoint high-congestion zones, choke points, and traffic police control outposts.
+                </p>
+                <div class="key-box-footer">
+                    <span class="key-metric-tag">📍 Instant City Plotting</span>
+                    <span style="color: #f59e0b;">Leaflet.js</span>
+                </div>
+            </div>
+
+            <!-- Box 5: Transit Incident Report -->
+            <div class="key-box box-report">
+                <div class="key-box-header">
+                    <div class="key-icon">📑</div>
+                    <span class="key-badge" style="background: rgba(244, 63, 94, 0.15); color: #f43f5e;">Real-Time Dispatch</span>
+                </div>
+                <h3>Transit & Route Reports</h3>
+                <p>
+                    Dedicated reporting conduit between urban checkpoints. Allows commuters and patrolling officers to register sensor failures, signal desynchronization, and emergency road obstructions with full route logging.
+                </p>
+                <div class="key-box-footer">
+                    <span class="key-metric-tag">🛡️ Route-to-Route Incident Log</span>
+                    <span style="color: #f43f5e;">Instant Dispatch</span>
+                </div>
+            </div>
+
+            <!-- Box 6: Dynamic Policy Configuration -->
+            <div class="key-box box-policy">
+                <div class="key-box-header">
+                    <div class="key-icon">⚙️</div>
+                    <span class="key-badge" style="background: rgba(6, 182, 212, 0.15); color: #0d9488;">Authority Admin</span>
+                </div>
+                <h3>Zero-Downtime Settings</h3>
+                <p>
+                    Administrators can calibrate safe congestion thresholds on-the-fly via a responsive slider. The system immediately applies new safety limits across signals without needing server restarts or pipeline disruption.
+                </p>
+                <div class="key-box-footer">
+                    <span class="key-metric-tag">🎛️ Live Slider Recalibration</span>
+                    <span style="color: #0d9488;">Dynamic API</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Launch Call To Action Card -->
+        <div class="panel" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; padding: 36px 40px; margin-bottom: 50px;">
+            <div>
+                <h3 style="margin: 0 0 6px 0; font-size: 1.6rem; font-weight: 800;">Ready to inspect live traffic flow?</h3>
+                <p style="margin: 0; color: var(--muted); font-size: 1.05rem;">
+                    Launch the operator console to connect camera streams, examine YOLO telemetry, and test dynamic signals.
+                </p>
+            </div>
+            <a href="{{ url_for('login') }}" class="primary-btn" style="padding: 16px 36px; font-size: 1.1rem;">
+                <span>Launch Operator Console</span> →
+            </a>
+        </div>
+
+    </main>
+
+    <!-- Theme Toggle Script -->
+    <script>
+        function updateThemeUI(theme) {
+            const icon = document.getElementById('themeIcon');
+            const label = document.getElementById('themeLabel');
+            if (theme === 'bright') {
+                if (icon) icon.innerText = '☀️';
+                if (label) label.innerText = 'Bright Mode';
+            } else {
+                if (icon) icon.innerText = '🌙';
+                if (label) label.innerText = 'Dark Mode';
+            }
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'bright';
+            const next = current === 'bright' ? 'dark' : 'bright';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('traffic_theme', next);
+            updateThemeUI(next);
+        }
+
+        // Initialize button text on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const active = document.documentElement.getAttribute('data-theme') || 'bright';
+            updateThemeUI(active);
+        });
+    </script>
+
+</body>
+</html>

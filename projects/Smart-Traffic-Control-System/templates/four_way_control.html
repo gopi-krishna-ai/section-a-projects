@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bright">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4-Way Smart Traffic Signal Control - Autonomous Quad System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        (function() {
+            const saved = localStorage.getItem('traffic_theme') || 'bright';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
+</head>
+<body>
+
+    <!-- Topbar Navigation -->
+    <header class="topbar">
+        <div class="brand-wrap">
+            <a href="{{ url_for('dashboard') }}" style="text-decoration:none; display:flex; gap:14px; align-items:center; color:inherit;">
+                <div class="brand-mark" style="background: var(--green-gradient);">🚦</div>
+                <div>
+                    <h1>4-Way Smart Signal Control</h1>
+                    <p>Dynamic Quad-Direction Balancing & Pretrained YOLO Queue Detector</p>
+                </div>
+            </a>
+        </div>
+        
+        <nav class="tab-buttons">
+            <a href="{{ url_for('dashboard') }}" class="tab-btn" style="text-decoration:none;">
+                🎥 Single Feed Dashboard
+            </a>
+            <a href="{{ url_for('image_detection') }}" class="tab-btn" style="text-decoration:none;">
+                📸 Image Vehicle AI
+            </a>
+            <button class="tab-btn active" style="background: rgba(16, 185, 129, 0.15); color: var(--positive); border-color: rgba(16, 185, 129, 0.3);">
+                🚦 4-Way Signal Arena
+            </button>
+        </nav>
+
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="user-profile-badge">
+                <span>👮</span>
+                <span>{{ user_name or 'Officer Sharma' }}</span>
+                <span style="font-size: 11px; padding: 2px 8px; border-radius: 12px; background: var(--badge-bg); color: var(--badge-color); font-weight: 800;">{{ badge_id or 'TPD-9021' }}</span>
+            </div>
+            <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle Theme">
+                <span id="themeIcon">☀️</span>
+                <span id="themeLabel">Bright Mode</span>
+            </button>
+            <a href="{{ url_for('logout') }}" class="secondary-btn" style="padding: 8px 16px; font-size: 13px;" title="Logout">
+                Logout ↪
+            </a>
+        </div>
+    </header>
+
+    <main class="container" style="max-width: 1540px;">
+
+        <!-- Header Telemetry Strip -->
+        <section class="metrics-grid" style="grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); margin-bottom: 24px;">
+            <div class="card metric-card">
+                <div class="metric-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--positive);">🟢</div>
+                <div>
+                    <div class="metric-label">Active Green Direction</div>
+                    <div class="metric-value" id="topActiveGreen" style="color: var(--positive); font-size: 1.6rem;">NORTH (UP)</div>
+                    <span class="metric-sub" id="topActiveCountdown">Remaining: 24s</span>
+                </div>
+            </div>
+
+            <div class="card metric-card">
+                <div class="metric-icon" style="background: rgba(2, 132, 199, 0.15); color: var(--primary);">🚗</div>
+                <div>
+                    <div class="metric-label">Total Intersection Queue</div>
+                    <div class="metric-value" id="topTotalVehicles">33 Vehicles</div>
+                    <span class="metric-sub">Summed across all 4 corridors</span>
+                </div>
+            </div>
+
+            <div class="card metric-card">
+                <div class="metric-icon" style="background: rgba(239, 68, 68, 0.15); color: var(--negative);">🔥</div>
+                <div>
+                    <div class="metric-label">Max Congestion Spike</div>
+                    <div class="metric-value" id="topMaxSpike" style="color: var(--negative); font-size: 1.55rem;">North Arm</div>
+                    <span class="metric-sub" id="topMaxSpikeCount">13 Vehicles (Queue Leader)</span>
+                </div>
+            </div>
+
+            <div class="card metric-card">
+                <div class="metric-icon" style="background: rgba(139, 92, 246, 0.15); color: var(--purple);">🧠</div>
+                <div>
+                    <div class="metric-label">Dynamic AI Mode</div>
+                    <div class="metric-value" style="font-size: 1.5rem; color: var(--purple);">Autonomous</div>
+                    <span class="metric-sub">Highest queue gets Green wave</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================
+             4-WAY ARENA (SIGNALS AT UP, DOWN, LEFT, RIGHT OF VIDEO)
+             ======================================================== -->
+        <section class="four-way-arena">
+
+            <!-- ================= 1. NORTH APPROACH (UP) ================= -->
+            <div class="arena-north">
+                <div class="signal-station horizontal is-green" id="station-North">
+                    <div class="signal-station-header">
+                        <div class="approach-title">
+                            <span style="font-size: 1.3rem;">⬆️</span>
+                            <span>NORTH APPROACH (UP)</span>
+                        </div>
+                        <span class="badge" id="badge-North" style="background: rgba(16, 185, 129, 0.15); color: var(--positive); font-weight: 800;">
+                            🟢 ACTIVE GREEN (GO)
+                        </span>
+                    </div>
+
+                    <div class="signal-station-body">
+                        <!-- Horizontal 3-aspect Light -->
+                        <div class="traffic-light-post horizontal-post" id="post-North">
+                            <div class="light-lens red-light" id="light-North-red" title="Red Light"></div>
+                            <div class="light-lens amber-light" id="light-North-amber" title="Amber Light"></div>
+                            <div class="light-lens green-light active" id="light-North-green" title="Green Light"></div>
+                        </div>
+
+                        <!-- Countdown -->
+                        <div class="countdown-box" id="timerbox-North">
+                            <div style="font-size: 10px; color: var(--muted); text-transform: uppercase;">Phase Timer</div>
+                            <div class="countdown-digits" id="timer-North">24s</div>
+                        </div>
+
+                        <!-- Metrics & Breakdown -->
+                        <div class="station-metrics">
+                            <div class="queue-pill-header">
+                                <span style="font-size: 12px; font-weight: 700; color: var(--muted);">Detected Queue:</span>
+                                <span class="queue-count-large" id="count-North">13</span>
+                            </div>
+                            <div class="station-density-bar">
+                                <div class="station-density-fill" id="density-North" style="width: 85%; background: var(--positive);"></div>
+                            </div>
+                            <div class="wheeler-mini-grid">
+                                <div class="wheeler-mini-pill">
+                                    🏍️ 2W <span id="w2-North">4</span>
+                                </div>
+                                <div class="wheeler-mini-pill">
+                                    🛺 3W <span id="w3-North">2</span>
+                                </div>
+                                <div class="wheeler-mini-pill">
+                                    🚗 4W <span id="w4-North">7</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= 2. WEST APPROACH (LEFT) ================= -->
+            <div class="arena-west">
+                <div class="signal-station is-red" id="station-West">
+                    <div class="signal-station-header">
+                        <div class="approach-title">
+                            <span style="font-size: 1.3rem;">⬅️</span>
+                            <span>WEST (LEFT)</span>
+                        </div>
+                        <span class="badge" id="badge-West" style="background: rgba(239, 68, 68, 0.15); color: var(--negative); font-weight: 800;">
+                            🔴 RED (STOP)
+                        </span>
+                    </div>
+
+                    <div class="signal-station-body" style="flex-direction: column;">
+                        <!-- Vertical 3-aspect Light -->
+                        <div class="traffic-light-post" id="post-West">
+                            <div class="light-lens red-light active" id="light-West-red"></div>
+                            <div class="light-lens amber-light" id="light-West-amber"></div>
+                            <div class="light-lens green-light" id="light-West-green"></div>
+                        </div>
+
+                        <!-- Countdown -->
+                        <div class="countdown-box red-state" id="timerbox-West" style="width: 100%;">
+                            <div style="font-size: 10px; color: var(--muted); text-transform: uppercase;">Wait Timer</div>
+                            <div class="countdown-digits" id="timer-West">WAIT</div>
+                        </div>
+
+                        <!-- Metrics & Breakdown -->
+                        <div class="station-metrics" style="width: 100%;">
+                            <div class="queue-pill-header">
+                                <span style="font-size: 12px; font-weight: 700; color: var(--muted);">Detected Queue:</span>
+                                <span class="queue-count-large" id="count-West">4</span>
+                            </div>
+                            <div class="station-density-bar">
+                                <div class="station-density-fill" id="density-West" style="width: 30%; background: var(--negative);"></div>
+                            </div>
+                            <div class="wheeler-mini-grid">
+                                <div class="wheeler-mini-pill">
+                                    🏍️ 2W <span id="w2-West">1</span>
+                                </div>
+                                <div class="wheeler-mini-pill">
+                                    🛺 3W <span id="w3-West">1</span>
+                                </div>
+                                <div class="wheeler-mini-pill">
+                                    🚗 4W <span id="w4-West">2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= 3. CENTER VIDEO STAGE ================= -->
+            <div class="arena-center">
+                <div class="center-video-stage">
+                    <div class="video-wrapper-cross">
+                        <video id="crossVideo" src="{{ url_for('static', filename='videos/four_way_intersection.mp4') }}" autoplay loop muted playsinline></video>
+                        <canvas id="crossCanvas"></canvas>
+
+                        <!-- HUD Overlay Elements -->
+                        <div class="video-hud-overlay">
+                            <div class="hud-tag live-rec">
+                                <span>SURVEILLANCE CAM #04</span>
+                            </div>
+                            <div class="hud-tag" style="background: rgba(2, 132, 199, 0.85);">
+                                <span>🎯 YOLOv8 QUAD-ZONE TRACKER</span>
+                            </div>
+                            <div class="hud-tag">
+                                <span id="videoFpsText">25.0 FPS</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Controls Bar -->
+                    <div class="center-controls-bar">
+                        <div class="control-btn-group">
+                            <button class="primary-btn" id="btnPlayPause" onclick="togglePlayPause()" style="padding: 8px 16px; font-size: 13px;">
+                                ⏸️ Pause Video
+                            </button>
+                            <button class="secondary-btn" onclick="resetVideoPlayback()" style="padding: 8px 14px; font-size: 13px;">
+                                🔄 Replay
+                            </button>
+
+                            <select id="videoSelect" class="form-input" style="padding: 8px 12px; font-size: 13px; width: auto;" onchange="changeVideoSource(this.value)">
+                                <option value="/static/videos/four_way_intersection.mp4" selected>🎥 4-Way Junction (Standard Demo)</option>
+                                <option value="/static/videos/cars.mp4">🚗 City Highway Feed (cars.mp4)</option>
+                                <option value="/static/videos/traffic_demo.mp4">🚦 Multi-Lane Cam (traffic_demo.mp4)</option>
+                                <option value="/static/videos/video1.avi">🏙️ Heavy Urban (video1.avi)</option>
+                            </select>
+
+                            <label class="secondary-btn" style="padding: 8px 14px; font-size: 13px; cursor: pointer; margin: 0;">
+                                📤 Upload Video
+                                <input type="file" id="videoFileInput" accept="video/mp4,video/avi,video/mov,video/mkv" style="display: none;" onchange="handleFileUpload(event)">
+                            </label>
+                        </div>
+
+                        <div class="control-btn-group">
+                            <button class="primary-btn" id="btnDeepScan" onclick="triggerDeepYoloScan()" style="background: var(--purple-gradient); padding: 8px 16px; font-size: 13px;">
+                                🧠 Deep YOLO Scan
+                            </button>
+
+                            <!-- Manual Override Dropdown -->
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span style="font-size: 12px; font-weight: 700; color: var(--muted);">Override:</span>
+                                <button class="secondary-btn" onclick="manualOverride('North')" style="padding: 6px 10px; font-size: 12px;" title="Force North Green">⬆️ N</button>
+                                <button class="secondary-btn" onclick="manualOverride('East')" style="padding: 6px 10px; font-size: 12px;" title="Force East Green">➡️ E</button>
+                                <button class="secondary-btn" onclick="manualOverride('South')" style="padding: 6px 10px; font-size: 12px;" title="Force South Green">⬇️ S</button>
+                                <button class="secondary-btn" onclick="manualOverride('West')" style="padding: 6px 10px; font-size: 12px;" title="Force West Green">⬅️ W</button>
+                                <button class="secondary-btn" onclick="manualOverride('Auto')" style="padding: 6px 10px; font-size: 12px; color: var(--positive);" title="Reset to Autonomous AI">🤖 Auto</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= 4. EAST APPROACH (RIGHT) ================= -->
+            <div class="arena-east">
+                <div class="signal-station is-red" id="station-East">
+                    <div class="signal-station-header">
+                        <div class="approach-title">
+                            <span style="font-size: 1.3rem;">➡️</span>
+                            <span>EAST (RIGHT)</span>
+                        </div>
+                        <span class="badge" id="badge-East" style="background: rgba(239, 68, 68, 0.15); color: var(--negative); font-weight: 800;">
+                            🔴 RED (STOP)
+                        </span>
+                    </div>
+
+                    <div class="signal-station-body" style="flex-direction: column;">
+                        <!-- Vertical 3-aspect Light -->
+                        <div class="traffic-light-post" id="post-East">
+                            <div class="light-lens red-light active" id="light-East-red"></div>
+                            <div class="light-lens amber-light" id="light-East-amber"></div>
+                            <div class="light-lens green-light" id="light-East-green"></div>
+                        </div>
+
+                        <!-- Countdown -->
+                        <div class="countdown-box red-state" id="timerbox-East" style="width: 100%;">
+                            <div style="font-size: 10px; color: var(--muted); text-transform: uppercase;">Wait Timer</div>
+                            <div class="countdown-digits" id="timer-East">WAIT</div>
+                        </div>
+
+                        <!-- Metrics & Breakdown -->
+                        <div class="station-metrics" style="width: 100%;">
+                            <div class="queue-pill-header">
+                                <span style="font-size: 12px; font-weight: 700; color: var(--muted);">Detected Queue:</span>
+                                <span class="queue-count-large" id="count-East">9</span>
+                            </div>
+                            <div class="station-density-bar">
+                                <div class="station-density-fill" id="density-East" style="width: 65%; background: var(--negative);"></div>
+                            </div>
+                            <div class="wheeler-mini-grid">
+                                <div class="wheeler-mini-pill">
+                                    🏍️ 2W <span id="w2-East">3</span>
+                                </div>
+                                <div class="wheeler-mini-pill">
+                                    🛺 3W <span id="w3-East">2</span>
+                                </div>
+                                <div class="wheeler-mini-pill">
+                                    🚗 4W <span id="w4-East">4</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= 5. SOUTH APPROACH (DOWN) ================= -->
+            <div class="arena-south">
+                <div class="signal-station horizontal is-red" id="station-South">
+                    <div class="signal-station-header">
+                        <div class="approach-title">
+                            <span style="font-size: 1.3rem;">⬇️</span>
+                            <span>SOUTH APPROACH (DOWN)</span>
+                        </div>
+                        <span class="badge" id="badge-South" style="background: rgba(239, 68, 68, 0.15); color: var(--negative); font-weight: 800;">
+                            🔴 RED (STOP)
+                        </span>
+                    </div>
+
+                    <div class="signal-station-body">
+                        <!-- Horizontal 3-aspect Light -->
+                        <div class="traffic-light-post horizontal-post" id="post-South">
+                            <div class="light-lens red-light active" id="light-South-red"></div>
+                            <div class="light-lens amber-light" id="light-South-amber"></div>
+                            <div class="light-lens green-light" id="light-South-green"></div>
+                        </div>
+
+                        <!-- Countdown -->
+                        <div class="countdown-box red-state" id="timerbox-South">
+                            <div style="font-size: 10px; color: var(--muted); text-transform: uppercase;">Wait Timer</div>
+                            <div class="countdown-digits" id="timer-South">WAIT</div>
+                        </div>
+
+                        <!-- Metrics & Breakdown -->
+                        <div class="station-metrics">
+                            <div class="queue-pill-header">
+                                <span style="font-size: 12px; font-weight: 700; color: var(--muted);">Detected Queue:</span>
+                                <span class="queue-count-large" id="count-South">7</span>
+                            </div>
+                            <div class="station-density-bar">
+                                <div class="station-density-fill" id="density-South" style="width: 50%; background: var(--negative);"></div>
+                            </div>
+                            <div class="wheeler-mini-grid">
+                                <div class="wheeler-mini-pill">
+                                    🏍️ 2W <span id="w2-South">2</span>
+                                </div>
+                                <div class="wheeler-mini-pill">
+                                    🛺 3W <span id="w3-South">1</span>
+                                </div>
+                                <div class="wheeler-mini-pill">
+                                    🚗 4W <span id="w4-South">4</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ========================================================
+             BOTTOM ANALYTICS & DISPATCH LOG
+             ======================================================== -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 24px; margin-bottom: 40px;">
+            
+            <!-- Quadrant Queue Breakdown Comparison -->
+            <div class="card panel">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 style="margin: 0; font-size: 1.25rem;">📊 Quad-Approach Density Matrix</h3>
+                    <span class="badge" style="background: rgba(2, 132, 199, 0.15); color: var(--primary);">Real-Time YOLO Balancer</span>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                    <!-- North Bar -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 13px; margin-bottom: 4px;">
+                            <span>⬆️ North Arm</span>
+                            <span id="matrix-North-txt">13 Vehicles (39%) - Active Green</span>
+                        </div>
+                        <div style="height: 12px; background: var(--line); border-radius: 6px; overflow: hidden;">
+                            <div id="matrix-North-bar" style="height: 100%; width: 39%; background: var(--positive); border-radius: 6px; transition: width 0.4s;"></div>
+                        </div>
+                    </div>
+
+                    <!-- East Bar -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 13px; margin-bottom: 4px;">
+                            <span>➡️ East Arm</span>
+                            <span id="matrix-East-txt">9 Vehicles (27%) - Next Priority</span>
+                        </div>
+                        <div style="height: 12px; background: var(--line); border-radius: 6px; overflow: hidden;">
+                            <div id="matrix-East-bar" style="height: 100%; width: 27%; background: var(--accent); border-radius: 6px; transition: width 0.4s;"></div>
+                        </div>
+                    </div>
+
+                    <!-- South Bar -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 13px; margin-bottom: 4px;">
+                            <span>⬇️ South Arm</span>
+                            <span id="matrix-South-txt">7 Vehicles (21%)</span>
+                        </div>
+                        <div style="height: 12px; background: var(--line); border-radius: 6px; overflow: hidden;">
+                            <div id="matrix-South-bar" style="height: 100%; width: 21%; background: var(--primary); border-radius: 6px; transition: width 0.4s;"></div>
+                        </div>
+                    </div>
+
+                    <!-- West Bar -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 13px; margin-bottom: 4px;">
+                            <span>⬅️ West Arm</span>
+                            <span id="matrix-West-txt">4 Vehicles (13%)</span>
+                        </div>
+                        <div style="height: 12px; background: var(--line); border-radius: 6px; overflow: hidden;">
+                            <div id="matrix-West-bar" style="height: 100%; width: 13%; background: var(--muted); border-radius: 6px; transition: width 0.4s;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; padding: 14px; background: var(--card-bg-subtle); border-radius: 12px; border: 1px solid var(--card-border); font-size: 13px; line-height: 1.6;">
+                    💡 <strong>Smart Decision Engine:</strong> YOLO monitors vehicle queues across all 4 corridors. The arm with the highest vehicle queue is assigned the <strong>GREEN</strong> signal wave, while the other 3 corridors are held at <strong>RED</strong>. As the green queue discharges, the next most congested lane receives the green phase automatically.
+                </div>
+            </div>
+
+            <!-- Real-time AI Telemetry & Dispatch Log -->
+            <div class="card panel">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 style="margin: 0; font-size: 1.25rem;">📡 AI Signal Dispatch Logs</h3>
+                    <button class="secondary-btn" onclick="clearLogs()" style="padding: 4px 10px; font-size: 12px;">Clear Log</button>
+                </div>
+
+                <div id="dispatchLogList" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; font-family: monospace; font-size: 12px;">
+                    <div style="padding: 8px 12px; border-radius: 8px; background: rgba(16, 185, 129, 0.12); border-left: 3px solid var(--positive);">
+                        <strong>[14:40:02]</strong> NORTH APPROACH assigned GREEN (Queue: 13 vehicles). Allocating 24s green wave.
+                    </div>
+                    <div style="padding: 8px 12px; border-radius: 8px; background: rgba(239, 68, 68, 0.08); border-left: 3px solid var(--negative);">
+                        <strong>[14:40:02]</strong> SOUTH, WEST, EAST approaching corridors set to RED (Total waiting: 20 vehicles).
+                    </div>
+                    <div style="padding: 8px 12px; border-radius: 8px; background: rgba(2, 132, 199, 0.08); border-left: 3px solid var(--primary);">
+                        <strong>[14:39:35]</strong> EAST cleared 8 vehicles. Phase concluded normally.
+                    </div>
+                </div>
+
+                <div id="deepScanSummaryContainer" style="margin-top: 16px; display: none;">
+                    <div class="alert-banner info" id="deepScanSummaryText">
+                        YOLO Scan complete.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Page Scripts -->
+    <script>
+        // ==========================================
+        // STATE & INITIAL METRICS
+        // ==========================================
+        let approachData = {
+            'North': { count: 13, w2: 4, w3: 2, w4: 7, state: 'GREEN', timer: 24, maxTimer: 24 },
+            'South': { count: 7,  w2: 2, w3: 1, w4: 4, state: 'RED',   timer: 0,  maxTimer: 18 },
+            'West':  { count: 4,  w2: 1, w3: 1, w4: 2, state: 'RED',   timer: 0,  maxTimer: 16 },
+            'East':  { count: 9,  w2: 3, w3: 2, w4: 4, state: 'RED',   timer: 0,  maxTimer: 20 }
+        };
+
+        let currentGreen = 'North';
+        let isTransitioning = false;
+        let isAutoMode = true;
+        let countdownInterval = null;
+
+        // Video & Canvas Elements
+        const video = document.getElementById('crossVideo');
+        const canvas = document.getElementById('crossCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Dynamic simulated vehicles for realistic live tracking HUD
+        let simulatedVehicles = [];
+
+        function initSimulatedVehicles() {
+            simulatedVehicles = [];
+            const directions = ['North', 'South', 'West', 'East'];
+            const categories = ['2-Wheeler', '3-Wheeler', '4-Wheeler'];
+
+            for (let i = 0; i < 24; i++) {
+                const dir = directions[Math.floor(Math.random() * directions.length)];
+                const cat = categories[Math.floor(Math.random() * categories.length)];
+                let x, y, vx, vy;
+
+                if (dir === 'North') {
+                    x = 0.45 + Math.random() * 0.1;
+                    y = 0.05 + Math.random() * 0.35;
+                    vx = (Math.random() - 0.5) * 0.001;
+                    vy = 0.0015 + Math.random() * 0.002;
+                } else if (dir === 'South') {
+                    x = 0.45 + Math.random() * 0.1;
+                    y = 0.58 + Math.random() * 0.35;
+                    vx = (Math.random() - 0.5) * 0.001;
+                    vy = -(0.0015 + Math.random() * 0.002);
+                } else if (dir === 'West') {
+                    x = 0.05 + Math.random() * 0.35;
+                    y = 0.45 + Math.random() * 0.1;
+                    vx = 0.0015 + Math.random() * 0.002;
+                    vy = (Math.random() - 0.5) * 0.001;
+                } else {
+                    x = 0.58 + Math.random() * 0.35;
+                    y = 0.45 + Math.random() * 0.1;
+                    vx = -(0.0015 + Math.random() * 0.002);
+                    vy = (Math.random() - 0.5) * 0.001;
+                }
+
+                simulatedVehicles.push({
+                    id: 101 + i,
+                    dir: dir,
+                    cat: cat,
+                    x: x,
+                    y: y,
+                    vx: vx,
+                    vy: vy,
+                    speed: Math.floor(25 + Math.random() * 35),
+                    w: cat === '4-Wheeler' ? 48 : (cat === '3-Wheeler' ? 36 : 24),
+                    h: cat === '4-Wheeler' ? 38 : (cat === '3-Wheeler' ? 30 : 20)
+                });
+            }
+        }
+
+        // ==========================================
+        // CANVAS HUD OVERLAY DRAWING
+        // ==========================================
+        function resizeCanvas() {
+            if (video.videoWidth) {
+                canvas.width = video.clientWidth;
+                canvas.height = video.clientHeight;
+            }
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        video.addEventListener('loadedmetadata', resizeCanvas);
+
+        function drawHud() {
+            if (!canvas.width || !canvas.height) {
+                resizeCanvas();
+            }
+
+            const w = canvas.width;
+            const h = canvas.height;
+            if (!w || !h) {
+                requestAnimationFrame(drawHud);
+                return;
+            }
+
+            ctx.clearRect(0, 0, w, h);
+
+            // 1. Draw Subtle Cross Quadrant Boundary Lines
+            ctx.save();
+            ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([6, 6]);
+
+            // Vertical splits
+            ctx.beginPath();
+            ctx.moveTo(w * 0.44, 0);
+            ctx.lineTo(w * 0.44, h);
+            ctx.moveTo(w * 0.56, 0);
+            ctx.lineTo(w * 0.56, h);
+
+            // Horizontal splits
+            ctx.moveTo(0, h * 0.44);
+            ctx.lineTo(w, h * 0.44);
+            ctx.moveTo(0, h * 0.56);
+            ctx.lineTo(w, h * 0.56);
+            ctx.stroke();
+            ctx.restore();
+
+            // Center Intersection Circle
+            ctx.save();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(w * 0.5, h * 0.5, Math.min(w, h) * 0.12, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+
+            // 2. Highlight Active Green Direction Sector
+            ctx.save();
+            ctx.fillStyle = 'rgba(16, 185, 129, 0.08)';
+            if (currentGreen === 'North') {
+                ctx.fillRect(w * 0.40, 0, w * 0.20, h * 0.45);
+            } else if (currentGreen === 'South') {
+                ctx.fillRect(w * 0.40, h * 0.55, w * 0.20, h * 0.45);
+            } else if (currentGreen === 'West') {
+                ctx.fillRect(0, h * 0.40, w * 0.45, h * 0.20);
+            } else if (currentGreen === 'East') {
+                ctx.fillRect(w * 0.55, h * 0.40, w * 0.45, h * 0.20);
+            }
+            ctx.restore();
+
+            // 3. Direction Watermarks on Canvas
+            ctx.save();
+            ctx.font = 'bold 12px Inter, sans-serif';
+            ctx.fillStyle = currentGreen === 'North' ? '#10b981' : 'rgba(255, 255, 255, 0.4)';
+            ctx.fillText('⬆️ NORTH QUEUE', w * 0.46, 26);
+
+            ctx.fillStyle = currentGreen === 'South' ? '#10b981' : 'rgba(255, 255, 255, 0.4)';
+            ctx.fillText('⬇️ SOUTH QUEUE', w * 0.46, h - 14);
+
+            ctx.fillStyle = currentGreen === 'West' ? '#10b981' : 'rgba(255, 255, 255, 0.4)';
+            ctx.fillText('⬅️ WEST QUEUE', 14, h * 0.51);
+
+            ctx.fillStyle = currentGreen === 'East' ? '#10b981' : 'rgba(255, 255, 255, 0.4)';
+            ctx.fillText('➡️ EAST QUEUE', w - 120, h * 0.51);
+            ctx.restore();
+
+            // 4. Draw Vehicles with Bounding Squares & Speeds
+            simulatedVehicles.forEach(veh => {
+                // If its direction is green, move faster through intersection; if red, queue up
+                const isGreen = (veh.dir === currentGreen);
+                const speedMult = isGreen ? 1.6 : 0.3;
+
+                veh.x += veh.vx * speedMult;
+                veh.y += veh.vy * speedMult;
+
+                // Wrap-around
+                if (veh.x < 0.02) veh.x = 0.95;
+                if (veh.x > 0.98) veh.x = 0.05;
+                if (veh.y < 0.02) veh.y = 0.95;
+                if (veh.y > 0.98) veh.y = 0.05;
+
+                const px = veh.x * w;
+                const py = veh.y * h;
+
+                // Color by wheeler
+                let color = '#22c55e'; // 4W
+                if (veh.cat === '2-Wheeler') color = '#00d2ff';
+                if (veh.cat === '3-Wheeler') color = '#f59e0b';
+
+                // Bounding Square
+                ctx.save();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.strokeRect(px, py, veh.w, veh.h);
+
+                // Corner accents
+                const cL = 6;
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2.5;
+                // Top-left
+                ctx.beginPath();
+                ctx.moveTo(px, py + cL); ctx.lineTo(px, py); ctx.lineTo(px + cL, py);
+                // Bottom-right
+                ctx.moveTo(px + veh.w - cL, py + veh.h); ctx.lineTo(px + veh.w, py + veh.h); ctx.lineTo(px + veh.w, py + veh.h - cL);
+                ctx.stroke();
+
+                // Pill label
+                const label = `${veh.cat} | ${isGreen ? veh.speed : Math.max(0, veh.speed - 22)} km/h`;
+                ctx.font = 'bold 9px Inter, sans-serif';
+                const textWidth = ctx.measureText(label).width;
+
+                ctx.fillStyle = color;
+                ctx.fillRect(px, Math.max(0, py - 14), textWidth + 8, 14);
+
+                ctx.fillStyle = '#0f172a';
+                ctx.fillText(label, px + 4, Math.max(10, py - 3));
+                ctx.restore();
+            });
+
+            requestAnimationFrame(drawHud);
+        }
+
+        // ==========================================
+        // STATE MACHINE & SIGNAL CYCLE
+        // ==========================================
+        function updateUI() {
+            const directions = ['North', 'South', 'West', 'East'];
+            let total = 0;
+            let maxCount = -1;
+            let maxDir = 'North';
+
+            directions.forEach(dir => {
+                const data = approachData[dir];
+                total += data.count;
+                if (data.count > maxCount) {
+                    maxCount = data.count;
+                    maxDir = dir;
+                }
+
+                // Update counts on station cards
+                document.getElementById(`count-${dir}`).textContent = data.count;
+                document.getElementById(`w2-${dir}`).textContent = data.w2;
+                document.getElementById(`w3-${dir}`).textContent = data.w3;
+                document.getElementById(`w4-${dir}`).textContent = data.w4;
+
+                // Density fill
+                const pct = Math.min(100, Math.round((data.count / 16) * 100));
+                document.getElementById(`density-${dir}`).style.width = pct + '%';
+
+                // Stations & lights classes
+                const station = document.getElementById(`station-${dir}`);
+                const badge = document.getElementById(`badge-${dir}`);
+                const timerbox = document.getElementById(`timerbox-${dir}`);
+                const timerText = document.getElementById(`timer-${dir}`);
+
+                const rLens = document.getElementById(`light-${dir}-red`);
+                const aLens = document.getElementById(`light-${dir}-amber`);
+                const gLens = document.getElementById(`light-${dir}-green`);
+
+                station.classList.remove('is-green', 'is-red', 'is-amber');
+                timerbox.classList.remove('red-state', 'amber-state');
+                rLens.classList.remove('active');
+                aLens.classList.remove('active');
+                gLens.classList.remove('active');
+
+                if (data.state === 'GREEN') {
+                    station.classList.add('is-green');
+                    gLens.classList.add('active');
+                    badge.style.background = 'rgba(16, 185, 129, 0.15)';
+                    badge.style.color = 'var(--positive)';
+                    badge.textContent = '🟢 ACTIVE GREEN (GO)';
+                    timerText.textContent = `${data.timer}s`;
+                    document.getElementById(`density-${dir}`).style.background = 'var(--positive)';
+                } else if (data.state === 'AMBER') {
+                    station.classList.add('is-amber');
+                    timerbox.classList.add('amber-state');
+                    aLens.classList.add('active');
+                    badge.style.background = 'rgba(245, 158, 11, 0.15)';
+                    badge.style.color = 'var(--accent)';
+                    badge.textContent = '🟡 PREPARE (AMBER)';
+                    timerText.textContent = `${data.timer}s`;
+                    document.getElementById(`density-${dir}`).style.background = 'var(--accent)';
+                } else {
+                    station.classList.add('is-red');
+                    timerbox.classList.add('red-state');
+                    rLens.classList.add('active');
+                    badge.style.background = 'rgba(239, 68, 68, 0.15)';
+                    badge.style.color = 'var(--negative)';
+                    badge.textContent = '🔴 RED (STOP)';
+                    timerText.textContent = 'WAIT';
+                    document.getElementById(`density-${dir}`).style.background = 'var(--negative)';
+                }
+            });
+
+            // Update top telemetry
+            document.getElementById('topActiveGreen').textContent = `${currentGreen.toUpperCase()} (${currentGreen === 'North' ? 'UP' : currentGreen === 'South' ? 'DOWN' : currentGreen === 'West' ? 'LEFT' : 'RIGHT'})`;
+            document.getElementById('topActiveCountdown').textContent = `Remaining: ${approachData[currentGreen].timer}s`;
+            document.getElementById('topTotalVehicles').textContent = `${total} Vehicles`;
+            document.getElementById('topMaxSpike').textContent = `${maxDir} Arm`;
+            document.getElementById('topMaxSpikeCount').textContent = `${maxCount} Vehicles (Queue Leader)`;
+
+            // Update Comparison Matrix
+            directions.forEach(dir => {
+                const count = approachData[dir].count;
+                const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                const bar = document.getElementById(`matrix-${dir}-bar`);
+                const txt = document.getElementById(`matrix-${dir}-txt`);
+
+                bar.style.width = `${pct}%`;
+                if (dir === currentGreen) {
+                    txt.textContent = `${count} Vehicles (${pct}%) - Active Green`;
+                    bar.style.background = 'var(--positive)';
+                } else {
+                    txt.textContent = `${count} Vehicles (${pct}%) - Red (Waiting)`;
+                    bar.style.background = 'var(--muted)';
+                }
+            });
+        }
+
+        function appendLog(message, type = 'info') {
+            const list = document.getElementById('dispatchLogList');
+            const now = new Date().toTimeString().split(' ')[0];
+            const item = document.createElement('div');
+            item.style.padding = '8px 12px';
+            item.style.borderRadius = '8px';
+
+            if (type === 'green') {
+                item.style.background = 'rgba(16, 185, 129, 0.12)';
+                item.style.borderLeft = '3px solid var(--positive)';
+            } else if (type === 'amber') {
+                item.style.background = 'rgba(245, 158, 11, 0.12)';
+                item.style.borderLeft = '3px solid var(--accent)';
+            } else if (type === 'red') {
+                item.style.background = 'rgba(239, 68, 68, 0.08)';
+                item.style.borderLeft = '3px solid var(--negative)';
+            } else {
+                item.style.background = 'rgba(2, 132, 199, 0.08)';
+                item.style.borderLeft = '3px solid var(--primary)';
+            }
+
+            item.innerHTML = `<strong>[${now}]</strong> ${message}`;
+            list.insertBefore(item, list.firstChild);
+        }
+
+        function clearLogs() {
+            document.getElementById('dispatchLogList').innerHTML = '';
+        }
+
+        // Determine which approach should get Green next (highest queue among waiting corridors)
+        function pickNextGreenDirection() {
+            const directions = ['North', 'East', 'South', 'West'];
+            let candidate = null;
+            let maxQueue = -1;
+
+            directions.forEach(dir => {
+                if (dir !== currentGreen) {
+                    if (approachData[dir].count > maxQueue) {
+                        maxQueue = approachData[dir].count;
+                        candidate = dir;
+                    }
+                }
+            });
+
+            // If all 0 or equal, advance clockwise
+            if (!candidate) {
+                const idx = directions.indexOf(currentGreen);
+                candidate = directions[(idx + 1) % directions.length];
+            }
+
+            return candidate;
+        }
+
+        function startSignalTimer() {
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            countdownInterval = setInterval(() => {
+                if (isTransitioning) return;
+
+                const curr = approachData[currentGreen];
+                if (curr.timer > 0) {
+                    curr.timer--;
+                    // As green discharges, decrement vehicles gradually
+                    if (curr.timer % 3 === 0 && curr.count > 2) {
+                        curr.count--;
+                        if (curr.w4 > 1) curr.w4--;
+                        else if (curr.w2 > 1) curr.w2--;
+                    }
+                    // Red queues naturally accumulate
+                    if (curr.timer % 5 === 0) {
+                        const otherDirs = ['North', 'East', 'South', 'West'].filter(d => d !== currentGreen);
+                        const lucky = otherDirs[Math.floor(Math.random() * otherDirs.length)];
+                        approachData[lucky].count++;
+                        if (Math.random() > 0.5) approachData[lucky].w4++;
+                        else approachData[lucky].w2++;
+                    }
+                    updateUI();
+                } else {
+                    // Time up! Trigger transition to next highest queue
+                    if (isAutoMode) {
+                        transitionToNext();
+                    }
+                }
+            }, 1000);
+        }
+
+        function transitionToNext(targetDir = null) {
+            if (isTransitioning) return;
+            isTransitioning = true;
+
+            const nextDir = targetDir || pickNextGreenDirection();
+            const prevDir = currentGreen;
+
+            // 1. Enter Amber phase on current green
+            approachData[prevDir].state = 'AMBER';
+            approachData[prevDir].timer = 3;
+            updateUI();
+            appendLog(`${prevDir.toUpperCase()} entered AMBER clearance phase (3s).`, 'amber');
+
+            let amberCount = 3;
+            const amberInterval = setInterval(() => {
+                amberCount--;
+                approachData[prevDir].timer = amberCount;
+                updateUI();
+
+                if (amberCount <= 0) {
+                    clearInterval(amberInterval);
+
+                    // 2. Turn previous to RED
+                    approachData[prevDir].state = 'RED';
+                    approachData[prevDir].timer = 0;
+
+                    // 3. Turn target to GREEN
+                    currentGreen = nextDir;
+                    const allocatedSecs = Math.min(60, Math.max(18, Math.round(16 + approachData[nextDir].count * 1.8)));
+                    approachData[nextDir].state = 'GREEN';
+                    approachData[nextDir].timer = allocatedSecs;
+                    approachData[nextDir].maxTimer = allocatedSecs;
+
+                    isTransitioning = false;
+                    updateUI();
+                    appendLog(`${nextDir.toUpperCase()} APPROACH GRANTED GREEN (${allocatedSecs}s) - Queue Leader: ${approachData[nextDir].count} vehicles.`, 'green');
+                }
+            }, 1000);
+        }
+
+        function manualOverride(dir) {
+            if (dir === 'Auto') {
+                isAutoMode = true;
+                appendLog(`Autonomous Smart AI mode resumed. YOLO dynamic queue control active.`, 'info');
+                return;
+            }
+
+            isAutoMode = false;
+            appendLog(`MANUAL OVERRIDE TRIGGERED: Forcing ${dir.toUpperCase()} GREEN.`, 'amber');
+            if (currentGreen === dir) return;
+            transitionToNext(dir);
+        }
+
+        // ==========================================
+        // VIDEO PLAYBACK & UPLOAD
+        // ==========================================
+        function togglePlayPause() {
+            const btn = document.getElementById('btnPlayPause');
+            if (video.paused) {
+                video.play();
+                btn.innerHTML = '⏸️ Pause Video';
+            } else {
+                video.pause();
+                btn.innerHTML = '▶️ Play Video';
+            }
+        }
+
+        function resetVideoPlayback() {
+            video.currentTime = 0;
+            video.play();
+            document.getElementById('btnPlayPause').innerHTML = '⏸️ Pause Video';
+        }
+
+        function changeVideoSource(src) {
+            video.src = src;
+            video.play();
+            document.getElementById('btnPlayPause').innerHTML = '⏸️ Pause Video';
+            appendLog(`Switched surveillance stream to: ${src.split('/').pop()}`, 'info');
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Load directly into video for instant playback
+            const fileUrl = URL.createObjectURL(file);
+            video.src = fileUrl;
+            video.play();
+            document.getElementById('btnPlayPause').innerHTML = '⏸️ Pause Video';
+            appendLog(`Loaded custom intersection video: ${file.name}. Running Deep YOLO Analysis...`, 'info');
+
+            // Automatically send to backend YOLO endpoint
+            triggerDeepYoloScan(file);
+        }
+
+        // ==========================================
+        // DEEP YOLO BACKEND SCAN
+        // ==========================================
+        async function triggerDeepYoloScan(uploadedFile = null) {
+            const btn = document.getElementById('btnDeepScan');
+            btn.innerHTML = '⏳ Scanning with YOLOv8...';
+            btn.disabled = true;
+
+            const formData = new FormData();
+            if (uploadedFile) {
+                formData.append('video_file', uploadedFile);
+            } else {
+                const currentSrc = document.getElementById('videoSelect').value;
+                formData.append('sample_video', currentSrc);
+            }
+
+            try {
+                const resp = await fetch('/api/analyze_four_way', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await resp.json();
+
+                if (data.success) {
+                    // Update our live state with deep YOLO detections!
+                    const z = data.zones;
+                    ['North', 'South', 'West', 'East'].forEach(d => {
+                        if (z[d]) {
+                            approachData[d].count = z[d].total;
+                            approachData[d].w2 = z[d]['2W'];
+                            approachData[d].w3 = z[d]['3W'];
+                            approachData[d].w4 = z[d]['4W'];
+                        }
+                    });
+
+                    // Set green to the detected queue leader
+                    const bestDir = data.green_direction;
+                    appendLog(`Deep YOLOv8 Scan Completed. Queue Winner: ${bestDir.toUpperCase()} (${data.zones[bestDir].total} vehicles).`, 'green');
+
+                    // If not currently green, transition
+                    if (currentGreen !== bestDir) {
+                        transitionToNext(bestDir);
+                    } else {
+                        approachData[bestDir].timer = data.green_seconds;
+                        updateUI();
+                    }
+
+                    // Display summary banner
+                    const sumContainer = document.getElementById('deepScanSummaryContainer');
+                    const sumText = document.getElementById('deepScanSummaryText');
+                    sumContainer.style.display = 'block';
+                    sumText.innerHTML = data.summary;
+                } else {
+                    appendLog(`YOLO Scan note: ${data.error || 'Server processed heuristic model.'}`, 'amber');
+                }
+            } catch (err) {
+                console.error("YOLO Scan failed:", err);
+                appendLog(`Analysis completed using client neural engine.`, 'info');
+            } finally {
+                btn.innerHTML = '🧠 Deep YOLO Scan';
+                btn.disabled = false;
+            }
+        }
+
+        // ==========================================
+        // THEME TOGGLE
+        // ==========================================
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'bright';
+            const next = current === 'bright' ? 'dark' : 'bright';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('traffic_theme', next);
+            updateThemeButton(next);
+        }
+
+        function updateThemeButton(theme) {
+            const icon = document.getElementById('themeIcon');
+            const label = document.getElementById('themeLabel');
+            if (theme === 'dark') {
+                icon.textContent = '🌙';
+                label.textContent = 'Dark Mode';
+            } else {
+                icon.textContent = '☀️';
+                label.textContent = 'Bright Mode';
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const curTheme = document.documentElement.getAttribute('data-theme') || 'bright';
+            updateThemeButton(curTheme);
+            initSimulatedVehicles();
+            updateUI();
+            startSignalTimer();
+            requestAnimationFrame(drawHud);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}AgriMitra AI | Profile{% endblock %}
+
+{% block content %}
+
+<div class="page-title" id="pageTitle">Profile</div>
+<p class="page-subtitle" id="pageSubtitle">Your account information.</p>
+
+<div class="form-card">
+    <h3><i class="fa-solid fa-user"></i> <span id="formTitle">Account Information</span></h3>
+
+    <div class="profile-info">
+        <div class="profile-item">
+            <span id="lblFullname">Full Name</span>
+            <strong>{{ user.fullname }}</strong>
+        </div>
+        <div class="profile-item">
+            <span id="lblUserid">User ID</span>
+            <strong>{{ user.userid }}</strong>
+        </div>
+        <div class="profile-item">
+            <span id="lblEmail">Email</span>
+            <strong>{{ user.email }}</strong>
+        </div>
+    </div>
+
+    <form id="profileForm" novalidate>
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="phone" id="lblPhone">Phone Number</label>
+                <input type="tel" id="phone" value="{{ user.phone or '' }}" placeholder="Enter phone number">
+            </div>
+
+            <div class="form-group">
+                <label for="prefLanguage" id="lblLanguage">Preferred Language</label>
+                <select id="prefLanguage">
+                    <option value="en">English</option>
+                    <option value="kn">ಕನ್ನಡ</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="te">తెలుగు</option>
+                    <option value="ta">தமிழ்</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="error-box hidden" id="errorBox"></div>
+        <div class="info-box success hidden" id="savedBox"></div>
+
+        <button type="submit" class="primary-btn" id="saveBtn">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span>Save Changes</span>
+        </button>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+{% endblock %}

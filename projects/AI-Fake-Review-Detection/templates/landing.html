@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Review Authenticator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+            text-align: left;
+        }
+        .feature-box {
+            background: #fff;
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            transition: 0.3s;
+        }
+        .feature-box:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-light);
+        }
+        .icon-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: grid;
+            place-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .feature-title {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+        .feature-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; background-color: var(--bg-main);">
+        <div style="max-width: 1000px; width: 100%; text-align: center;">
+            
+            <div class="brand-mark" style="margin: 0 auto 20px auto; width: 70px; height: 70px; font-size: 32px; border-radius: 16px;">AI</div>
+            <h1 style="font-size: 3.5rem; margin-top: 0; margin-bottom: 15px; font-weight: 800; color: var(--text-main); letter-spacing: -1px;">Fake Review Detection System</h1>
+            
+            <p style="font-size: 1.2rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 40px auto; line-height: 1.6;">
+                Protect your brand and customers from deceptive online reviews.<br>
+                Powered by state-of-the-art Natural Language Processing (NLP) and Machine Learning algorithms.
+            </p>
+
+            <!-- Explanation Methods Grid (Key Boxes) -->
+            <div class="feature-grid">
+                <div class="feature-box">
+                    <div class="icon-circle">📝</div>
+                    <div class="feature-title">Bulk NLP Parsing</div>
+                    <div class="feature-desc">Copy-paste entire comment sections from Amazon or Yelp. Our system instantly tokenizes text, removes stop-words, and lemmatizes thousands of reviews at once.</div>
+                </div>
+                
+                <div class="feature-box">
+                    <div class="icon-circle">🧮</div>
+                    <div class="feature-title">TF-IDF Vectorization</div>
+                    <div class="feature-desc">We convert raw review text into numerical feature vectors using Term Frequency-Inverse Document Frequency, mapping the true semantic intent behind the words.</div>
+                </div>
+                
+                <div class="feature-box">
+                    <div class="icon-circle">🤖</div>
+                    <div class="feature-title">Logistic Regression</div>
+                    <div class="feature-desc">Trained on massive Kaggle datasets, our ML classifier instantly categorizes reviews as Genuine or Fake based on statistical patterns invisible to human moderators.</div>
+                </div>
+
+                <div class="feature-box">
+                    <div class="icon-circle">🔍</div>
+                    <div class="feature-title">Explainable AI (XAI)</div>
+                    <div class="feature-desc">Don't just get a "Fake" label. The dashboard highlights the exact deceptive trigger words that caused the AI to flag the comment, providing complete transparency.</div>
+                </div>
+
+                <div class="feature-box">
+                    <div class="icon-circle">🗺️</div>
+                    <div class="feature-title">Bot Farm Mapping</div>
+                    <div class="feature-desc">Extract IP addresses from suspicious reviews and plot them on an interactive map of India to physically track down automated spam clusters and bot farms.</div>
+                </div>
+
+                <div class="feature-box">
+                    <div class="icon-circle">📊</div>
+                    <div class="feature-title">Keyword Analytics</div>
+                    <div class="feature-desc">Visual dashboards using Chart.js to track your platform's overall Spam Ratio and identify the most frequently used deceptive marketing buzzwords.</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 50px;">
+                <a href="{{ url_for('login') }}" class="primary-btn" style="display: inline-block; width: auto; padding: 18px 50px; text-decoration: none; font-size: 16px; border-radius: 12px;">Launch NLP Platform</a>
+                <p style="margin-top: 15px; font-size: 13px; color: var(--text-muted);">Fully automated analysis. No coding required.</p>
+            </div>
+            
+        </div>
+    </div>
+</body>
+</html>

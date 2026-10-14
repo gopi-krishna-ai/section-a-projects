@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudCost AI - Resource Optimizer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;">
+        <div style="max-width: 800px; width: 100%; text-align: center; padding: 60px; background: var(--panel-bg); backdrop-filter: blur(15px); border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+            
+            <div class="brand-mark" style="margin: 0 auto 30px auto; width: 60px; height: 60px; font-size: 28px;">AI</div>
+            <h1 style="font-size: 3rem; margin-top: 0; margin-bottom: 20px; font-weight: 800;">CloudCost AI</h1>
+            
+            <p style="font-size: 1.1rem; margin-bottom: 40px; color: var(--muted); line-height: 1.6;">
+                Intelligent Cost & Resource Optimizer for Multi-Cloud Environments.<br>
+                Reduce your AWS, Azure, and GCP bills instantly using Machine Learning.
+                <br><br>
+                💰 <strong>Predict Cloud Costs</strong> with XGBoost.<br>
+                📉 <strong>Optimize VMs</strong> by identifying idle/underutilized servers.<br>
+                🗺️ <strong>Multi-Cloud Mapping</strong> to visually plan regional deployments.
+            </p>
+
+            <a href="{{ url_for('login') }}" class="primary-btn" style="display: inline-block; width: auto; padding: 15px 40px; text-decoration: none;">Proceed to Console</a>
+            
+        </div>
+    </div>
+</body>
+</html>

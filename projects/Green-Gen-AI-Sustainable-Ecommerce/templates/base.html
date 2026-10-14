@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Gen AI - Sustainable E-Commerce</title>
+    <script src="{{ url_for('static', filename='js/tailwind.js') }}"></script>
+    <link href="{{ url_for('static', filename='css/all.min.css') }}" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        green: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .eco-score-circle {
+            background: conic-gradient(#22c55e calc(var(--score) * 1%), #e5e7eb 0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .eco-score-inner {
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased flex flex-col min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="{{ url_for('landing_page') }}" class="flex-shrink-0 flex items-center gap-2">
+                        <i class="fa-solid fa-leaf text-green-600 text-2xl"></i>
+                        <span class="font-bold text-xl text-green-900 tracking-tight">Green Gen AI</span>
+                    </a>
+                    <div class="hidden sm:ml-8 sm:flex sm:space-x-8">
+                        <a href="{{ url_for('home') }}" class="text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-green-500 text-sm font-medium">Store</a>
+                        <a href="{{ url_for('product_catalog') }}" class="text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-green-500 text-sm font-medium">Shop</a>
+                        <a href="{{ url_for('refurbished') }}" class="text-gray-500 hover:text-emerald-600 inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-emerald-500 text-sm font-medium"><i class="fa-solid fa-recycle mr-1"></i> Refurbished</a>
+                        <a href="{{ url_for('recommendations') }}" class="text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-green-500 text-sm font-medium">Recommendations</a>
+                        <a href="{{ url_for('landing_page') }}#how-it-works" class="text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-green-500 text-sm font-medium">How it Works</a>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <!-- Search Bar -->
+                    <form action="{{ url_for('product_catalog') }}" method="GET" class="hidden md:flex">
+                        <div class="relative">
+                            <input type="text" name="search" placeholder="Search eco products..." class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fa-solid fa-search text-gray-400"></i>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <a href="{{ url_for('view_cart') }}" class="text-gray-500 hover:text-green-600 relative p-2">
+                        <i class="fa-solid fa-shopping-cart text-xl"></i>
+                        <span id="cart-badge" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-green-600 rounded-full">{{ session.get('cart', {}) | length }}</span>
+                    </a>
+                    
+                    <div class="relative group">
+                        {% if user %}
+                        <a href="{{ url_for('profile') }}" class="flex items-center space-x-2 text-gray-500 hover:text-green-600 cursor-pointer p-2">
+                            <i class="fa-solid fa-user-circle text-2xl"></i>
+                            <span class="text-sm font-medium hidden md:block">{{ user.name }}</span>
+                        </a>
+                        
+                        <!-- User Menu Dropdown -->
+                        <div class="absolute right-0 w-48 mt-2 origin-top-right bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                            <div class="py-1">
+                                <div class="px-4 py-2 text-xs text-gray-500 border-b">Welcome, {{ user.name }}</div>
+                                {% if user.is_admin %}
+                                <a href="{{ url_for('admin_dashboard') }}" class="block px-4 py-2 text-sm text-green-700 font-bold hover:bg-green-50">Admin Dashboard</a>
+                                {% endif %}
+                                <a href="{{ url_for('profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50">My Profile</a>
+                                <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</a>
+                            </div>
+                        </div>
+                        {% else %}
+                        <a href="{{ url_for('login_page') }}" class="flex items-center space-x-2 text-gray-500 hover:text-green-600 cursor-pointer p-2">
+                            <i class="fa-solid fa-sign-in-alt text-2xl"></i>
+                            <span class="text-sm font-medium hidden md:block border border-gray-300 rounded-md px-3 py-1 hover:border-green-500">Sign In</span>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <a href="#" class="flex items-center gap-2 mb-4">
+                        <i class="fa-solid fa-leaf text-green-600 text-2xl"></i>
+                        <span class="font-bold text-xl text-green-900">Green Gen AI</span>
+                    </a>
+                    <p class="text-gray-500 text-sm mb-4">
+                        An AI-powered sustainable e-commerce platform prototype. 
+                        We evaluate products using sustainability information to help you shop better and choose greener.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Features</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><a href="{{ url_for('architecture') }}" class="text-base text-gray-500 hover:text-green-600">Eco Score</a></li>
+                        <li><a href="{{ url_for('recommendations') }}" class="text-base text-gray-500 hover:text-green-600">AI Personalization</a></li>
+                        <li><a href="{{ url_for('recycle') }}" class="text-base text-gray-500 hover:text-green-600">Recycle & Earn</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">Demo Info</h3>
+                    <ul class="mt-4 space-y-4">
+                        <li><span class="text-base text-gray-500">Built for Advanced Agentic Coding Prototype.</span></li>
+                        <li><span class="text-base text-gray-500">Includes 1,500 real product rows.</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-200 pt-8 flex items-center justify-between">
+                <p class="text-base text-gray-400">
+                    &copy; 2026 Green Gen AI Project.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function addToCart(productId) {
+            fetch(`/cart/add/${productId}`, { method: 'POST' })
+                .then(r => r.json())
+                .then(data => {
+                    if(data.success) {
+                        document.getElementById('cart-badge').innerText = data.cart_count;
+                        // Show a small toast
+                        const toast = document.createElement('div');
+                        toast.className = "fixed bottom-4 right-4 bg-green-600 text-white px-6 py-3 rounded shadow-lg z-50 transition-opacity";
+                        toast.innerText = "Added to Cart!";
+                        document.body.appendChild(toast);
+                        setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+                        setTimeout(() => { document.body.removeChild(toast); }, 2500);
+                    }
+                });
+        }
+    </script>
+
+    <!-- Chatbot Widget -->
+    <div id="chatbot-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; align-items: flex-end;">
+        <div id="chat-window" style="display: none; width: 320px; height: 400px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); flex-direction: column; overflow: hidden; margin-bottom: 15px;">
+            <div style="background: #059669; color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
+                <span><i class="fas fa-robot"></i> Green Gen AI</span>
+                <button onclick="document.getElementById('chat-window').style.display='none'" style="background: none; border: none; color: white; cursor: pointer;"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="chat-messages" style="flex: 1; padding: 15px; overflow-y: auto; background: #f9fafb; display: flex; flex-direction: column; gap: 10px;">
+                <div style="background: #e5e7eb; padding: 10px; border-radius: 10px; border-bottom-left-radius: 0; align-self: flex-start; max-width: 85%; font-size: 0.9em; color: #1f2937;">
+                    Hi! I'm the Green Gen AI. Ask me to find products to see their eco-scores and prices!
+                </div>
+            </div>
+            <div style="padding: 10px; background: white; border-top: 1px solid #e5e7eb; display: flex;">
+                <input type="text" id="chat-input" placeholder="Type a message..." style="flex: 1; padding: 8px; border: 1px solid #d1d5db; border-radius: 20px; outline: none; padding-left: 15px;" onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                <button onclick="sendChatMessage()" style="background: #059669; color: white; border: none; border-radius: 50%; width: 35px; height: 35px; margin-left: 10px; cursor: pointer; display: flex; justify-content: center; align-items: center;"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+        <button id="chat-toggle" onclick="toggleChat()" style="background: #059669; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; font-size: 1.5rem; display: flex; justify-content: center; align-items: center; transition: transform 0.2s;">
+            <i class="fas fa-comment-dots"></i>
+        </button>
+    </div>
+
+    <script>
+        function toggleChat() {
+            const win = document.getElementById('chat-window');
+            if (win.style.display === 'none') {
+                win.style.display = 'flex';
+                document.getElementById('chat-input').focus();
+            } else {
+                win.style.display = 'none';
+            }
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            // Add user message to UI
+            addChatMessage(message, 'user');
+            input.value = '';
+            
+            // Show typing indicator
+            const typingId = addChatMessage('<i class="fas fa-ellipsis-h" style="animation: blink 1s infinite;"></i>', 'bot');
+            
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({query: message})
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById(typingId).remove();
+                addChatMessage(data.reply, 'bot', true);
+            })
+            .catch(err => {
+                document.getElementById(typingId).remove();
+                addChatMessage("Sorry, I'm having trouble connecting to the server.", 'bot');
+            });
+        }
+        
+        function addChatMessage(content, sender, isHtml = false) {
+            const messages = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            const id = 'msg-' + Date.now();
+            div.id = id;
+            div.style.padding = '10px';
+            div.style.borderRadius = '10px';
+            div.style.maxWidth = '85%';
+            div.style.fontSize = '0.9em';
+            div.style.lineHeight = '1.4';
+            
+            if (sender === 'user') {
+                div.style.background = '#059669';
+                div.style.color = 'white';
+                div.style.alignSelf = 'flex-end';
+                div.style.borderBottomRightRadius = '0';
+                if (!isHtml) div.textContent = content;
+                else div.innerHTML = content;
+            } else {
+                div.style.background = '#e5e7eb';
+                div.style.color = '#1f2937';
+                div.style.alignSelf = 'flex-start';
+                div.style.borderBottomLeftRadius = '0';
+                if (!isHtml) div.textContent = content;
+                else div.innerHTML = content;
+            }
+            
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+            return id;
+        }
+    </script>
+</body>
+</html>

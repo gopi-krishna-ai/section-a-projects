@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Scanner - Auth</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+        <div style="max-width: 400px; width: 100%; background: var(--panel-bg); backdrop-filter: blur(15px); border-radius: 12px; padding: 40px; border: 1px solid var(--line); border-top: 2px solid var(--primary);">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div class="brand-mark" style="margin: 0 auto 15px auto;">SEC</div>
+                <h2 style="margin: 0; border: none; padding: 0;">AUTHORIZE ACCESS</h2>
+            </div>
+            
+            <form method="POST" action="{{ url_for('login') }}">
+                <div style="margin-bottom: 20px;">
+                    <label style="font-family: monospace; color: var(--primary); margin-bottom: 5px; display: block; font-size: 12px;">> ENTER CREDENTIALS</label>
+                    <input type="email" name="email" required placeholder="agent@cyber.gov">
+                </div>
+                <div style="margin-bottom: 30px;">
+                    <label style="font-family: monospace; color: var(--primary); margin-bottom: 5px; display: block; font-size: 12px;">> ENTER PASSKEY</label>
+                    <input type="password" name="password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="primary-btn">DECRYPT & LOGIN</button>
+            </form>
+            <div style="text-align: center; margin-top: 20px; font-family: monospace; font-size: 11px; color: var(--muted);">
+                [ DEMO MODE: BYPASS AUTHENTICATION ACTIVE ]
+            </div>
+        </div>
+    </div>
+</body>
+</html>

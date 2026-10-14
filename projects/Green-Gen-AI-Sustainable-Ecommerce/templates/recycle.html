@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-gray-50 flex-grow py-12">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center mb-10">
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+                <i class="fa-solid fa-recycle text-3xl text-green-600"></i>
+            </div>
+            <h1 class="text-3xl font-extrabold text-gray-900">Recycle & Earn</h1>
+            <p class="mt-4 text-lg text-gray-500">Give your used products a second life. Return eligible items, and once verified, we'll credit your account with Green Points.</p>
+        </div>
+
+        <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-200">
+            <form class="space-y-6" action="{{ url_for('recycle') }}" method="POST">
+                
+                <div>
+                    <label for="product_id" class="block text-sm font-medium text-gray-700">Select Purchased Product to Recycle</label>
+                    <div class="mt-1">
+                        <select id="product_id" name="product_id" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm">
+                            <option value="">-- Select Product --</option>
+                            {% for p in products %}
+                            <option value="{{ p.id }}">{{ p.name }} (Purchased)</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% if products|length == 0 %}
+                    <p class="mt-2 text-sm text-red-600">You don't have any past purchases eligible for recycling yet.</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="condition" class="block text-sm font-medium text-gray-700">Condition of Item</label>
+                    <div class="mt-1">
+                        <select id="condition" name="condition" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm">
+                            <option value="Good">Good - Usable</option>
+                            <option value="Fair">Fair - Shows wear</option>
+                            <option value="Poor">Poor - Broken/Needs material recycling</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="reason" class="block text-sm font-medium text-gray-700">Reason for Return</label>
+                    <div class="mt-1">
+                        <textarea id="reason" name="reason" rows="3" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="e.g. No longer needed, upgrading to new model..."></textarea>
+                    </div>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" {% if products|length == 0 %}disabled{% endif %} class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                        Submit Recycling Request
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

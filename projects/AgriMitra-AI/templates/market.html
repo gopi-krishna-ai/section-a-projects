@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+{% block title %}AgriMitra AI | Local Market Hub{% endblock %}
+
+{% block content %}
+{% if current_user and current_user.userid == 'admin@agrimitra' %}
+
+<div style="padding: 30px;">
+    <h2><i class="fa-solid fa-shop"></i> Marketplace API</h2>
+    <div style="margin-top: 10px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <p>Market API connection fetching live spot prices for standard commodities.</p>
+    </div>
+</div>
+
+{% else %}
+
+<style>
+.market-header {
+    background: linear-gradient(135deg, var(--c-secondary), var(--c-secondary-dark));
+    color: white;
+    padding: var(--sp-6) var(--sp-8);
+    border-radius: var(--r-xl);
+    box-shadow: var(--sh-lg);
+    margin-bottom: var(--sp-7);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.market-header h1 { margin: 0; font-size: 2.5rem; text-transform: capitalize; }
+.market-header p { margin: 5px 0 0; opacity: 0.9; font-size: 1.1rem; }
+
+.market-container {
+    display: flex;
+    gap: 20px;
+    height: 600px;
+    margin-bottom: 30px;
+}
+.shops-list {
+    flex: 1;
+    background: var(--c-surface);
+    border-radius: var(--r-xl);
+    box-shadow: var(--sh-md);
+    overflow-y: auto;
+    padding: var(--sp-5);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.map-view {
+    flex: 2;
+    background: #e0e0e0;
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--sh-md);
+}
+#marketMap {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.shop-card {
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    padding: 15px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.shop-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--sh-sm);
+    border-color: var(--c-secondary);
+}
+.shop-card.active {
+    background: var(--c-secondary-soft);
+    border-color: var(--c-secondary);
+}
+.shop-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--c-primary);
+    margin-bottom: 5px;
+}
+.shop-rate {
+    font-size: 1.5rem;
+    color: var(--c-secondary-dark);
+    font-weight: bold;
+    margin: 10px 0;
+}
+.shop-dist {
+    font-size: 0.9rem;
+    color: var(--c-text-muted);
+}
+</style>
+
+<div class="market-header">
+    <div>
+        <h1>{{ crop }} Buyers</h1>
+        <p>Find local mandis and buyers near your location.</p>
+    </div>
+    <a href="/recommendation" style="color: white; font-weight:bold; text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Back to Hub</a>
+</div>
+
+<div class="market-container">
+    <div class="shops-list" id="shopsContainer">
+        <!-- JS generated shops -->
+    </div>
+    
+    <div class="map-view">
+        <div id="marketMap"></div>
+    </div>
+</div>
+
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    let centerLat = parseFloat("{{ lat }}");
+    let centerLon = parseFloat("{{ lon }}");
+    
+    // Check sessionStorage if args were default/missing
+    if (centerLat === 20.5937 || isNaN(centerLat)) {
+        centerLat = parseFloat(sessionStorage.getItem('farmLat')) || 20.5937;
+        centerLon = parseFloat(sessionStorage.getItem('farmLon')) || 78.9629;
+    }
+    
+    const crop = "{{ crop }}";
+    
+    const map = L.map('marketMap').setView([centerLat, centerLon], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    // Add user marker
+    const userIcon = L.icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+    L.marker([centerLat, centerLon], {icon: userIcon}).addTo(map).bindPopup("<b>Your Farm</b>").openPopup();
+
+    const shopNames = ["Agri Trade Hub", "Kisan Mandi", "Green Valley Buyers", "National Agri Traders", "Local Farm Co-op", "Golden Harvest Buyers", "Sunrise Agro Market", "Village Produce Traders", "Premium Crop Buyers", "Farmer's Friend Market"];
+    const baseRate = Math.floor(Math.random() * 2000) + 1500; // Base rate between 1500 - 3500
+
+    const shops = [];
+    const markers = [];
+
+    // Generate exactly 10 shops around the center
+    const numShops = 10;
+    for(let i=0; i<numShops; i++) {
+        // Random offset ~ 2-20km
+        const latOffset = (Math.random() - 0.5) * 0.25;
+        const lonOffset = (Math.random() - 0.5) * 0.25;
+        const sLat = centerLat + latOffset;
+        const sLon = centerLon + lonOffset;
+        
+        const rate = baseRate + (Math.floor(Math.random() * 300) - 150); // +/- 150
+        const dist = (Math.sqrt(Math.pow(latOffset, 2) + Math.pow(lonOffset, 2)) * 111).toFixed(1); // Rough km conversion
+        
+        shops.push({
+            id: i,
+            name: shopNames[i % shopNames.length] + " " + String.fromCharCode(65 + i),
+            lat: sLat,
+            lon: sLon,
+            rate: rate,
+            dist: dist
+        });
+    }
+
+    // Sort by best rate, then distance
+    shops.sort((a,b) => b.rate - a.rate || a.dist - b.dist);
+
+    const container = document.getElementById('shopsContainer');
+    
+    // Initialize markers once
+    shops.forEach((shop, idx) => {
+        const m = L.marker([shop.lat, shop.lon]).addTo(map);
+        m.bindPopup(`<b>${shop.name}</b><br>Rate: ₹${shop.rate}/q`);
+        markers.push(m);
+    });
+
+    function renderShops(translatedShops) {
+        container.innerHTML = '';
+        translatedShops.forEach((shop, idx) => {
+            const card = document.createElement('div');
+            card.className = 'shop-card';
+            let badge = "";
+            if (idx === 0) {
+                badge = `<div style="background:#dcfce7; color:#166534; padding:5px; border-radius:4px; font-size:0.8rem; margin-top:5px; border:1px solid #86efac;">
+                    <i class="fa-solid fa-star"></i> <b>${shop.badgeTitle}:</b> ${shop.badgeDesc}
+                </div>`;
+            }
+
+            card.innerHTML = `
+                <div class="shop-name">${shop.name}</div>
+                <div class="shop-rate">₹${shop.rate} <span style="font-size:0.8rem; color:gray;">${shop.perQuintal}</span></div>
+                <div class="shop-dist"><i class="fa-solid fa-location-arrow"></i> ${shop.dist} ${shop.kmAway}</div>
+                ${badge}
+            `;
+            card.onclick = () => {
+                document.querySelectorAll('.shop-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                map.flyTo([shop.lat, shop.lon], 14);
+                markers[idx].openPopup();
+            };
+            container.appendChild(card);
+            markers[idx].getPopup().setContent(`<b>${shop.name}</b><br>${shop.rateText}: ₹${shop.rate}/q`);
+        });
+    }
+
+    renderShops(shops.map(s => ({
+        ...s, 
+        badgeTitle: "Top Choice", 
+        badgeDesc: `Recommended by AgriMitra because they are offering the highest rate (₹${s.rate}) and are very close to your farm. Highly trusted buyer.`,
+        perQuintal: "/ quintal",
+        kmAway: "km away",
+        rateText: "Rate"
+    })));
+
+    document.addEventListener("agri:langchange", function(e) {
+        const lang = e.detail.lang;
+        const texts = [
+            "Local Market Hub",
+            "Find nearby buyers and sellers for your crops.",
+            "Top Choice",
+            "/ quintal",
+            "km away",
+            "Rate",
+            "Recommended by AgriMitra because they are offering the highest rate and are very close to your farm. Highly trusted buyer."
+        ];
+        
+        NLP.translate(texts, lang).then(out => {
+            document.querySelector('.market-header h1').innerText = out[0];
+            document.querySelector('.market-header p').innerText = out[1];
+            
+            const translatedShops = shops.map(s => ({
+                ...s,
+                badgeTitle: out[2],
+                badgeDesc: out[6].replace("rate", "₹"+s.rate),
+                perQuintal: out[3],
+                kmAway: out[4],
+                rateText: out[5]
+            }));
+            renderShops(translatedShops);
+        });
+    });
+
+    if (typeof getSavedLanguage === "function") {
+        document.dispatchEvent(new CustomEvent("agri:langchange", { detail: { lang: getSavedLanguage() } }));
+    }
+</script>
+{% endblock %}

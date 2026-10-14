@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="StudyAI — AI-Assisted Smart Study Planner with Productivity Prediction. Plan smarter, study better." />
+    <meta name="theme-color" content="#4F8EF7" />
+
+    <!-- Favicon: gradient brain icon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%234F8EF7'/><stop offset='100%25' stop-color='%237B61FF'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23g)'/><text y='.9em' font-size='72' x='10'>🧠</text></svg>" />
+
+    <!-- Open Graph -->
+    <meta property="og:title"       content="StudyAI — Smart Study Planner" />
+    <meta property="og:description" content="AI-powered study planning that adapts to your learning patterns and predicts your peak productivity hours." />
+    <meta property="og:type"        content="website" />
+
+    <!-- Preconnect for Google Fonts (loaded via fonts.css) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <title>StudyAI — Smart Study Planner</title>
+
+    <style>
+      /* Prevent flash of unstyled content */
+      html, body { margin: 0; padding: 0; background: #f0f4ff; }
+
+      /* Splash screen */
+      #splash {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #1a1f3e 0%, #0f1228 100%);
+        z-index: 9999;
+        transition: opacity 0.4s ease;
+        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+      #splash.hidden { opacity: 0; pointer-events: none; }
+
+      .splash-logo {
+        width: 72px;
+        height: 72px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #4F8EF7, #7B61FF);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        margin-bottom: 20px;
+        box-shadow: 0 16px 50px rgba(79, 142, 247, 0.5);
+        animation: splashPulse 1.8s ease-in-out infinite;
+      }
+
+      .splash-name {
+        color: #ffffff;
+        font-size: 1.6rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        margin: 0 0 4px;
+      }
+
+      .splash-tag {
+        color: #718096;
+        font-size: 0.82rem;
+        margin: 0 0 28px;
+      }
+
+      .splash-dots { display: flex; gap: 10px; }
+      .splash-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #4F8EF7;
+        animation: splashBounce 1.3s ease-in-out infinite;
+      }
+      .splash-dot:nth-child(2) { animation-delay: 0.18s; background: #7B61FF; }
+      .splash-dot:nth-child(3) { animation-delay: 0.36s; background: #10b981; }
+
+      @keyframes splashPulse {
+        0%, 100% { transform: scale(1); box-shadow: 0 16px 50px rgba(79,142,247,0.5); }
+        50%       { transform: scale(1.06); box-shadow: 0 20px 60px rgba(123,97,255,0.5); }
+      }
+      @keyframes splashBounce {
+        0%, 80%, 100% { transform: translateY(0); opacity: 0.6; }
+        40%           { transform: translateY(-14px); opacity: 1; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Splash shown while JS loads -->
+    <div id="splash">
+      <div class="splash-logo">🧠</div>
+      <p class="splash-name">StudyAI</p>
+      <p class="splash-tag">Smart Study Planner · AI Powered</p>
+      <div class="splash-dots">
+        <div class="splash-dot"></div>
+        <div class="splash-dot"></div>
+        <div class="splash-dot"></div>
+      </div>
+    </div>
+
+    <!-- React mount target -->
+    <div id="root"></div>
+
+    <script>
+      // Called by main.tsx once React has mounted
+      window.__removeSplash = function () {
+        var splash = document.getElementById('splash');
+        if (splash) {
+          splash.classList.add('hidden');
+          setTimeout(function () {
+            if (splash.parentNode) splash.parentNode.removeChild(splash);
+          }, 450);
+        }
+      };
+    </script>
+
+    <!-- Vite + React entry -->
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

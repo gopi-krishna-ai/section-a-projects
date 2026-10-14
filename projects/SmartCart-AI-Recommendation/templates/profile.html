@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-dark text-white text-center py-4">
+                <img src="https://ui-avatars.com/api/?name={{ customer.name|urlencode }}&size=100&background=random" class="rounded-circle mb-3" alt="Avatar">
+                <h3>{{ customer.name }}</h3>
+                <p class="mb-0">{{ customer.email }}</p>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Member Since
+                        <span>{{ customer.created_at.strftime('%Y-%m-%d') }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Orders
+                        <span class="badge bg-primary rounded-pill">{{ order_count }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Total Spent
+                        <span class="text-success fw-bold">${{ "%.2f"|format(total_spent) }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-light">
+                <h4 class="mb-0">Shopping Activity Insights</h4>
+            </div>
+            <div class="card-body">
+                <p>Welcome to your SmartCart Dashboard. Here we track your behavior to provide you with intelligent AI recommendations.</p>
+                <div class="alert alert-info">
+                    <strong>AI Insight:</strong> Based on your history, our Random Forest Classifier analyzes your purchases, searches, and cart additions to predict what you might need next!
+                </div>
+                
+                <div class="mt-4">
+                    <h5>Quick Links</h5>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('recommendations') }}" class="btn btn-outline-primary text-start">✨ View Personalized Recommendations</a>
+                        <a href="{{ url_for('orders') }}" class="btn btn-outline-secondary text-start">📦 Order History</a>
+                        <a href="{{ url_for('shop') }}" class="btn btn-outline-success text-start">🛍️ Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

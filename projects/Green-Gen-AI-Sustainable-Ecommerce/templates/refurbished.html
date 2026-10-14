@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-emerald-50">
+  <div>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-extrabold tracking-tight text-emerald-900 sm:text-5xl">
+            Community Recycled Products
+        </h1>
+        <p class="mt-4 max-w-2xl mx-auto text-xl text-emerald-700">
+            Give these items a second life! These products were responsibly recycled by our amazing community members and refurbished to full working condition. By choosing refurbished, you save money and reduce e-waste.
+        </p>
+      </div>
+
+      <section aria-labelledby="products-heading" class="pb-24">
+        <div class="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+            {% for p in products %}
+            <div class="group relative bg-white border border-emerald-200 rounded-2xl shadow-sm flex flex-col overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div class="aspect-w-3 aspect-h-4 bg-gray-200 group-hover:opacity-75 sm:aspect-none sm:h-64 relative">
+                    <img src="{{ p.image_url }}" alt="{{ p.name }}" class="w-full h-full object-center object-cover sm:w-full sm:h-full">
+                    
+                    <!-- Recycled Badge overlay -->
+                    <div class="absolute top-2 left-2 bg-emerald-100 px-3 py-1 rounded-full shadow flex items-center gap-1 border border-emerald-300">
+                        <i class="fa-solid fa-recycle text-emerald-600 text-xs"></i>
+                        <span class="text-xs font-bold text-emerald-800">Refurbished</span>
+                    </div>
+                </div>
+                <div class="flex-1 p-5 space-y-3 flex flex-col bg-white">
+                    <div class="flex items-center text-xs text-emerald-600 font-medium bg-emerald-50 rounded p-2">
+                        <i class="fa-solid fa-hand-holding-heart mr-2"></i> Recycled by {{ p.recycled_by }}
+                    </div>
+                    
+                    <h3 class="text-sm font-bold text-gray-900 leading-tight">
+                        <a href="{{ url_for('product_details', product_id=p.id) }}">
+                            <span aria-hidden="true" class="absolute inset-0"></span>
+                            {{ p.name }}
+                        </a>
+                    </h3>
+                    <p class="text-xs text-gray-500 uppercase tracking-wide font-semibold">{{ p.category }}</p>
+                    
+                    <div class="flex-1 flex items-end justify-between mt-4">
+                        <div>
+                            <p class="text-xs text-gray-500 line-through">₹{{ p.price_inr | int }}</p>
+                            <p class="text-lg font-extrabold text-emerald-700">₹{{ p.refurbished_price }}</p>
+                        </div>
+                        <div class="flex gap-2 relative z-10 flex-wrap justify-end">
+                            <button onclick="event.preventDefault(); addToCart('{{ p.id }}')" class="px-4 py-2 bg-emerald-600 text-white hover:bg-emerald-700 rounded-lg text-sm font-bold shadow transition-colors">
+                                Add
+                            </button>
+                            {% if user and user.is_admin %}
+                            <a href="{{ url_for('admin_edit_image', product_id=p.id) }}" class="px-3 py-2 bg-white text-emerald-700 border border-emerald-300 hover:bg-emerald-50 rounded-lg text-sm font-bold shadow-sm transition-colors flex items-center" onclick="event.stopPropagation();">
+                                <i class="fa-solid fa-image mr-1"></i> Edit
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-span-full py-12 text-center">
+                <i class="fa-solid fa-box-open text-4xl text-gray-300 mb-4"></i>
+                <h3 class="text-lg font-medium text-gray-900">No refurbished products right now</h3>
+                <p class="mt-1 text-sm text-gray-500">Check back later when more community members recycle!</p>
+            </div>
+            {% endfor %}
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+{% endblock %}

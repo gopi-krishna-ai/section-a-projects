@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="bg-white">
+  <div class="pt-6">
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <ol role="list" class="flex items-center space-x-2">
+        <li><a href="{{ url_for('product_catalog') }}" class="text-sm font-medium text-gray-900">Products</a></li>
+        <li><svg width="16" height="20" viewBox="0 0 16 20" fill="currentColor" class="text-gray-300"><path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" /></svg></li>
+        <li><a href="{{ url_for('product_catalog', category=product.category) }}" class="text-sm font-medium text-gray-900">{{ product.category }}</a></li>
+      </ol>
+    </nav>
+
+    <!-- Product Detail -->
+    <div class="max-w-7xl mx-auto mt-8 px-4 sm:px-6 lg:px-8">
+        <div class="lg:grid lg:grid-cols-2 lg:gap-x-8">
+            <!-- Image gallery -->
+            <div class="w-full rounded-lg overflow-hidden bg-gray-100 p-8 flex items-center justify-center">
+                <img src="{{ product.image_url }}" alt="{{ product.name }}" class="w-2/3 h-auto object-center object-cover shadow-lg border border-gray-200">
+            </div>
+
+            <!-- Product info -->
+            <div class="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
+                <h1 class="text-3xl font-extrabold tracking-tight text-gray-900">{{ product.name }}</h1>
+                <div class="mt-3 flex items-center justify-between">
+                    <p class="text-3xl text-gray-900">₹{{ product.price_inr | int }}</p>
+                    <div class="bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm font-semibold border border-green-200">
+                        {{ product.eco_label }}
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="sr-only">Description</h3>
+                    <p class="text-base text-gray-700">{{ product.description }}</p>
+                </div>
+
+                <!-- Eco Score Big Widget -->
+                <div class="mt-8 bg-green-50 rounded-xl p-6 border border-green-200">
+                    <div class="flex items-center gap-6">
+                        <!-- CSS Pie Chart representation of Eco Score -->
+                        <div class="w-24 h-24 eco-score-circle" style="--score: {{ product.eco_score }};">
+                            <div class="w-20 h-20 eco-score-inner text-green-700 flex flex-col items-center justify-center">
+                                <span class="text-2xl font-black">{{ product.eco_score | round | int }}</span>
+                                <span class="text-[10px] font-bold text-gray-400">/ 100</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-green-900">Overall Eco Score</h3>
+                            <p class="text-sm text-green-700 mt-1">This score evaluates the environmental impact of this product across its lifecycle.</p>
+                            <button onclick="document.getElementById('eco-modal').classList.remove('hidden')" class="mt-2 text-sm text-green-600 font-semibold hover:underline">Why this score?</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex gap-4">
+                    <button onclick="addToCart('{{ product.id }}')" class="flex-1 bg-green-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 shadow-sm transition-colors">
+                        Add to Cart
+                    </button>
+                    <a href="{{ url_for('customize', product_id=product.id) }}" class="flex-1 bg-white border border-gray-300 rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 shadow-sm transition-colors">
+                        <i class="fa-solid fa-cube mr-2"></i> 3D Customize
+                    </a>
+                </div>
+
+                <div class="mt-10 border-t border-gray-200 pt-8">
+                    <h3 class="text-sm font-medium text-gray-900">Sustainability Details</h3>
+                    <div class="mt-4 prose prose-sm text-gray-500">
+                        <ul role="list">
+                            <li><strong>Material:</strong> {{ product.material_type | default('Eco Material') }} ({{ product.recycled_content_pct | default(0) }}% recycled)</li>
+                            <li><strong>Manufacturing:</strong> {{ product.manufacturing_process | default('Standard') }}</li>
+                            <li><strong>Packaging:</strong> {{ product.packaging_type | default('Standard Box') }} ({{ product.packaging_recyclable_pct | default(0) }}% recyclable)</li>
+                            <li><strong>Carbon Footprint:</strong> {{ product.carbon_footprint_kg | default(1.5) }} kg</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<!-- Eco Score Modal -->
+<div id="eco-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="document.getElementById('eco-modal').classList.add('hidden')"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+            <div class="absolute top-0 right-0 pt-4 pr-4">
+                <button type="button" onclick="document.getElementById('eco-modal').classList.add('hidden')" class="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none">
+                    <span class="sr-only">Close</span>
+                    <i class="fa-solid fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="sm:flex sm:items-start">
+                <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                    <i class="fa-solid fa-leaf text-green-600 text-xl"></i>
+                </div>
+                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                        Why this Eco Score?
+                    </h3>
+                    <div class="mt-4 space-y-4">
+                        
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span class="text-sm font-medium text-gray-700">Material Score</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-gray-500">{{ product.material_type | default('Eco Material') }}</span>
+                                {% if (product.recycled_content_pct | default(0)) > 30 %}<i class="fa-solid fa-check-circle text-green-500"></i>{% else %}<i class="fa-solid fa-exclamation-circle text-yellow-500"></i>{% endif %}
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span class="text-sm font-medium text-gray-700">Recyclability</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-gray-500">{{ product.recyclability_pct | default(0) }}%</span>
+                                {% if (product.recyclability_pct | default(0)) > 50 %}<i class="fa-solid fa-check-circle text-green-500"></i>{% else %}<i class="fa-solid fa-exclamation-circle text-yellow-500"></i>{% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span class="text-sm font-medium text-gray-700">Manufacturing</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-gray-500">{{ product.manufacturing_process | default('Standard') }}</span>
+                                {% if 'Renewable' in (product.manufacturing_process | default('')) or 'Low' in (product.manufacturing_process | default('')) %}<i class="fa-solid fa-check-circle text-green-500"></i>{% else %}<i class="fa-solid fa-exclamation-circle text-yellow-500"></i>{% endif %}
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span class="text-sm font-medium text-gray-700">Packaging</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs text-gray-500">{{ product.packaging_type | default('Standard Box') }}</span>
+                                {% if (product.packaging_recyclable_pct | default(0)) > 80 %}<i class="fa-solid fa-check-circle text-green-500"></i>{% else %}<i class="fa-solid fa-exclamation-circle text-yellow-500"></i>{% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="mt-4 bg-gray-50 p-3 rounded text-sm text-gray-600 text-center">
+                        This product receives an <strong>{{ product.eco_score | round | int }}/100</strong> Eco Score because it uses {{ product.material_type }} materials and features {{ product.packaging_type|lower }} packaging.
+                    </div>
+                </div>
+            </div>
+            <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                <button type="button" onclick="document.getElementById('eco-modal').classList.add('hidden')" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    Got it
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

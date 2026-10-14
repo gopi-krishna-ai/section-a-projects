@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Leaflet CSS & JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <!-- AI Analysis Side -->
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow-lg border-danger border-3 h-100">
+                <div class="card-header bg-danger text-white py-3 text-center">
+                    <h3 class="mb-0">🚨 SCAM DETECTED 🚨</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <h5 class="text-muted">AI Confidence Score</h5>
+                        <h1 class="display-4 text-danger fw-bold">{{ confidence }}%</h1>
+                        <p class="text-danger fw-bold">Do not pay any fees or share personal documents.</p>
+                    </div>
+
+                    <div class="alert alert-warning mb-4">
+                        <h5>Suspicious Patterns Identified</h5>
+                        <p class="small mb-2">Our AI flagged this posting primarily due to these phrases:</p>
+                        {% for word in scam_words %}
+                            <span class="badge bg-danger fs-6 me-2 mb-2">{{ word }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary w-100">Scan Another Job</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reporting / Map Side -->
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow-lg h-100">
+                <div class="card-header bg-dark text-white py-3">
+                    <h4 class="mb-0"><i class="bi bi-geo-alt"></i> Report to Local Authorities</h4>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-muted">Enter the location (City/State in India) of the fake company below to find nearby Cyber Crime Cells and Police Stations to file a complaint.</p>
+                    
+                    <div class="input-group mb-3">
+                        <input type="text" id="locationInput" class="form-control" placeholder="e.g., Bangalore, Karnataka">
+                        <button class="btn btn-primary" type="button" onclick="searchLocation()">Find Authorities</button>
+                    </div>
+
+                    <div id="map" style="height: 400px; width: 100%; border-radius: 8px; border: 2px solid #ddd;"></div>
+                    
+                    <div id="mapStatus" class="mt-2 text-muted small">Map centered on India. Please search a specific location.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize map centered on India
+    var map = L.map('map').setView([20.5937, 78.9629], 5);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    var currentMarkers = [];
+
+    function searchLocation() {
+        var query = document.getElementById('locationInput').value;
+        if(!query) return;
+
+        document.getElementById('mapStatus').innerText = "Searching...";
+
+        // Use Nominatim API for geocoding
+        fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(query + ', India'))
+            .then(response => response.json())
+            .then(data => {
+                if(data.length > 0) {
+                    var lat = parseFloat(data[0].lat);
+                    var lon = parseFloat(data[0].lon);
+                    
+                    // Clear old markers
+                    currentMarkers.forEach(m => map.removeLayer(m));
+                    currentMarkers = [];
+
+                    // Center map on searched location
+                    map.setView([lat, lon], 12);
+
+                    // Add primary marker for the searched location
+                    var mainMarker = L.marker([lat, lon]).addTo(map)
+                        .bindPopup("<b>" + query + "</b><br>Searched Location").openPopup();
+                    currentMarkers.push(mainMarker);
+
+                    // Mock nearby Police Station (slightly offset)
+                    var policeMarker = L.marker([lat + 0.015, lon - 0.01]).addTo(map)
+                        .bindPopup("<b style='color:blue;'>Local Police Station</b><br>Report fraud here.");
+                    currentMarkers.push(policeMarker);
+
+                    // Mock Cyber Cell (slightly offset)
+                    var cyberMarker = L.marker([lat - 0.01, lon + 0.015]).addTo(map)
+                        .bindPopup("<b style='color:red;'>Cyber Crime Cell</b><br>File IT Act complaints.");
+                    currentMarkers.push(cyberMarker);
+
+                    document.getElementById('mapStatus').innerText = "Found nearby authorities for " + query + ".";
+                } else {
+                    document.getElementById('mapStatus').innerText = "Location not found. Please try a different city in India.";
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('mapStatus').innerText = "Error searching location.";
+            });
+    }
+</script>
+{% endblock %}

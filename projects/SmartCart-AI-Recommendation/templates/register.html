@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card product-card p-4">
+            <h3 class="text-center mb-4"><i class="fas fa-user-plus text-success"></i> Create Account</h3>
+            <form action="{{ url_for('register') }}" method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" name="name" required placeholder="John Doe">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-control" name="email" required placeholder="user@example.com">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" name="password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-success w-100 py-2">Create Account</button>
+            </form>
+            <div class="text-center mt-3">
+                <small>Already have an account? <a href="{{ url_for('login') }}" class="text-decoration-none">Login here</a></small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

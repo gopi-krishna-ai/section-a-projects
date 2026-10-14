@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}AgriMitra AI | Settings{% endblock %}
+
+{% block content %}
+
+<div class="page-title" id="pageTitle">Settings</div>
+<p class="page-subtitle" id="pageSubtitle">Language and password preferences.</p>
+
+<div class="form-card">
+    <h3><i class="fa-solid fa-gear"></i> <span id="formTitle">Settings</span></h3>
+
+    <form id="settingsForm" novalidate>
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="prefLanguage" id="lblLanguage">Preferred Language</label>
+                <select id="prefLanguage">
+                    <option value="en">English</option>
+                    <option value="kn">ಕನ್ನಡ</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="te">తెలుగు</option>
+                    <option value="ta">தமிழ்</option>
+                </select>
+            </div>
+
+        </div>
+
+        <h3 style="margin-top:30px;" id="pwSectionTitle">Change Password</h3>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="current_password" id="lblCurrent">Current Password</label>
+                <input type="password" id="current_password" placeholder="Enter current password">
+            </div>
+
+            <div class="form-group">
+                <label for="new_password" id="lblNew">New Password</label>
+                <input type="password" id="new_password" placeholder="Enter new password (min 6 characters)">
+            </div>
+
+        </div>
+
+        <p class="form-note" id="leaveBlank">Leave the password fields empty to keep your current password.</p>
+
+        <div class="error-box hidden" id="errorBox"></div>
+        <div class="info-box success hidden" id="savedBox"></div>
+
+        <button type="submit" class="primary-btn" id="saveBtn">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span>Save Settings</span>
+        </button>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}

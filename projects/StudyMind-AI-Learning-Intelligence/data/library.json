@@ -1,0 +1,636 @@
+{
+ "documents": [
+  {
+   "id": "doc_6861941753",
+   "name": "test_upload.pdf",
+   "pages": 1,
+   "ocr_pages": [],
+   "characters": 111,
+   "words": 18,
+   "language": {
+    "code": "en",
+    "name": "English"
+   },
+   "text": "This is a test document about machine learning. Machine learning is a subset of artificial intelligence that en",
+   "chunks": [
+    {
+     "page": 1,
+     "text": "This is a test document about machine learning. Machine learning is a subset of artificial intelligence that en"
+    }
+   ],
+   "concepts": [
+    {
+     "term": "machine learning",
+     "score": 4.4,
+     "occurrences": 2
+    }
+   ],
+   "topics": [
+    {
+     "topic": "Full document",
+     "label": "Full document",
+     "chunk_count": 1,
+     "pages": [
+      1
+     ]
+    }
+   ],
+   "exam_topics": [
+    {
+     "term": "Machine Learning",
+     "occurrences": 2,
+     "importance": 4.4
+    }
+   ],
+   "study_plan": [
+    {
+     "day": 1,
+     "focus": [
+      "Full document"
+     ],
+     "pages": [
+      1
+     ],
+     "chunks": 1
+    }
+   ]
+  },
+  {
+   "id": "doc_4347612220",
+   "name": "info_1.pdf",
+   "pages": 9,
+   "ocr_pages": [],
+   "characters": 5374,
+   "words": 931,
+   "language": {
+    "code": "en",
+    "name": "English"
+   },
+   "text": "A. Quantitative Aptitude \u2014 Priority 1\n1. Percentages\nWhat is it?\nExample\nPractice\n2. Profit & Loss\nWhat is it?\nSP > CP \u2192 Profit\nSP < CP \u2192 Loss\nExample\nPractice\nPercentage means \u201cout of 100.\u201d\nIf you score 72 out of 100:\nPercentage = 72%\nBasic formula:\n\ud835\udc43\ud835\udc52\ud835\udc5f\ud835\udc50\ud835\udc52\ud835\udc5b\ud835\udc61\ud835\udc4e\ud835\udc54\ud835\udc52=\ud835\udc43\ud835\udc4e\ud835\udc5f\ud835\udc61\ud835\udc4a\u210e\ud835\udc5c\ud835\udc59\ud835\udc52\u00d7100\nA student scores 360 marks out of 500. Find the percentage.\n360500\u00d7100=72%\nAnswer: 72%\nThe price of a phone is \u20b920,000. It increases by 15%.\nWhat is the new price?\nTry: \u20b923,000.\nYou compare the Cost Price (CP) with the Selling Price (SP).\n\ud835\udc43\ud835\udc5f\ud835\udc5c\ud835\udc53\ud835\udc56\ud835\udc61=\ud835\udc46\ud835\udc43\u2212\ud835\udc36\ud835\udc43\ud835\udc43\ud835\udc5f\ud835\udc5c\ud835\udc53\ud835\udc56\ud835\udc61%=\ud835\udc43\ud835\udc5f\ud835\udc5c\ud835\udc53\ud835\udc56\ud835\udc61\ud835\udc36\ud835\udc43\u00d7100\nA product is bought for \u20b9800 and sold for \u20b91,000.\nProfit:\n1000\u2212800=\u20b9200\nProfit percentage:\n200800\u00d7100=25%\nAnswer: 25% profit\nA watch is bought for \u20b91,200 and sold for \u20b91,500.\nFind the profit percentage.\nAnswer: 25%\n\n3. Ratio & Proportion\nWhat is it?\nExample\nPractice\n4. Averages\nWhat is it?\nExample\nPractice\nA ratio compares two quantities.\nIf:\n\ud835\udc34:\ud835\udc35=2:3\nthen for every 2 units of A, there are 3 units of B.\nThe ratio of boys to girls in a class is 2:3.\nIf there are 20 boys, how many girls are there?\n2 \u2192 20\nTherefore:\n3\u00d710=30\nAnswer: 30 girls\nThe ratio of A:B is 4:7.\nIf A = 28, find B.\nAnswer: 49\nAverage is the equal distribution of the total.\n\ud835\udc34\ud835\udc63\ud835\udc52\ud835\udc5f\ud835\udc4e\ud835\udc54\ud835\udc52=\ud835\udc46\ud835\udc62\ud835\udc5a\u00a0\ud835\udc5c\ud835\udc53\u00a0\ud835\udc63\ud835\udc4e\ud835\udc59\ud835\udc62\ud835\udc52\ud835\udc60\ud835\udc41\ud835\udc62\ud835\udc5a\ud835\udc4f\ud835\udc52\ud835\udc5f\u00a0\ud835\udc5c\ud835\udc53\u00a0\ud835\udc63\ud835\udc4e\ud835\udc59\ud835\udc62\ud835\udc52\ud835\udc60\nFind the average of:\n10, 20, 30, 40, 50\nSum:\n10+20+30+40+50=150\nNumber of values = 5\n\ud835\udc34\ud835\udc63\ud835\udc52\ud835\udc5f\ud835\udc4e\ud835\udc54\ud835\udc52=1505=30\nAnswer: 30\nThe average of 5 numbers is 24.\nFour of the numbers are:\n10, 20, 30, 25\nFind the fifth number.\n\n5. Time & Work\nExample\nPractice\n6. Time, Speed & Distance\nExample\nAnswer: 35\nBecause total = 5 \u00d7 24 = 120.\nKnown total = 85.\nMissing = 120 \u2212 85 = 35.\nThis looks scary initially. It's actually just work rate.\nIf A completes a job in 10 days:\n\ud835\udc34\u2032\ud835\udc60\u00a01\u2212\ud835\udc51\ud835\udc4e\ud835\udc66\u00a0\ud835\udc64\ud835\udc5c\ud835\udc5f\ud835\udc58=110\nIf B completes it in 20 days:\n\ud835\udc35\u2032\ud835\udc60\u00a01\u2212\ud835\udc51\ud835\udc4e\ud835\udc66\u00a0\ud835\udc64\ud835\udc5c\ud835\udc5f\ud835\udc58=120\nTogether:\n110+120=320\nSo they finish the job in:\n203=6.67\u00a0\ud835\udc51\ud835\udc4e\ud835\udc66\ud835\udc60\nA can complete a job in 10 days and B can complete it in 15 days.\nHow long will they take together?\n110+115\nLCM = 30:\n330+230=530=16\nTherefore:\n6 days\nA can finish a job in 12 days.\nB can finish it in 18 days.\nHow many days will they take together?\nAnswer: 7.2 days\nOne of the most important formulas:\n\ud835\udc37\ud835\udc56\ud835\udc60\ud835\udc61\ud835\udc4e\ud835\udc5b\ud835\udc50\ud835\udc52=\ud835\udc46\ud835\udc5d\ud835\udc52\ud835\udc52\ud835\udc51\u00d7\ud835\udc47\ud835\udc56\ud835\udc5a\ud835\udc52\nTherefore:\n\ud835\udc46\ud835\udc5d\ud835\udc52\ud835\udc52\ud835\udc51=\ud835\udc37\ud835\udc56\ud835\udc60\ud835\udc61\ud835\udc4e\ud835\udc5b\ud835\udc50\ud835\udc52\ud835\udc47\ud835\udc56\ud835\udc5a\ud835\udc52\ud835\udc47\ud835\udc56\ud835\udc5a\ud835\udc52=\ud835\udc37\ud835\udc56\ud835\udc60\ud835\udc61\ud835\udc4e\ud835\udc5b\ud835\udc50\ud835\udc52\ud835\udc46\ud835\udc5d\ud835\udc52\ud835\udc52\ud835\udc51\n\nPractice\n7. Simple Interest\nP = Principal\nR = Rate\nT = Time\nExample\nPractice\n8. Compound Interest\nA car travels 240 km in 4 hours.\n\ud835\udc46\ud835\udc5d\ud835\udc52\ud835\udc52\ud835\udc51=2404=60\nAnswer: 60 km/h\nA train travels at 80 km/h for 3.5 hours.\nHow far does it travel?\nAnswer: 280 km\nSimple Interest is calculated only on the original principal.\n\ud835\udc46\ud835\udc3c=\ud835\udc43\u00d7\ud835\udc45\u00d7\ud835\udc47100\nWhere:\n\u20b910,000 is invested at 8% simple interest for 2 years.\n\ud835\udc46\ud835\udc3c=10000\u00d78\u00d72100\ud835\udc46\ud835\udc3c=\u20b91600\nAmount:\n10000+1600=\u20b911600\nAnswer: \u20b91,600 interest\nFind the simple interest on \u20b95,000 at 10% per year for 3 years.\nAnswer: \u20b91,500\nThis is different from simple interest because interest gets added to the principal, and future \ninterest is calculated on the increased amount.\n\ud835\udc39\ud835\udc49=\ud835\udc43\ud835\udc49(1+\ud835\udc5f)\ud835\udc5b\n\ud835\udc39\ud835\udc49=\ud835\udc43\ud835\udc49(1+\ud835\udc5f)\ud835\udc5b=1000(1+0.05)20=$2,653.30FV=PV(1+r)n=1000(1+0.05)20=$2,653.30\nPVPV\n$\nPVPV\n\ud835\udc5fr\n%\n\nExample\nPractice\n9. Number System\nNatural numbers\nWhole numbers\nIntegers\nPrime numbers\nComposite numbers\nEven/odd\nDivisibility\nRemainders\nFactors\nMultiples\nUnits digit\nExample\n\ud835\udc5fr\n\ud835\udc5bn\n\ud835\udc5bn\nGive feedback\nFor annual compounding:\n\ud835\udc34=\ud835\udc43(1+\ud835\udc45100)\ud835\udc47\ud835\udc36\ud835\udc3c=\ud835\udc34\u2212\ud835\udc43\n\u20b910,000 at 10% compound interest for 2 years.\nFirst year:\n\u20b910,000 \u2192 \u20b911,000\nSecond year:\n\u20b911,000 \u2192 \u20b912,100\nTherefore:\n\ud835\udc36\ud835\udc3c=12100\u221210000=\u20b92100\nAnswer: \u20b92,100\n\u20b920,000 is invested at 10% compound interest for 2 years.\nFind the compound interest.\nAnswer: \u20b94,200\nThis is a big topic, not one single formula.\nYou should understand:\n\nPractice\n10. LCM & HCF\nHCF\nLCM\nIs 7,245 divisible by 5?\nA number is divisible by 5 if it ends in:\n0 or 5\n7,245 ends in 5.\nTherefore:\nYes.\nIs 7,392 divisible by 3?\nHint:\nAdd the digits.\n7+3+9+2\nAnswer: Yes, because the digit sum is 21, which is divisible by 3.\nHighest Common Factor\nThe largest number that divides both numbers.\nExample:\nFind HCF of 12 and 18.\nFactors of 12:\n1, 2, 3, 4, 6, 12\nFactors of 18:\n1, 2, 3, 6, 9, 18\nHighest common factor:\n6\nLeast Common Multiple\nThe smallest number that is a multiple of both.\nMultiples of 4:\n4, 8, 12, 16, 20, ...\nMultiples of 5:\n5, 10, 15, 20, ...\nSo:\nLCM = 20\n\ud835\udc34=4A=4\ud835\udc35=6B=6\n\nPractice\n11. Probability\nExample\nPractice\n048120612\nLCM=12LCM=12\nLCM(4,6)=12LCM(4,6)=12\n3 jumps of 4 and 2 jumps of 6 meet at 12\n\ud835\udc34A\n\ud835\udc34A\n\ud835\udc35B\n\ud835\udc35B\nGive feedback\nFind the HCF and LCM of 18 and 24.\nAnswer:\nHCF = 6\nLCM = 72\nProbability measures the chance of something happening.\n\ud835\udc43(\ud835\udc38)=\ud835\udc39\ud835\udc4e\ud835\udc63\ud835\udc5c\ud835\udc62\ud835\udc5f\ud835\udc4e\ud835\udc4f\ud835\udc59\ud835\udc52\u00a0\ud835\udc42\ud835\udc62\ud835\udc61\ud835\udc50\ud835\udc5c\ud835\udc5a\ud835\udc52\ud835\udc60\ud835\udc47\ud835\udc5c\ud835\udc61\ud835\udc4e\ud835\udc59\u00a0\ud835\udc42\ud835\udc62\ud835\udc61\ud835\udc50\ud835\udc5c\ud835\udc5a\ud835\udc52\ud835\udc60\nProbability ranges from:\n0\u2264\ud835\udc43(\ud835\udc38)\u22641\nA normal dice has 6 sides.\nWhat is the probability of getting a 4?\nFavourable outcomes = 1\nTotal outcomes = 6\n\ud835\udc43(4)=16\nAnswer: 1/6\nA dice is rolled once.\nWhat is the probability of getting an even number?\nEven numbers:\n2, 4, 6\nSo:\n\ud835\udc43=36=12\nAnswer: 1/2\n\n12. Permutation & Combination\nPermutation = Arrangement\nCombination = Selection\nExample \u2014 Permutation\nExample \u2014 Combination\nPractice\nThis is where people commonly mix things up.\nOrder matters.\nExample:\nABC and BAC are different arrangements.\nFormula:\n\ud835\udc5b\ud835\udc43\ud835\udc5f=\ud835\udc5b!(\ud835\udc5b\u2212\ud835\udc5f)!\nOrder does NOT matter.\nChoosing A and B is the same as choosing B and A.\nFormula:\n\ud835\udc5b\ud835\udc36\ud835\udc5f=\ud835\udc5b!\ud835\udc5f!(\ud835\udc5b\u2212\ud835\udc5f)!\nHow many ways can you arrange 3 people A, B and C?\nPossible:\nABC\nACB\nBAC\nBCA\nCAB\nCBA\nTherefore:\n6 ways\nOr:\n3!=6\nYou have 5 students and need to select 2.\n5\ud835\udc362=5!2!3!=5\u00d742=10\nAnswer: 10 selections\nThere are 6 people.\nHow many ways can you select 3 people?\nAnswer:\n\n6\ud835\udc363=20",
+   "chunks": [
+    {
+     "page": 1,
+     "text": "A. Quantitative Aptitude \u2014 Priority 1 1. Percentages What is it? Example Practice 2. Profit & Loss What is it? SP > CP \u2192 Profit SP < CP \u2192 Loss Example Practice Percentage means \u201cout of 100.\u201d If you score 72 out of 100: Percentage = 72% Basic formula: \ud835\udc43\ud835\udc52\ud835\udc5f\ud835\udc50\ud835\udc52\ud835\udc5b\ud835\udc61\ud835\udc4e\ud835\udc54\ud835\udc52=\ud835\udc43\ud835\udc4e\ud835\udc5f\ud835\udc61\ud835\udc4a\u210e\ud835\udc5c\ud835\udc59\ud835\udc52\u00d7100 A student scores 360 marks out of 500. Find the percentage. 360500\u00d7100=72% Answer: 72% The price of a phone is \u20b920,000. It increases by 15%. What is the new price? Try: \u20b923,000. You compare the Cost Price (CP) with the Selling Price (SP). \ud835\udc43\ud835\udc5f\ud835\udc5c\ud835\udc53\ud835\udc56\ud835\udc61=\ud835\udc46\ud835\udc43\u2212\ud835\udc36\ud835\udc43\ud835\udc43\ud835\udc5f\ud835\udc5c\ud835\udc53\ud835\udc56\ud835\udc61%=\ud835\udc43\ud835\udc5f\ud835\udc5c\ud835\udc53\ud835\udc56\ud835\udc61\ud835\udc36\ud835\udc43\u00d7100 A product is bought for \u20b9800 and sold for \u20b91,000. Profit: 1000\u2212800=\u20b9200 Profit percentage: 200800\u00d7100=25% Answer: 25% profit A watch is bought for \u20b91,200 and sold for \u20b91,500. Find the profit percentage. Answer: 25%"
+    },
+    {
+     "page": 2,
+     "text": "3. Ratio & Proportion What is it? Example Practice 4. Averages What is it? Example Practice A ratio compares two quantities. If: \ud835\udc34:\ud835\udc35=2:3 then for every 2 units of A, there are 3 units of B. The ratio of boys to girls in a class is 2:3. If there are 20 boys, how many girls are there? 2 \u2192 20 Therefore: 3\u00d710=30 Answer: 30 girls The ratio of A:B is 4:7. If A = 28, find B. Answer: 49 Average is the equal distribution of the total. \ud835\udc34\ud835\udc63\ud835\udc52\ud835\udc5f\ud835\udc4e\ud835\udc54\ud835\udc52=\ud835\udc46\ud835\udc62\ud835\udc5a \ud835\udc5c\ud835\udc53 \ud835\udc63\ud835\udc4e\ud835\udc59\ud835\udc62\ud835\udc52\ud835\udc60\ud835\udc41\ud835\udc62\ud835\udc5a\ud835\udc4f\ud835\udc52\ud835\udc5f \ud835\udc5c\ud835\udc53 \ud835\udc63\ud835\udc4e\ud835\udc59\ud835\udc62\ud835\udc52\ud835\udc60 Find the average of: 10, 20, 30, 40, 50 Sum: 10+20+30+40+50=150 Number of values = 5 \ud835\udc34\ud835\udc63\ud835\udc52\ud835\udc5f\ud835\udc4e\ud835\udc54\ud835\udc52=1505=30 Answer: 30 The average of 5 numbers is 24. Four of the numbers are: 10, 20, 30, 25 Find the fifth number."
+    },
+    {
+     "page": 3,
+     "text": "5. Time & Work Example Practice 6. Time, Speed & Distance Example Answer: 35 Because total = 5 \u00d7 24 = 120. Known total = 85. Missing = 120 \u2212 85 = 35. This looks scary initially. It's actually just work rate. If A completes a job in 10 days: \ud835\udc34\u2032\ud835\udc60 1\u2212\ud835\udc51\ud835\udc4e\ud835\udc66 \ud835\udc64\ud835\udc5c\ud835\udc5f\ud835\udc58=110 If B completes it in 20 days: \ud835\udc35\u2032\ud835\udc60 1\u2212\ud835\udc51\ud835\udc4e\ud835\udc66 \ud835\udc64\ud835\udc5c\ud835\udc5f\ud835\udc58=120 Together: 110+120=320 So they finish the job in: 203=6.67 \ud835\udc51\ud835\udc4e\ud835\udc66\ud835\udc60 A can complete a job in 10 days and B can complete it in 15 days. How long will they take together? 110+115 LCM = 30: 330+230=530=16 Therefore: 6 days A can finish a job in 12 days. B can finish it in 18 days. How many days will they take together? Answer: 7.2 days One of the most important formulas: \ud835\udc37\ud835\udc56\ud835\udc60\ud835\udc61\ud835\udc4e\ud835\udc5b\ud835\udc50\ud835\udc52=\ud835\udc46\ud835\udc5d\ud835\udc52\ud835\udc52\ud835\udc51\u00d7\ud835\udc47\ud835\udc56\ud835\udc5a\ud835\udc52 Therefore: \ud835\udc46\ud835\udc5d\ud835\udc52\ud835\udc52\ud835\udc51=\ud835\udc37\ud835\udc56\ud835\udc60\ud835\udc61\ud835\udc4e\ud835\udc5b\ud835\udc50\ud835\udc52\ud835\udc47\ud835\udc56\ud835\udc5a\ud835\udc52\ud835\udc47\ud835\udc56\ud835\udc5a\ud835\udc52=\ud835\udc37\ud835\udc56\ud835\udc60\ud835\udc61\ud835\udc4e\ud835\udc5b\ud835\udc50\ud835\udc52\ud835\udc46\ud835\udc5d\ud835\udc52\ud835\udc52\ud835\udc51"
+    },
+    {
+     "page": 4,
+     "text": "Practice 7. Simple Interest P = Principal R = Rate T = Time Example Practice 8. Compound Interest A car travels 240 km in 4 hours. \ud835\udc46\ud835\udc5d\ud835\udc52\ud835\udc52\ud835\udc51=2404=60 Answer: 60 km/h A train travels at 80 km/h for 3.5 hours. How far does it travel? Answer: 280 km Simple Interest is calculated only on the original principal. \ud835\udc46\ud835\udc3c=\ud835\udc43\u00d7\ud835\udc45\u00d7\ud835\udc47100 Where: \u20b910,000 is invested at 8% simple interest for 2 years. \ud835\udc46\ud835\udc3c=10000\u00d78\u00d72100\ud835\udc46\ud835\udc3c=\u20b91600 Amount: 10000+1600=\u20b911600 Answer: \u20b91,600 interest Find the simple interest on \u20b95,000 at 10% per year for 3 years. Answer: \u20b91,500 This is different from simple interest because interest gets added to the principal, and future interest is calculated on the increased amount. \ud835\udc39\ud835\udc49=\ud835\udc43\ud835\udc49(1+\ud835\udc5f)\ud835\udc5b \ud835\udc39\ud835\udc49=\ud835\udc43\ud835\udc49(1+\ud835\udc5f)\ud835\udc5b=1000(1+0.05)20=$2,653.30FV=PV(1+r)n=1000(1+0.05)20=$2,653.30 PVPV $ PVPV \ud835\udc5fr %"
+    },
+    {
+     "page": 5,
+     "text": "Example Practice 9. Number System Natural numbers Whole numbers Integers Prime numbers Composite numbers Even/odd Divisibility Remainders Factors Multiples Units digit Example \ud835\udc5fr \ud835\udc5bn \ud835\udc5bn Give feedback For annual compounding: \ud835\udc34=\ud835\udc43(1+\ud835\udc45100)\ud835\udc47\ud835\udc36\ud835\udc3c=\ud835\udc34\u2212\ud835\udc43 \u20b910,000 at 10% compound interest for 2 years. First year: \u20b910,000 \u2192 \u20b911,000 Second year: \u20b911,000 \u2192 \u20b912,100 Therefore: \ud835\udc36\ud835\udc3c=12100\u221210000=\u20b92100 Answer: \u20b92,100 \u20b920,000 is invested at 10% compound interest for 2 years. Find the compound interest. Answer: \u20b94,200 This is a big topic, not one single formula. You should understand:"
+    },
+    {
+     "page": 6,
+     "text": "Practice 10. LCM & HCF HCF LCM Is 7,245 divisible by 5? A number is divisible by 5 if it ends in: 0 or 5 7,245 ends in 5. Therefore: Yes. Is 7,392 divisible by 3? Hint: Add the digits. 7+3+9+2 Answer: Yes, because the digit sum is 21, which is divisible by 3. Highest Common Factor The largest number that divides both numbers. Example: Find HCF of 12 and 18. Factors of 12: 1, 2, 3, 4, 6, 12 Factors of 18: 1, 2, 3, 6, 9, 18 Highest common factor: 6 Least Common Multiple The smallest number that is a multiple of both. Multiples of 4: 4, 8, 12, 16, 20, ... Multiples of 5: 5, 10, 15, 20, ... So: LCM = 20 \ud835\udc34=4A=4\ud835\udc35=6B=6"
+    },
+    {
+     "page": 7,
+     "text": "Practice 11. Probability Example Practice 048120612 LCM=12LCM=12 LCM(4,6)=12LCM(4,6)=12 3 jumps of 4 and 2 jumps of 6 meet at 12 \ud835\udc34A \ud835\udc34A \ud835\udc35B \ud835\udc35B Give feedback Find the HCF and LCM of 18 and 24. Answer: HCF = 6 LCM = 72 Probability measures the chance of something happening. \ud835\udc43(\ud835\udc38)=\ud835\udc39\ud835\udc4e\ud835\udc63\ud835\udc5c\ud835\udc62\ud835\udc5f\ud835\udc4e\ud835\udc4f\ud835\udc59\ud835\udc52 \ud835\udc42\ud835\udc62\ud835\udc61\ud835\udc50\ud835\udc5c\ud835\udc5a\ud835\udc52\ud835\udc60\ud835\udc47\ud835\udc5c\ud835\udc61\ud835\udc4e\ud835\udc59 \ud835\udc42\ud835\udc62\ud835\udc61\ud835\udc50\ud835\udc5c\ud835\udc5a\ud835\udc52\ud835\udc60 Probability ranges from: 0\u2264\ud835\udc43(\ud835\udc38)\u22641 A normal dice has 6 sides. What is the probability of getting a 4? Favourable outcomes = 1 Total outcomes = 6 \ud835\udc43(4)=16 Answer: 1/6 A dice is rolled once. What is the probability of getting an even number? Even numbers: 2, 4, 6 So: \ud835\udc43=36=12 Answer: 1/2"
+    },
+    {
+     "page": 8,
+     "text": "12. Permutation & Combination Permutation = Arrangement Combination = Selection Example \u2014 Permutation Example \u2014 Combination Practice This is where people commonly mix things up. Order matters. Example: ABC and BAC are different arrangements. Formula: \ud835\udc5b\ud835\udc43\ud835\udc5f=\ud835\udc5b!(\ud835\udc5b\u2212\ud835\udc5f)! Order does NOT matter. Choosing A and B is the same as choosing B and A. Formula: \ud835\udc5b\ud835\udc36\ud835\udc5f=\ud835\udc5b!\ud835\udc5f!(\ud835\udc5b\u2212\ud835\udc5f)! How many ways can you arrange 3 people A, B and C? Possible: ABC ACB BAC BCA CAB CBA Therefore: 6 ways Or: 3!=6 You have 5 students and need to select 2. 5\ud835\udc362=5!2!3!=5\u00d742=10 Answer: 10 selections There are 6 people. How many ways can you select 3 people? Answer:"
+    }
+   ],
+   "concepts": [
+    {
+     "term": "answer",
+     "score": 32.0,
+     "occurrences": 20
+    },
+    {
+     "term": "practice",
+     "score": 19.2,
+     "occurrences": 12
+    },
+    {
+     "term": "find",
+     "score": 14.4,
+     "occurrences": 9
+    },
+    {
+     "term": "interest",
+     "score": 12.0,
+     "occurrences": 12
+    },
+    {
+     "term": "simple interest",
+     "score": 11.0,
+     "occurrences": 5
+    },
+    {
+     "term": "profit",
+     "score": 9.6,
+     "occurrences": 6
+    },
+    {
+     "term": "days",
+     "score": 9.0,
+     "occurrences": 9
+    },
+    {
+     "term": "compound interest",
+     "score": 8.8,
+     "occurrences": 4
+    },
+    {
+     "term": "percentage",
+     "score": 8.0,
+     "occurrences": 5
+    },
+    {
+     "term": "numbers",
+     "score": 8.0,
+     "occurrences": 8
+    },
+    {
+     "term": "probability",
+     "score": 8.0,
+     "occurrences": 5
+    },
+    {
+     "term": "number",
+     "score": 7.0,
+     "occurrences": 7
+    },
+    {
+     "term": "percentage answer",
+     "score": 6.6,
+     "occurrences": 3
+    },
+    {
+     "term": "lcm lcm",
+     "score": 6.6,
+     "occurrences": 3
+    },
+    {
+     "term": "formula",
+     "score": 6.4,
+     "occurrences": 4
+    }
+   ],
+   "topics": [
+    {
+     "topic": "Topic 3",
+     "label": "Interest, Answer, Profit",
+     "chunk_count": 3,
+     "pages": [
+      1,
+      4,
+      5
+     ],
+     "preview": "A. Quantitative Aptitude \u2014 Priority 1 1. Percentages What is it? Example Practice 2. Profit & Loss What is it? SP > CP \u2192 Profit SP < CP \u2192 Loss Example Practice Percentage means \u201cou"
+    },
+    {
+     "topic": "Topic 1",
+     "label": "Days, Answer, Number",
+     "chunk_count": 2,
+     "pages": [
+      2,
+      3
+     ],
+     "preview": "3. Ratio & Proportion What is it? Example Practice 4. Averages What is it? Example Practice A ratio compares two quantities. If: \ud835\udc34:\ud835\udc35=2:3 then for every 2 units of A, there are 3 un"
+    },
+    {
+     "topic": "Topic 2",
+     "label": "Number, Probability, Answer",
+     "chunk_count": 2,
+     "pages": [
+      6,
+      7
+     ],
+     "preview": "Practice 10. LCM & HCF HCF LCM Is 7,245 divisible by 5? A number is divisible by 5 if it ends in: 0 or 5 7,245 ends in 5. Therefore: Yes. Is 7,392 divisible by 3? Hint: Add the dig"
+    },
+    {
+     "topic": "Topic 4",
+     "label": "Answer, Formula, Practice",
+     "chunk_count": 1,
+     "pages": [
+      8
+     ],
+     "preview": "12. Permutation & Combination Permutation = Arrangement Combination = Selection Example \u2014 Permutation Example \u2014 Combination Practice This is where people commonly mix things up. Or"
+    }
+   ],
+   "exam_topics": [
+    {
+     "term": "Answer",
+     "occurrences": 20,
+     "importance": 52.0
+    },
+    {
+     "term": "Practice",
+     "occurrences": 12,
+     "importance": 24.2
+    },
+    {
+     "term": "Interest",
+     "occurrences": 12,
+     "importance": 17.0
+    },
+    {
+     "term": "Number",
+     "occurrences": 7,
+     "importance": 17.0
+    },
+    {
+     "term": "Profit",
+     "occurrences": 6,
+     "importance": 14.6
+    },
+    {
+     "term": "Find",
+     "occurrences": 9,
+     "importance": 14.4
+    }
+   ],
+   "study_plan": [
+    {
+     "day": 1,
+     "focus": [
+      "Interest, Answer, Profit"
+     ],
+     "pages": [
+      1,
+      4,
+      5
+     ],
+     "chunks": 3
+    },
+    {
+     "day": 2,
+     "focus": [
+      "Days, Answer, Number"
+     ],
+     "pages": [
+      2,
+      3
+     ],
+     "chunks": 2
+    },
+    {
+     "day": 3,
+     "focus": [
+      "Number, Probability, Answer"
+     ],
+     "pages": [
+      6,
+      7
+     ],
+     "chunks": 2
+    },
+    {
+     "day": 4,
+     "focus": [
+      "Answer, Formula, Practice"
+     ],
+     "pages": [
+      8
+     ],
+     "chunks": 1
+    }
+   ]
+  },
+  {
+   "id": "doc_6719999216",
+   "name": "ML_Basic_Algorithms.pdf",
+   "pages": 20,
+   "ocr_pages": [],
+   "characters": 11105,
+   "words": 1772,
+   "language": {
+    "code": "en",
+    "name": "English"
+   },
+   "text": "Machine Learning\nBasic Algorithms\nConcept  \u00b7  Worked example  \u00b7  Working code\n\nP A R T O N E\nSupervised learning\nLearns from labeled input\u2013output pairs. You give it the right answers, it learns the mapping.\n\n1\nLinear regression\nFits a straight line to predict a continuous number.\nH O W I T W O R K S\n\u2022\nFinds the line score = m x hours + b that sits closest to all \npoints.\n\u2022\n\"Closest\" = smallest sum of squared vertical gaps (residuals).\n\u2022\nSquaring punishes big misses more than small ones.\n\u2022\nUse it when the output is a number: price, score, \ntemperature.\nE X A M P L E\nHours studied to exam score\n1 hr  ->  50        4 hrs  ->  70\n2 hrs ->  55        5 hrs  ->  85\n3 hrs ->  65\nLearned line:  score = 8.5 x hours + 42\nPredict 6 hrs  ->  93\nLinear regression  \u00b7  concept\n\n1\nLinear regression \u2014 code\nimport numpy as np, matplotlib.pyplot as plt\nfrom sklearn.linear_model import LinearRegression\n# dataset: hours studied -> exam score\nX = np.array([[1], [2], [3], [4], [5]])     # 2D: rows = samples\ny = np.array([50, 55, 65, 70, 85])          # 1D: one target each\nmodel = LinearRegression()\nmodel.fit(X, y)                             # learns m and b\nprint(model.coef_[0], model.intercept_)     # 8.5 , 42\nprint(model.predict([[6]]))                 # -> 93\nxs = np.linspace(0.5, 6.5, 100).reshape(-1, 1)\nplt.scatter(X, y, color='tomato')           # the data\nplt.plot(xs, model.predict(xs), color='steelblue')   # the line\nplt.show()\nKey idea: .fit() finds the best line, .predict() uses it. reshape(-1,1) makes the 2D shape sklearn needs.\n\n2\nLogistic regression\nDespite the name, this is classification \u2014 it predicts a class, not a number.\nH O W I T W O R K S\n\u2022\nPushes a linear score through a sigmoid to get a probability \n0\u20131.\n\u2022\nApplies a threshold (usually 0.5) to pick the class.\n\u2022\nOutput is an S-curve, not a straight line.\n\u2022\nUse it for yes/no questions: pass/fail, spam/not spam, \nchurn/stay.\nE X A M P L E\nWill the student pass?\n1.5 hrs  ->  P(pass) = 0.08  ->  FAIL\n3.5 hrs  ->  P(pass) = 0.52  ->  PASS\n5.0 hrs  ->  P(pass) = 0.91  ->  PASS\nThreshold at 0.5 splits the two classes.\nLogistic regression  \u00b7  concept\n\n2\nLogistic regression \u2014 code\nfrom sklearn.linear_model import LogisticRegression\n# dataset: hours studied -> 0 = fail, 1 = pass\nX = np.array([[1], [1.5], [2], [3], [4], [5], [5.5]])\ny = np.array([0, 0, 0, 0, 1, 1, 1])         # categorical target\nmodel = LogisticRegression()\nmodel.fit(X, y)\nfor hrs in [1.5, 3.5, 5]:\n    p = model.predict_proba([[hrs]])[0][1]  # col 1 = P(pass)\n    print(hrs, round(p, 2), 'PASS' if p > 0.5 else 'FAIL')\nxs = np.linspace(0, 7, 300).reshape(-1, 1)\nplt.plot(xs, model.predict_proba(xs)[:, 1])  # the S-curve\nplt.axhline(0.5, ls='--', color='gray')      # threshold\nplt.show()\npredict_proba gives probabilities; predict gives the hard label. Column 1 is the positive class.\n\n3\nDecision tree\nA flowchart of yes/no questions you can read top to bottom.\nH O W I T W O R K S\n\u2022\nAt each step picks the question that best separates the \nclasses.\n\u2022\n\"Best\" is measured by Gini impurity or information gain.\n\u2022\nFully interpretable \u2014 you can explain every decision.\n\u2022\nLimit depth, or it memorises the training data (overfitting).\nE X A M P L E\nLoan approval\nIncome > $50k ?\n   No   ->  REJECT\n   Yes  ->  Credit score > 700 ?\n               No   ->  REJECT\n               Yes  ->  APPROVE\nApplicant: $75k, score 780  ->  APPROVE\nDecision tree  \u00b7  concept\n\n3\nDecision tree \u2014 code\nfrom sklearn.tree import DecisionTreeClassifier, plot_tree\n# dataset: [income_k, credit_score] -> 1 = approve\nX = [[30, 650], [40, 720], [45, 690], [60, 750], [70, 800],\n     [55, 640], [80, 710], [35, 800], [90, 660], [65, 730]]\ny = [0, 0, 0, 1, 1, 0, 1, 0, 0, 1]\nmodel = DecisionTreeClassifier(max_depth=2, random_state=0)\nmodel.fit(X, y)                # max_depth stops overfitting\nprint(model.predict([[75, 780]]))          # -> [1] APPROVE\nplt.figure(figsize=(10, 6))\nplot_tree(model, feature_names=['income_k', 'credit_score'],\n          class_names=['Reject', 'Approve'], filled=True)\nplt.show()\nplot_tree draws the actual learned tree \u2014 the clearest algorithm to show students, because the logic is visible.\n\n4\nK-nearest neighbours\nNo training at all \u2014 it just remembers the data and votes.\nH O W I T W O R K S\n\u2022\nStores every training point; does the work at prediction time.\n\u2022\nFor a new point, finds the k closest points by distance.\n\u2022\nTakes a majority vote among those k neighbours.\n\u2022\nk is the one parameter to tune: small k = noisy, large k = \nblurry.\nE X A M P L E\nApple or orange?\nFeatures: weight, redness\nNew fruit:  [2.7, 1.5]\n3 nearest neighbours:\n   apple, apple, apple\nVote  ->  APPLE\nK-nearest neighbours  \u00b7  concept\n\n4\nK-nearest neighbours \u2014 code\nfrom sklearn.neighbors import KNeighborsClassifier\n# dataset: [weight, redness]\nX = np.array([[1.8, 1.2], [2.2, 1.6], [2.6, 1.0], [1.5, 1.8],\n              [4.0, 2.5], [4.5, 2.2], [4.8, 2.7], [4.2, 2.0]])\ny = np.array(['apple'] * 4 + ['orange'] * 4)   # string labels are fine\nmodel = KNeighborsClassifier(n_neighbors=3)    # k = 3\nmodel.fit(X, y)                # just stores the data\nnew = np.array([[2.7, 1.5]])\nprint(model.predict(new))                      # -> ['apple']\ndist, idx = model.kneighbors(new)   # who voted, and how far\nprint([y[i] for i in idx[0]])       # the 3 neighbour labels\nKNN's .fit() does no learning \u2014 all computation happens at predict time. That makes it slow on big datasets.\n\n5\nSupport vector machine\nDraws the boundary with the widest possible gap between classes.\nH O W I T W O R K S\n\u2022\nFinds the separating line that maximises the margin.\n\u2022\nOnly the closest points \u2014 the support vectors \u2014 define it.\n\u2022\nAll other training points could be deleted without changing it.\n\u2022\nThe kernel trick bends the boundary for non-separable data.\nE X A M P L E\nSpam vs business email\nFeatures: spammy words, business words\nSpam:  [5,0]  [6,1]  [4,0]  [7,1]\nHam:   [0,5]  [1,6]  [0,4]  [1,7]\nBoundary sits exactly midway,\nheld in place by the support vectors.\nSupport vector machine  \u00b7  concept\n\n5\nSupport vector machine \u2014 code\nfrom sklearn.svm import SVC\n# dataset: [spammy_words, business_words] -> 1 = spam\nX = np.array([[5, 0], [6, 1], [4, 0], [7, 1],\n              [0, 5], [1, 6], [0, 4], [1, 7]])\ny = np.array([1, 1, 1, 1, 0, 0, 0, 0])\nmodel = SVC(kernel='linear')   # 'rbf' curves the boundary\nmodel.fit(X, y)\nprint(model.support_vectors_)  # the points that define it\nxx, yy = np.meshgrid(np.linspace(-1, 8, 200),\n                     np.linspace(-1, 8, 200))\nZ = model.decision_function(np.c_[xx.ravel(), yy.ravel()])\nplt.contour(xx, yy, Z.reshape(xx.shape), levels=[-1, 0, 1])\nplt.show()                     # boundary + both margins\nThe meshgrid + decision_function + contour pattern draws ANY 2D decision boundary \u2014 reuse it for other classifiers.\n\n6\nNaive Bayes\nMultiplies word probabilities together using Bayes' theorem.\nH O W I T W O R K S\n\u2022\nLearns P(word | spam) for every word from training data.\n\u2022\nMultiplies them to score a new message.\n\u2022\n\"Naive\" = assumes words are independent of each other.\n\u2022\nThat assumption is false, yet it works very well on text.\nE X A M P L E\nSpam detection\nP('free'   | spam) = 0.8\nP('winner' | spam) = 0.9\nP('click'  | spam) = 0.6\nEmail: \"free winner click\"\nCombined  ->  classified SPAM\nNaive Bayes  \u00b7  concept\n\n6\nNaive Bayes \u2014 code\nfrom sklearn.naive_bayes import MultinomialNB\nfrom sklearn.feature_extraction.text import CountVectorizer\nemails = ['free winner click now', 'free money winner',\n          'click free prize',      'meeting tomorrow report',\n          'project deadline monday', 'lunch meeting notes']\nlabels = ['spam', 'spam', 'spam', 'ham', 'ham', 'ham']\nvec = CountVectorizer()        # text -> word counts\nX = vec.fit_transform(emails)  # builds vocab + transforms\nmodel = MultinomialNB()        # NB variant for count data\nmodel.fit(X, labels)\ntest = vec.transform(['free winner click'])\nprint(model.predict_proba(test))   # P(ham), P(spam)\nprint(model.predict(test))         # -> ['spam']\nCountVectorizer turns text into numbers first \u2014 every text model needs this step. Use transform (not fit_transform) on test data.\n\nP A R T T W O\nUnsupervised learning\nNo labels at all. The algorithm finds structure in the data on its own.\n\n7\nK-means clustering\nGroups data into k clusters with no labels given.\nH O W I T W O R K S\n\u2022\nPick k. Place k centroids at random starting positions.\n\u2022\nAssign every point to its nearest centroid.\n\u2022\nMove each centroid to the average of its assigned points.\n\u2022\nRepeat until the centroids stop moving.\nE X A M P L E\nCustomer segments\nFeatures: purchases/month, avg spend\nCluster 0:  low spenders   (2.5, $32)\nCluster 1:  frequent buyers (13.5, $82)\nCluster 2:  big spenders    (4, $312)\nFound without being told the segments.\nK-means clustering  \u00b7  concept\n\n7\nK-means clustering \u2014 code\nfrom sklearn.cluster import KMeans\n# dataset: [purchases/month, avg spend $] - NO labels\nX = np.array([[2, 30],  [3, 35],  [2, 25],  [3, 40],\n              [12, 80], [14, 90], [13, 75], [15, 85],\n              [4, 300], [5, 350], [3, 280], [4, 320]])\nmodel = KMeans(n_clusters=3, random_state=0, n_init=10)\nlabels = model.fit_predict(X)   # fit + assign in one call\nprint(labels)                   # cluster id per customer\nprint(model.cluster_centers_)   # the 3 centroids\nplt.scatter(X[:, 0], X[:, 1], c=labels, cmap='Set2')\nplt.scatter(*model.cluster_centers_.T, marker='X', s=300)\nplt.show()\nNote there is no y anywhere \u2014 that is what makes it unsupervised. fit_predict trains and assigns in one step.\n\n8\nPCA\nSqueezes many features into a few, keeping most of the information.\nH O W I T W O R K S\n\u2022\nFinds new axes pointing along the directions of greatest \nvariance.\n\u2022\nProjects the data onto just the top few of those axes.\n\u2022\nAlways scale your features first, or big units dominate.\n\u2022\nUsed to speed up models and to make data visualisable in 2D.\nE X A M P L E\nHouse features\n5 features per house:\nsqft, bedrooms, age, distance, garage\nCompressed to 2 components\nPC1 keeps 71% of the variance\nPC2 keeps 21%   ->  92% total\nPCA  \u00b7  concept\n\n8\nPCA \u2014 code\nfrom sklearn.decomposition import PCA\nfrom sklearn.preprocessing import StandardScaler\n# [sqft, bedrooms, age, dist_to_school, garage]\nX = np.array([[1500, 3, 20, 2.0, 1], [2400, 4, 5, 1.5, 2],\n              [1100, 2, 35, 3.0, 1], [3000, 5, 2, 0.8, 3],\n              [1800, 3, 15, 2.2, 2], [2200, 4, 10, 1.2, 2]])\nX = StandardScaler().fit_transform(X)   # ALWAYS scale first\npca = PCA(n_components=2)               # 5 features -> 2\nX2 = pca.fit_transform(X)\nprint(pca.explained_variance_ratio_)    # info kept per axis\nprint(pca.explained_variance_ratio_.sum())\nplt.scatter(X2[:, 0], X2[:, 1])\nplt.xlabel('PC1'); plt.ylabel('PC2'); plt.show()\nSkipping StandardScaler is the classic PCA mistake \u2014 sqft in thousands would swamp bedrooms in single digits.\n\nWhich one do I use?\nPredict a number\nLinear regression\nPredict a yes/no class\nLogistic regression, SVM, Naive Bayes\nNeed to explain the decision\nDecision tree\nSmall data, no training time\nK-nearest neighbours\nWorking with text\nNaive Bayes\nNo labels \u2014 find groups\nK-means clustering\nToo many features\nPCA",
+   "chunks": [
+    {
+     "page": 1,
+     "text": "Machine Learning Basic Algorithms Concept \u00b7 Worked example \u00b7 Working code"
+    },
+    {
+     "page": 2,
+     "text": "P A R T O N E Supervised learning Learns from labeled input\u2013output pairs. You give it the right answers, it learns the mapping."
+    },
+    {
+     "page": 3,
+     "text": "1 Linear regression Fits a straight line to predict a continuous number. H O W I T W O R K S \u2022 Finds the line score = m x hours + b that sits closest to all points. \u2022 \"Closest\" = smallest sum of squared vertical gaps (residuals). \u2022 Squaring punishes big misses more than small ones. \u2022 Use it when the output is a number: price, score, temperature. E X A M P L E Hours studied to exam score 1 hr -> 50 4 hrs -> 70 2 hrs -> 55 5 hrs -> 85 3 hrs -> 65 Learned line: score = 8.5 x hours + 42 Predict 6 hrs -> 93 Linear regression \u00b7 concept"
+    },
+    {
+     "page": 4,
+     "text": "1 Linear regression \u2014 code import numpy as np, matplotlib.pyplot as plt from sklearn.linear_model import LinearRegression # dataset: hours studied -> exam score X = np.array([[1], [2], [3], [4], [5]]) # 2D: rows = samples y = np.array([50, 55, 65, 70, 85]) # 1D: one target each model = LinearRegression() model.fit(X, y) # learns m and b print(model.coef_[0], model.intercept_) # 8.5 , 42 print(model.predict([[6]])) # -> 93 xs = np.linspace(0.5, 6.5, 100).reshape(-1, 1) plt.scatter(X, y, color='tomato') # the data plt.plot(xs, model.predict(xs), color='steelblue') # the line plt.show() Key idea: .fit() finds the best line, .predict() uses it. reshape(-1,1) makes the 2D shape sklearn needs."
+    },
+    {
+     "page": 5,
+     "text": "2 Logistic regression Despite the name, this is classification \u2014 it predicts a class, not a number. H O W I T W O R K S \u2022 Pushes a linear score through a sigmoid to get a probability 0\u20131. \u2022 Applies a threshold (usually 0.5) to pick the class. \u2022 Output is an S-curve, not a straight line. \u2022 Use it for yes/no questions: pass/fail, spam/not spam, churn/stay. E X A M P L E Will the student pass? 1.5 hrs -> P(pass) = 0.08 -> FAIL 3.5 hrs -> P(pass) = 0.52 -> PASS 5.0 hrs -> P(pass) = 0.91 -> PASS Threshold at 0.5 splits the two classes. Logistic regression \u00b7 concept"
+    },
+    {
+     "page": 6,
+     "text": "2 Logistic regression \u2014 code from sklearn.linear_model import LogisticRegression # dataset: hours studied -> 0 = fail, 1 = pass X = np.array([[1], [1.5], [2], [3], [4], [5], [5.5]]) y = np.array([0, 0, 0, 0, 1, 1, 1]) # categorical target model = LogisticRegression() model.fit(X, y) for hrs in [1.5, 3.5, 5]: p = model.predict_proba([[hrs]])[0][1] # col 1 = P(pass) print(hrs, round(p, 2), 'PASS' if p > 0.5 else 'FAIL') xs = np.linspace(0, 7, 300).reshape(-1, 1) plt.plot(xs, model.predict_proba(xs)[:, 1]) # the S-curve plt.axhline(0.5, ls='--', color='gray') # threshold plt.show() predict_proba gives probabilities; predict gives the hard label. Column 1 is the positive class."
+    },
+    {
+     "page": 7,
+     "text": "3 Decision tree A flowchart of yes/no questions you can read top to bottom. H O W I T W O R K S \u2022 At each step picks the question that best separates the classes. \u2022 \"Best\" is measured by Gini impurity or information gain. \u2022 Fully interpretable \u2014 you can explain every decision. \u2022 Limit depth, or it memorises the training data (overfitting). E X A M P L E Loan approval Income > $50k ? No -> REJECT Yes -> Credit score > 700 ? No -> REJECT Yes -> APPROVE Applicant: $75k, score 780 -> APPROVE Decision tree \u00b7 concept"
+    },
+    {
+     "page": 8,
+     "text": "3 Decision tree \u2014 code from sklearn.tree import DecisionTreeClassifier, plot_tree # dataset: [income_k, credit_score] -> 1 = approve X = [[30, 650], [40, 720], [45, 690], [60, 750], [70, 800], [55, 640], [80, 710], [35, 800], [90, 660], [65, 730]] y = [0, 0, 0, 1, 1, 0, 1, 0, 0, 1] model = DecisionTreeClassifier(max_depth=2, random_state=0) model.fit(X, y) # max_depth stops overfitting print(model.predict([[75, 780]])) # -> [1] APPROVE plt.figure(figsize=(10, 6)) plot_tree(model, feature_names=['income_k', 'credit_score'], class_names=['Reject', 'Approve'], filled=True) plt.show() plot_tree draws the actual learned tree \u2014 the clearest algorithm to show students, because the logic is visible."
+    },
+    {
+     "page": 9,
+     "text": "4 K-nearest neighbours No training at all \u2014 it just remembers the data and votes. H O W I T W O R K S \u2022 Stores every training point; does the work at prediction time. \u2022 For a new point, finds the k closest points by distance. \u2022 Takes a majority vote among those k neighbours. \u2022 k is the one parameter to tune: small k = noisy, large k = blurry. E X A M P L E Apple or orange? Features: weight, redness New fruit: [2.7, 1.5] 3 nearest neighbours: apple, apple, apple Vote -> APPLE K-nearest neighbours \u00b7 concept"
+    },
+    {
+     "page": 10,
+     "text": "4 K-nearest neighbours \u2014 code from sklearn.neighbors import KNeighborsClassifier # dataset: [weight, redness] X = np.array([[1.8, 1.2], [2.2, 1.6], [2.6, 1.0], [1.5, 1.8], [4.0, 2.5], [4.5, 2.2], [4.8, 2.7], [4.2, 2.0]]) y = np.array(['apple'] * 4 + ['orange'] * 4) # string labels are fine model = KNeighborsClassifier(n_neighbors=3) # k = 3 model.fit(X, y) # just stores the data new = np.array([[2.7, 1.5]]) print(model.predict(new)) # -> ['apple'] dist, idx = model.kneighbors(new) # who voted, and how far print([y[i] for i in idx[0]]) # the 3 neighbour labels KNN's .fit() does no learning \u2014 all computation happens at predict time. That makes it slow on big datasets."
+    },
+    {
+     "page": 11,
+     "text": "5 Support vector machine Draws the boundary with the widest possible gap between classes. H O W I T W O R K S \u2022 Finds the separating line that maximises the margin. \u2022 Only the closest points \u2014 the support vectors \u2014 define it. \u2022 All other training points could be deleted without changing it. \u2022 The kernel trick bends the boundary for non-separable data. E X A M P L E Spam vs business email Features: spammy words, business words Spam: [5,0] [6,1] [4,0] [7,1] Ham: [0,5] [1,6] [0,4] [1,7] Boundary sits exactly midway, held in place by the support vectors. Support vector machine \u00b7 concept"
+    },
+    {
+     "page": 12,
+     "text": "5 Support vector machine \u2014 code from sklearn.svm import SVC # dataset: [spammy_words, business_words] -> 1 = spam X = np.array([[5, 0], [6, 1], [4, 0], [7, 1], [0, 5], [1, 6], [0, 4], [1, 7]]) y = np.array([1, 1, 1, 1, 0, 0, 0, 0]) model = SVC(kernel='linear') # 'rbf' curves the boundary model.fit(X, y) print(model.support_vectors_) # the points that define it xx, yy = np.meshgrid(np.linspace(-1, 8, 200), np.linspace(-1, 8, 200)) Z = model.decision_function(np.c_[xx.ravel(), yy.ravel()]) plt.contour(xx, yy, Z.reshape(xx.shape), levels=[-1, 0, 1]) plt.show() # boundary + both margins The meshgrid + decision_function + contour pattern draws ANY 2D decision boundary \u2014 reuse it for other classifiers."
+    },
+    {
+     "page": 13,
+     "text": "6 Naive Bayes Multiplies word probabilities together using Bayes' theorem. H O W I T W O R K S \u2022 Learns P(word | spam) for every word from training data. \u2022 Multiplies them to score a new message. \u2022 \"Naive\" = assumes words are independent of each other. \u2022 That assumption is false, yet it works very well on text. E X A M P L E Spam detection P('free' | spam) = 0.8 P('winner' | spam) = 0.9 P('click' | spam) = 0.6 Email: \"free winner click\" Combined -> classified SPAM Naive Bayes \u00b7 concept"
+    },
+    {
+     "page": 14,
+     "text": "6 Naive Bayes \u2014 code from sklearn.naive_bayes import MultinomialNB from sklearn.feature_extraction.text import CountVectorizer emails = ['free winner click now', 'free money winner', 'click free prize', 'meeting tomorrow report', 'project deadline monday', 'lunch meeting notes'] labels = ['spam', 'spam', 'spam', 'ham', 'ham', 'ham'] vec = CountVectorizer() # text -> word counts X = vec.fit_transform(emails) # builds vocab + transforms model = MultinomialNB() # NB variant for count data model.fit(X, labels) test = vec.transform(['free winner click']) print(model.predict_proba(test)) # P(ham), P(spam) print(model.predict(test)) # -> ['spam'] CountVectorizer turns text into numbers first \u2014 every text model needs this step. Use transform (not fit_transform) on test data."
+    },
+    {
+     "page": 15,
+     "text": "P A R T T W O Unsupervised learning No labels at all. The algorithm finds structure in the data on its own."
+    },
+    {
+     "page": 16,
+     "text": "7 K-means clustering Groups data into k clusters with no labels given. H O W I T W O R K S \u2022 Pick k. Place k centroids at random starting positions. \u2022 Assign every point to its nearest centroid. \u2022 Move each centroid to the average of its assigned points. \u2022 Repeat until the centroids stop moving. E X A M P L E Customer segments Features: purchases/month, avg spend Cluster 0: low spenders (2.5, $32) Cluster 1: frequent buyers (13.5, $82) Cluster 2: big spenders (4, $312) Found without being told the segments. K-means clustering \u00b7 concept"
+    },
+    {
+     "page": 17,
+     "text": "7 K-means clustering \u2014 code from sklearn.cluster import KMeans # dataset: [purchases/month, avg spend $] - NO labels X = np.array([[2, 30], [3, 35], [2, 25], [3, 40], [12, 80], [14, 90], [13, 75], [15, 85], [4, 300], [5, 350], [3, 280], [4, 320]]) model = KMeans(n_clusters=3, random_state=0, n_init=10) labels = model.fit_predict(X) # fit + assign in one call print(labels) # cluster id per customer print(model.cluster_centers_) # the 3 centroids plt.scatter(X[:, 0], X[:, 1], c=labels, cmap='Set2') plt.scatter(*model.cluster_centers_.T, marker='X', s=300) plt.show() Note there is no y anywhere \u2014 that is what makes it unsupervised. fit_predict trains and assigns in one step."
+    },
+    {
+     "page": 18,
+     "text": "8 PCA Squeezes many features into a few, keeping most of the information. H O W I T W O R K S \u2022 Finds new axes pointing along the directions of greatest variance. \u2022 Projects the data onto just the top few of those axes. \u2022 Always scale your features first, or big units dominate. \u2022 Used to speed up models and to make data visualisable in 2D. E X A M P L E House features 5 features per house: sqft, bedrooms, age, distance, garage Compressed to 2 components PC1 keeps 71% of the variance PC2 keeps 21% -> 92% total PCA \u00b7 concept"
+    },
+    {
+     "page": 19,
+     "text": "8 PCA \u2014 code from sklearn.decomposition import PCA from sklearn.preprocessing import StandardScaler # [sqft, bedrooms, age, dist_to_school, garage] X = np.array([[1500, 3, 20, 2.0, 1], [2400, 4, 5, 1.5, 2], [1100, 2, 35, 3.0, 1], [3000, 5, 2, 0.8, 3], [1800, 3, 15, 2.2, 2], [2200, 4, 10, 1.2, 2]]) X = StandardScaler().fit_transform(X) # ALWAYS scale first pca = PCA(n_components=2) # 5 features -> 2 X2 = pca.fit_transform(X) print(pca.explained_variance_ratio_) # info kept per axis print(pca.explained_variance_ratio_.sum()) plt.scatter(X2[:, 0], X2[:, 1]) plt.xlabel('PC1'); plt.ylabel('PC2'); plt.show() Skipping StandardScaler is the classic PCA mistake \u2014 sqft in thousands would swamp bedrooms in single digits."
+    },
+    {
+     "page": 20,
+     "text": "Which one do I use? Predict a number Linear regression Predict a yes/no class Logistic regression, SVM, Naive Bayes Need to explain the decision Decision tree Small data, no training time K-nearest neighbours Working with text Naive Bayes No labels \u2014 find groups K-means clustering Too many features PCA"
+    }
+   ],
+   "concepts": [
+    {
+     "term": "model",
+     "score": 33.0,
+     "occurrences": 33
+    },
+    {
+     "term": "predict",
+     "score": 18.0,
+     "occurrences": 18
+    },
+    {
+     "term": "print model",
+     "score": 17.6,
+     "occurrences": 8
+    },
+    {
+     "term": "model predict",
+     "score": 17.6,
+     "occurrences": 8
+    },
+    {
+     "term": "model fit",
+     "score": 15.4,
+     "occurrences": 7
+    },
+    {
+     "term": "decision",
+     "score": 14.4,
+     "occurrences": 9
+    },
+    {
+     "term": "plt show",
+     "score": 13.2,
+     "occurrences": 6
+    },
+    {
+     "term": "naive bayes",
+     "score": 13.2,
+     "occurrences": 6
+    },
+    {
+     "term": "data",
+     "score": 13.0,
+     "occurrences": 13
+    },
+    {
+     "term": "spam",
+     "score": 12.0,
+     "occurrences": 12
+    },
+    {
+     "term": "linear",
+     "score": 11.2,
+     "occurrences": 7
+    },
+    {
+     "term": "cluster",
+     "score": 11.2,
+     "occurrences": 7
+    },
+    {
+     "term": "import",
+     "score": 11.0,
+     "occurrences": 11
+    },
+    {
+     "term": "sklearn",
+     "score": 11.0,
+     "occurrences": 11
+    },
+    {
+     "term": "array",
+     "score": 11.0,
+     "occurrences": 11
+    }
+   ],
+   "topics": [
+    {
+     "topic": "Topic 4",
+     "label": "Model, Predict, Linear",
+     "chunk_count": 5,
+     "pages": [
+      3,
+      4,
+      5,
+      6,
+      8
+     ],
+     "preview": "1 Linear regression Fits a straight line to predict a continuous number. H O W I T W O R K S \u2022 Finds the line score = m x hours + b that sits closest to all points. \u2022 \"Closest\" = s"
+    },
+    {
+     "topic": "Topic 5",
+     "label": "Cluster, Model, Predict",
+     "chunk_count": 5,
+     "pages": [
+      9,
+      10,
+      16,
+      17,
+      20
+     ],
+     "preview": "4 K-nearest neighbours No training at all \u2014 it just remembers the data and votes. H O W I T W O R K S \u2022 Stores every training point; does the work at prediction time. \u2022 For a new p"
+    },
+    {
+     "topic": "Topic 2",
+     "label": "Spam, Model, Data",
+     "chunk_count": 4,
+     "pages": [
+      11,
+      12,
+      13,
+      14
+     ],
+     "preview": "5 Support vector machine Draws the boundary with the widest possible gap between classes. H O W I T W O R K S \u2022 Finds the separating line that maximises the margin. \u2022 Only the clos"
+    },
+    {
+     "topic": "Topic 3",
+     "label": "Decision, Data",
+     "chunk_count": 4,
+     "pages": [
+      1,
+      2,
+      7,
+      15
+     ],
+     "preview": "Machine Learning Basic Algorithms Concept \u00b7 Worked example \u00b7 Working code"
+    },
+    {
+     "topic": "Topic 1",
+     "label": "Data, Import, Sklearn",
+     "chunk_count": 2,
+     "pages": [
+      18,
+      19
+     ],
+     "preview": "8 PCA Squeezes many features into a few, keeping most of the information. H O W I T W O R K S \u2022 Finds new axes pointing along the directions of greatest variance. \u2022 Projects the da"
+    }
+   ],
+   "exam_topics": [
+    {
+     "term": "Model",
+     "occurrences": 33,
+     "importance": 48.0
+    },
+    {
+     "term": "Predict",
+     "occurrences": 18,
+     "importance": 28.0
+    },
+    {
+     "term": "Data",
+     "occurrences": 13,
+     "importance": 28.0
+    },
+    {
+     "term": "Decision",
+     "occurrences": 9,
+     "importance": 19.4
+    },
+    {
+     "term": "Print Model",
+     "occurrences": 8,
+     "importance": 17.6
+    },
+    {
+     "term": "Model Predict",
+     "occurrences": 8,
+     "importance": 17.6
+    }
+   ],
+   "study_plan": [
+    {
+     "day": 1,
+     "focus": [
+      "Model, Predict, Linear"
+     ],
+     "pages": [
+      3,
+      4,
+      5,
+      6,
+      8
+     ],
+     "chunks": 5
+    },
+    {
+     "day": 2,
+     "focus": [
+      "Cluster, Model, Predict"
+     ],
+     "pages": [
+      9,
+      10,
+      16,
+      17,
+      20
+     ],
+     "chunks": 5
+    },
+    {
+     "day": 3,
+     "focus": [
+      "Spam, Model, Data"
+     ],
+     "pages": [
+      11,
+      12,
+      13,
+      14
+     ],
+     "chunks": 4
+    },
+    {
+     "day": 4,
+     "focus": [
+      "Decision, Data"
+     ],
+     "pages": [
+      1,
+      2,
+      7,
+      15
+     ],
+     "chunks": 4
+    },
+    {
+     "day": 5,
+     "focus": [
+      "Data, Import, Sklearn"
+     ],
+     "pages": [
+      18,
+      19
+     ],
+     "chunks": 2
+    }
+   ]
+  }
+ ]
+}

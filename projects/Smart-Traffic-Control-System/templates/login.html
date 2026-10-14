@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bright">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Traffic - Officer Authentication</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        (function() {
+            const saved = localStorage.getItem('traffic_theme') || 'bright';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
+</head>
+<body>
+    <div style="min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 24px;">
+        
+        <!-- Header with Back & Theme Toggle -->
+        <header style="display: flex; justify-content: space-between; align-items: center; max-width: 1100px; width: 100%; margin: 0 auto;">
+            <a href="{{ url_for('index') }}" class="secondary-btn" style="padding: 8px 18px; font-size: 13px;">
+                ← Back to Home
+            </a>
+            <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle Theme">
+                <span id="themeIcon">☀️</span>
+                <span id="themeLabel">Bright Mode</span>
+            </button>
+        </header>
+
+        <!-- Main Auth Container -->
+        <main style="max-width: 480px; width: 100%; margin: 30px auto; background: var(--panel-bg); backdrop-filter: var(--panel-backdrop); border-radius: 24px; padding: 38px; border: 1px solid var(--card-border); box-shadow: var(--shadow);">
+            
+            <div style="text-align: center; margin-bottom: 22px;">
+                <div class="brand-mark" style="margin: 0 auto 14px auto; width: 52px; height: 52px; font-size: 24px;">AI</div>
+                <h2 id="authHeading" style="margin: 0 0 6px 0; font-size: 26px; font-weight: 800;">Authority Portal</h2>
+                <p id="authSubheading" style="margin: 0; color: var(--muted); font-size: 14px;">Sign in or register to access real-time signal telemetry</p>
+            </div>
+
+            <!-- Flashed Messages Alerts -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert-banner {{ category }}">
+                            <span>
+                                {% if category == 'error' %}⚠️
+                                {% elif category == 'success' %}✅
+                                {% else %}ℹ️{% endif %}
+                            </span>
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Auth Switcher Tabs -->
+            <div class="auth-tabs">
+                <button type="button" class="auth-tab-btn {% if active_tab != 'register' %}active{% endif %}" id="tabBtnLogin" onclick="switchAuthTab('login')">
+                    <span>🔑 Sign In</span>
+                </button>
+                <button type="button" class="auth-tab-btn {% if active_tab == 'register' %}active{% endif %}" id="tabBtnRegister" onclick="switchAuthTab('register')">
+                    <span>📝 Register New Officer</span>
+                </button>
+            </div>
+
+            <!-- 1. LOGIN FORM -->
+            <form id="loginForm" method="POST" action="{{ url_for('login') }}" style="display: {% if active_tab == 'register' %}none{% else %}block{% endif %};">
+                <div style="margin-bottom: 16px;">
+                    <label style="font-weight: 700; color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block;">
+                        Officer ID / Email
+                    </label>
+                    <input type="email" id="loginEmail" name="email" value="{{ email or 'officer@traffic.gov' }}" required placeholder="officer@traffic.gov">
+                </div>
+                
+                <div style="margin-bottom: 22px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <label style="font-weight: 700; color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
+                            Security Passcode
+                        </label>
+                        <a href="javascript:void(0)" onclick="fillDemoCredentials()" style="font-size: 12px; color: var(--primary); text-decoration: none; font-weight: 700;">
+                            Auto-Fill Demo
+                        </a>
+                    </div>
+                    <input type="password" id="loginPassword" name="password" value="demo123" required placeholder="••••••••">
+                </div>
+                
+                <button type="submit" class="primary-btn" style="width: 100%; padding: 14px 20px;">
+                    <span>Authenticate & Access Console</span> →
+                </button>
+
+                <div style="text-align: center; margin-top: 18px; font-size: 14px; color: var(--muted);">
+                    Don't have an officer profile? 
+                    <a href="javascript:void(0)" onclick="switchAuthTab('register')" style="color: var(--primary); font-weight: 700; text-decoration: none;">
+                        Register here
+                    </a>
+                </div>
+            </form>
+
+            <!-- 2. REGISTER FORM -->
+            <form id="registerForm" method="POST" action="{{ url_for('register') }}" style="display: {% if active_tab == 'register' %}block{% else %}none{% endif %};">
+                <div style="margin-bottom: 15px;">
+                    <label style="font-weight: 700; color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block;">
+                        Officer Full Name
+                    </label>
+                    <input type="text" name="name" value="{{ name or '' }}" required placeholder="e.g. Officer Alex Carter">
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label style="font-weight: 700; color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block;">
+                        Official Email / ID
+                    </label>
+                    <input type="email" name="email" value="{{ email or '' }}" required placeholder="e.g. alex@traffic.gov">
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label style="font-weight: 700; color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block;">
+                        Division / Badge ID <span style="font-size: 11px; text-transform: none; color: var(--muted);">(Optional)</span>
+                    </label>
+                    <input type="text" name="badge_id" value="{{ badge_id or '' }}" placeholder="e.g. TPD-5541">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px;">
+                    <div>
+                        <label style="font-weight: 700; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block;">
+                            Passcode
+                        </label>
+                        <input type="password" name="password" required placeholder="••••••••">
+                    </div>
+                    <div>
+                        <label style="font-weight: 700; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block;">
+                            Confirm Passcode
+                        </label>
+                        <input type="password" name="confirm_password" required placeholder="••••••••">
+                    </div>
+                </div>
+
+                <button type="submit" class="primary-btn" style="width: 100%; padding: 14px 20px; background: var(--green-gradient);">
+                    <span>Register New Officer Account</span> 📝
+                </button>
+
+                <div style="text-align: center; margin-top: 18px; font-size: 14px; color: var(--muted);">
+                    Already have an account? 
+                    <a href="javascript:void(0)" onclick="switchAuthTab('login')" style="color: var(--primary); font-weight: 700; text-decoration: none;">
+                        Sign in here
+                    </a>
+                </div>
+            </form>
+
+            <!-- Demo Helper Footer -->
+            <div style="margin-top: 24px; padding: 14px; border-radius: 12px; background: var(--card-bg-subtle); border: 1px solid var(--line); font-size: 13px; color: var(--muted); line-height: 1.5;">
+                <div style="display: flex; align-items: center; gap: 6px; font-weight: 700; color: var(--ink-heading); margin-bottom: 4px;">
+                    <span>💡 Pre-configured Officer Account:</span>
+                </div>
+                Email: <strong>officer@traffic.gov</strong> | Passcode: <strong>demo123</strong>
+            </div>
+
+        </main>
+
+        <footer style="text-align: center; color: var(--muted); font-size: 13px; padding-bottom: 10px;">
+            Intelligent Traffic Control System • Secure Officer Authority Portal
+        </footer>
+    </div>
+
+    <!-- Auth Script -->
+    <script>
+        function switchAuthTab(mode) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const btnLogin = document.getElementById('tabBtnLogin');
+            const btnRegister = document.getElementById('tabBtnRegister');
+            const heading = document.getElementById('authHeading');
+            const subheading = document.getElementById('authSubheading');
+
+            if (mode === 'register') {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                btnLogin.classList.remove('active');
+                btnRegister.classList.add('active');
+                heading.innerText = 'Officer Registration';
+                subheading.innerText = 'Create a new patrol account to access traffic controls';
+            } else {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+                btnLogin.classList.add('active');
+                btnRegister.classList.remove('active');
+                heading.innerText = 'Authority Login';
+                subheading.innerText = 'Sign in to access real-time signal telemetry';
+            }
+        }
+
+        function fillDemoCredentials() {
+            document.getElementById('loginEmail').value = 'officer@traffic.gov';
+            document.getElementById('loginPassword').value = 'demo123';
+        }
+
+        // Theme Toggle Logic
+        function updateThemeUI(theme) {
+            const icon = document.getElementById('themeIcon');
+            const label = document.getElementById('themeLabel');
+            if (theme === 'bright') {
+                if (icon) icon.innerText = '☀️';
+                if (label) label.innerText = 'Bright Mode';
+            } else {
+                if (icon) icon.innerText = '🌙';
+                if (label) label.innerText = 'Dark Mode';
+            }
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'bright';
+            const next = current === 'bright' ? 'dark' : 'bright';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('traffic_theme', next);
+            updateThemeUI(next);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const active = document.documentElement.getAttribute('data-theme') || 'bright';
+            updateThemeUI(active);
+        });
+    </script>
+</body>
+</html>

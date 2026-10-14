@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GuardPath AI - Admin Dashboard</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 20px;
+    }
+    .full-width { grid-column: 1 / -1; }
+    .alert-card { background: #fee2e2; border: 1px solid #f87171; }
+    .hazard-img { max-width: 100px; border-radius: 8px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+    <div class="brand">
+        <img src="{{ url_for('static', filename='images/logo.jpg') }}" class="brand-icon" alt="GuardPath Logo">
+        <div>
+            <h1>GuardPath Admin</h1>
+            <p class="tagline">System Overview & Alerts</p>
+        </div>
+    </div>
+    <div style="color:white; margin-right:20px; display:flex; gap:15px; align-items:center;">
+        <span>Welcome, <strong>{{ name }}</strong></span>
+        <a href="{{ url_for('logout') }}" style="color:#e74c3c; text-decoration:none;">Logout</a>
+    </div>
+</header>
+
+<main class="container">
+    <section class="panel">
+        <h2>Admin Overview</h2>
+        
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert" style="background: #d1fae5; border: 1px solid #34d399; color: #065f46; margin-bottom: 20px;">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="panel" style="background: #f8fafc; border: 1px solid var(--border); margin-bottom: 20px;">
+            <h3 style="margin-top:0;">SOS Email Configuration</h3>
+            <p style="font-size: 14px; color: var(--muted); margin-bottom: 15px;">
+                Configure the Gmail account used to dispatch SOS alerts. You <strong>must</strong> use a 16-character Google App Password (not your regular login password). See README.md for instructions.
+            </p>
+            <form method="POST" action="{{ url_for('admin_dashboard') }}" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+                <div class="field" style="flex: 1; min-width: 250px;">
+                    <label>Sender Gmail Address</label>
+                    <input type="email" name="smtp_email" required value="{{ smtp_config.get('email', '') }}" placeholder="e.g. guardpath.bot@gmail.com">
+                </div>
+                <div class="field" style="flex: 1; min-width: 250px;">
+                    <label>Google App Password (16 letters)</label>
+                    <input type="password" name="smtp_password" required value="{{ smtp_config.get('password', '') }}" placeholder="abcd efgh ijkl mnop">
+                </div>
+                <button type="submit" class="submit-btn" style="padding: 12px 24px; margin-bottom: 0;">Save Configuration</button>
+            </form>
+        </div>
+
+        <!-- REGISTERED USERS & ACCOUNTS DIRECTORY -->
+        <div class="panel" style="background: white; border: 1px solid var(--border); margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <h3 style="margin: 0; color: var(--primary); display: flex; align-items: center; gap: 8px; font-size: 20px;">
+                        👥 Registered Users &amp; Accounts Directory
+                    </h3>
+                    <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--muted);">
+                        Real-time directory of all registered passenger and administrative accounts on GuardPath.
+                    </p>
+                </div>
+                <span style="background: rgba(94, 53, 177, 0.1); color: var(--accent); padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px;">
+                    Total Registered: {{ users|length }} Accounts
+                </span>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="table" style="margin-bottom: 0;">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Full Name</th>
+                            <th>Email Address</th>
+                            <th>Account Role</th>
+                            <th>Trips Recorded</th>
+                            <th>Account Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for uname, uinfo in users.items() %}
+                        <tr>
+                            <td>
+                                <strong style="color: var(--primary);">
+                                    {% if uinfo.role == 'admin' %}👑{% else %}👤{% endif %} {{ uname }}
+                                </strong>
+                            </td>
+                            <td>{{ uinfo.name }}</td>
+                            <td>
+                                <a href="mailto:{{ uinfo.email }}" style="color: var(--accent); text-decoration: none; font-weight: 500;">
+                                    {{ uinfo.email }}
+                                </a>
+                            </td>
+                            <td>
+                                <span style="padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; {% if uinfo.role == 'admin' %}background: #fee2e2; color: #991b1b; border: 1px solid #f87171;{% else %}background: #ede9fe; color: #5b21b6; border: 1px solid #c4b5fd;{% endif %}">
+                                    {{ uinfo.role }}
+                                </span>
+                            </td>
+                            <td>
+                                <strong style="color: var(--primary);">
+                                    {{ (history_data.get(uname, [])|length) }} rides
+                                </strong>
+                            </td>
+                            <td>
+                                <span style="display: inline-flex; align-items: center; gap: 6px; color: #059669; font-weight: 600; font-size: 13px;">
+                                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+                                    Registered &amp; Active
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- SOS ALERTS -->
+            <div class="panel alert-card" style="margin-bottom: 0;">
+                <h3 style="color: #991b1b; margin-top:0;">Active SOS Alerts ({{ sos_alerts|length }})</h3>
+                {% if sos_alerts %}
+                    <ul style="padding-left: 20px; margin: 0; color: #991b1b;">
+                    {% for alert in sos_alerts %}
+                        <li style="margin-bottom: 10px; border-bottom: 1px solid rgba(239, 68, 68, 0.3); padding-bottom: 10px;">
+                            <strong>{{ alert.name }}</strong> ({{ alert.timestamp }})<br>
+                            <em>Live Location:</em> {{ alert.lat }}, {{ alert.lng }}<br>
+                            <em>Alert Sent To:</em> <strong>{{ alert.email }}</strong><br>
+                            <em>Custom Message:</em> "{{ alert.message }}"
+                            {% if alert.voice_file %}
+                            <br><em>Voice Recording:</em><br>
+                            <audio controls src="{{ url_for('static', filename='uploads/' + alert.voice_file) }}" style="height: 30px; margin-top: 5px;"></audio>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p style="color: #991b1b; margin:0;">No active SOS alerts. All safe.</p>
+                {% endif %}
+            </div>
+
+            <!-- HAZARDS -->
+            <div class="panel" style="margin-bottom: 0; background: #fffbeb; border-color: #fcd34d;">
+                <h3 style="color: #b45309; margin-top:0;">Reported Community Hazards ({{ hazards|length }})</h3>
+                {% if hazards %}
+                    <ul style="padding-left: 20px; margin: 0; color: #b45309;">
+                    {% for h in hazards %}
+                        <li>
+                            <strong>{{ h.name }}</strong> reported at {{ h.timestamp }}<br>
+                            Desc: {{ h.description }}<br>
+                            {% if h.image %}
+                                <a href="{{ url_for('static', filename='uploads/' + h.image) }}" target="_blank">View Image</a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <p style="color: #b45309; margin:0;">No hazards reported.</p>
+                {% endif %}
+            </div>
+            
+            <!-- HISTORY -->
+            <div class="panel full-width" style="margin-bottom:0;">
+                <h3 style="margin-top:0; color: var(--primary);">System Ride History</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Date</th>
+                            <th>Source</th>
+                            <th>Destination</th>
+                            <th>Safety Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user, rides in history_data.items() %}
+                            {% for ride in rides %}
+                            <tr>
+                                <td>{{ user }}</td>
+                                <td>{{ ride.date }}</td>
+                                <td>{{ ride.source }}</td>
+                                <td>{{ ride.destination }}</td>
+                                <td><span class="badge {% if ride.safety_score >= 70 %}safe{% else %}short{% endif %}">{{ ride.safety_score }}</span></td>
+                            </tr>
+                            {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

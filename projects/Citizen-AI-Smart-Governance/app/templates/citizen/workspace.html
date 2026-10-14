@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Workspace - Citizen AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 h-screen flex flex-col overflow-hidden">
+    <!-- Top Nav -->
+    <header class="bg-white shadow-sm border-b z-10 flex-shrink-0 h-16 flex items-center justify-between px-6">
+        <div class="flex items-center">
+            <a href="{{ url_for('main.index') }}" class="text-gray-500 hover:text-gray-700 mr-4">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </a>
+            <h1 class="text-lg font-bold text-gray-900">PAN Card Application</h1>
+            <span class="ml-3 px-2 py-1 text-xs rounded bg-blue-100 text-blue-800">Draft</span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <div class="text-sm text-gray-500">Step 2 of 5 <span class="mx-2 text-gray-300">|</span> 40% Complete</div>
+            <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                <div class="bg-blue-600 h-2.5 rounded-full" style="width: 40%"></div>
+            </div>
+            <button class="text-sm font-medium text-blue-600 hover:text-blue-800 ml-4">Save Draft</button>
+        </div>
+    </header>
+
+    <!-- Split Screen Content -->
+    <div class="flex-grow flex overflow-hidden">
+        
+        <!-- LEFT PANEL: FORM -->
+        <div class="w-3/5 bg-white border-r overflow-y-auto p-8 relative">
+            <h2 class="text-2xl font-bold mb-2">Personal Details</h2>
+            <p class="text-gray-500 mb-6 border-b pb-4">Please provide your details exactly as they appear on your supporting documents.</p>
+            
+            <form id="applicationForm" class="space-y-6">
+                <!-- Full Name -->
+                <div>
+                    <label for="fullname" class="block text-sm font-medium text-gray-700">Full Name</label>
+                    <div class="mt-1 flex rounded-md shadow-sm">
+                        <input type="text" name="fullname" id="fullname" class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-l-md focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300 border" placeholder="e.g. Ravi Kumar" onfocus="updateContext('Full Name')">
+                        <button type="button" onclick="askExplain('fullname')" class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 hover:bg-gray-100">
+                            <i class="fa-regular fa-circle-question mr-1"></i> Help
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Date of Birth -->
+                <div>
+                    <label for="dob" class="block text-sm font-medium text-gray-700">Date of Birth</label>
+                    <div class="mt-1 flex rounded-md shadow-sm">
+                        <input type="text" name="dob" id="dob" class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-l-md focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300 border" placeholder="DD/MM/YYYY" onfocus="updateContext('Date of Birth')">
+                        <button type="button" onclick="askExplain('dob')" class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 hover:bg-gray-100">
+                            <i class="fa-regular fa-circle-question mr-1"></i> Help
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Gender -->
+                <div>
+                    <label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
+                    <select id="gender" name="gender" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md border" onfocus="updateContext('Gender')">
+                        <option>Select</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Transgender</option>
+                    </select>
+                </div>
+                
+                <!-- OCR Upload Test -->
+                <div class="mt-6 border p-4 bg-gray-50 rounded-md">
+                    <h3 class="text-md font-bold mb-2">Upload Supporting Document (OCR Verification)</h3>
+                    <input type="file" id="documentUpload" class="mb-2">
+                    <button type="button" onclick="uploadDoc()" class="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700">Process with OCR</button>
+                    <div id="ocrResults" class="mt-2 text-sm text-gray-700 hidden">
+                        <strong>Extracted from Document:</strong>
+                        <ul id="ocrList" class="list-disc pl-5 mt-1 text-green-700 font-semibold"></ul>
+                        <button type="button" onclick="useOcrData()" class="mt-2 text-xs bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 border border-gray-400">Use this data</button>
+                    </div>
+                </div>
+
+                <div class="flex justify-between pt-6 border-t mt-8">
+                    <button type="button" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded shadow-sm hover:bg-gray-50 font-medium">Previous Step</button>
+                    <button type="button" onclick="submitApp()" class="bg-blue-600 text-white px-4 py-2 rounded shadow-sm hover:bg-blue-700 font-medium">Complete Application</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- RIGHT PANEL: AI ASSISTANT -->
+        <div class="w-2/5 bg-gray-50 flex flex-col">
+            <!-- AI Header -->
+            <div class="bg-white p-4 border-b flex justify-between items-center shadow-sm">
+                <div class="flex items-center">
+                    <div class="bg-blue-100 p-2 rounded-full mr-3">
+                        <i class="fa-solid fa-robot text-blue-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800">Citizen AI Assistant</h3>
+                        <div class="flex items-center text-xs text-green-600">
+                            <span class="h-2 w-2 bg-green-500 rounded-full mr-1"></span> Ready to help
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <select id="chatLang" class="text-sm border-gray-300 rounded-md py-1 pl-2 pr-8 border">
+                        <option value="en">English</option>
+                        <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                        <option value="hi">हिन्दी (Hindi)</option>
+                        <option value="ta">தமிழ் (Tamil)</option>
+                        <option value="te">తెలుగు (Telugu)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- AI Context Bar -->
+            <div class="bg-blue-50 px-4 py-2 border-b border-blue-100 flex text-xs text-blue-800">
+                <div class="mr-4"><span class="font-semibold">CURRENT STEP:</span> Personal Details</div>
+                <div><span class="font-semibold">CURRENT FIELD:</span> <span id="currentFieldContext">Full Name</span></div>
+            </div>
+
+            <!-- Chat History -->
+            <div id="chatHistory" class="flex-grow p-4 overflow-y-auto space-y-4">
+                <!-- AI Welcome Message -->
+                <div class="flex items-start">
+                    <div class="bg-blue-100 p-2 rounded-full mr-3 flex-shrink-0">
+                        <i class="fa-solid fa-robot text-blue-600 text-sm"></i>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg rounded-tl-none shadow-sm border border-gray-100 text-sm max-w-[85%]">
+                        Hello! I am your Citizen AI Assistant. I see you are filling out the <strong>Personal Details</strong> section.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="bg-gray-50 px-4 pb-2">
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="sendChat('Explain this field')" class="bg-white border border-blue-200 text-blue-700 hover:bg-blue-50 text-xs px-3 py-1.5 rounded-full shadow-sm">Explain this field</button>
+                    <button onclick="sendChat('Give an example')" class="bg-white border border-blue-200 text-blue-700 hover:bg-blue-50 text-xs px-3 py-1.5 rounded-full shadow-sm">Give an example</button>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="bg-white p-4 border-t">
+                <div class="flex rounded-md shadow-sm border border-gray-300">
+                    <input type="text" id="chatInput" class="flex-1 px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 rounded-l-md sm:text-sm" placeholder="Ask Citizen AI..." onkeypress="if(event.key === 'Enter') sendCustomChat()">
+                    <button class="px-3 bg-gray-50 text-gray-500 hover:bg-gray-100 border-l border-r">
+                        <i class="fa-solid fa-microphone"></i>
+                    </button>
+                    <button onclick="sendCustomChat()" class="px-4 bg-blue-600 text-white hover:bg-blue-700 rounded-r-md">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals & Overlays -->
+    <div id="successOverlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg shadow-xl text-center max-w-md">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                <i class="fa-solid fa-check text-green-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-2">Application Prepared Successfully</h3>
+            <p class="text-sm text-gray-500 mb-6">Your application is ready for review. The AI has verified the entries.</p>
+            <div class="space-y-3">
+                <a href="#" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 sm:text-sm">Download Application PDF</a>
+                <a href="{{ url_for('citizen.dashboard') }}" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:text-sm">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentField = 'fullname';
+        let latestOcrData = {};
+
+        function updateContext(fieldName) {
+            document.getElementById('currentFieldContext').innerText = fieldName;
+            if(fieldName === 'Full Name') currentField = 'fullname';
+            if(fieldName === 'Date of Birth') currentField = 'dob';
+            if(fieldName === 'Gender') currentField = 'gender';
+        }
+
+        function appendUserMessage(msg) {
+            const hist = document.getElementById('chatHistory');
+            hist.innerHTML += `
+                <div class="flex items-start justify-end">
+                    <div class="bg-blue-600 text-white p-3 rounded-lg rounded-tr-none shadow-sm text-sm max-w-[85%]">
+                        ${msg}
+                    </div>
+                </div>
+            `;
+            hist.scrollTop = hist.scrollHeight;
+        }
+
+        function appendAIMessage(msg) {
+            const hist = document.getElementById('chatHistory');
+            hist.innerHTML += `
+                <div class="flex items-start">
+                    <div class="bg-blue-100 p-2 rounded-full mr-3 flex-shrink-0">
+                        <i class="fa-solid fa-robot text-blue-600 text-sm"></i>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg rounded-tl-none shadow-sm border border-gray-100 text-sm max-w-[85%]">
+                        ${msg}
+                    </div>
+                </div>
+            `;
+            hist.scrollTop = hist.scrollHeight;
+        }
+
+        async function sendChat(message) {
+            appendUserMessage(message);
+            const lang = document.getElementById('chatLang').value;
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        message: message,
+                        field: currentField,
+                        language: lang
+                    })
+                });
+                const data = await response.json();
+                appendAIMessage(data.response);
+            } catch (err) {
+                appendAIMessage("Sorry, I could not connect to the server.");
+            }
+        }
+
+        function sendCustomChat() {
+            const input = document.getElementById('chatInput');
+            if (input.value.trim() !== '') {
+                sendChat(input.value);
+                input.value = '';
+            }
+        }
+
+        function askExplain(fieldId) {
+            document.getElementById(fieldId).focus();
+            sendChat("Explain this field");
+        }
+
+        async function uploadDoc() {
+            const fileInput = document.getElementById('documentUpload');
+            if(fileInput.files.length === 0) {
+                alert("Please select a file first.");
+                return;
+            }
+            
+            appendAIMessage("Processing your document with OCR...");
+            
+            const formData = new FormData();
+            formData.append('document', fileInput.files[0]);
+            
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                if(data.status === 'success') {
+                    latestOcrData = data.extracted_fields;
+                    const resDiv = document.getElementById('ocrResults');
+                    const ul = document.getElementById('ocrList');
+                    ul.innerHTML = '';
+                    
+                    let found = false;
+                    for (const [key, value] of Object.entries(data.extracted_fields)) {
+                        found = true;
+                        ul.innerHTML += `<li>${key}: ${value}</li>`;
+                    }
+                    
+                    if(found) {
+                        resDiv.classList.remove('hidden');
+                        appendAIMessage(`I have successfully extracted information from your document. You can review it and click 'Use this data' to compare/fill.`);
+                    } else {
+                        appendAIMessage("I couldn't detect clear PAN information on this document. Please ensure the image is clear.");
+                    }
+                }
+            } catch (err) {
+                appendAIMessage("Error processing document.");
+            }
+        }
+
+        function useOcrData() {
+            if(latestOcrData.document_number) {
+                appendAIMessage(`Detected PAN: ${latestOcrData.document_number}`);
+            }
+            if(latestOcrData.dob) {
+                const el = document.getElementById('dob');
+                if(el.value && el.value !== latestOcrData.dob) {
+                    appendAIMessage(`⚠️ Mismatch Warning: Form Date of Birth (${el.value}) does not match Document (${latestOcrData.dob}).`);
+                } else {
+                    el.value = latestOcrData.dob;
+                    appendAIMessage("I have filled the Date of Birth based on your document.");
+                }
+            }
+        }
+
+        function submitApp() {
+            document.getElementById('successOverlay').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

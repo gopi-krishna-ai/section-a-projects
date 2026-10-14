@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Tutor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f7fafc;
+            --text-main: #2d3748;
+            --primary: #667eea;
+            --primary-hover: #5a67d8;
+            --user-msg: #e2e8f0;
+            --ai-msg: #ebf4ff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: url('/static/bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .chat-container {
+            flex: 1;
+            max-width: 800px;
+            margin: 2rem auto;
+            width: 95%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-box {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .msg {
+            max-width: 80%;
+            padding: 1rem;
+            border-radius: 12px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .msg-user {
+            background: rgba(102, 126, 234, 0.9);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .msg-ai {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .input-area {
+            display: flex;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 50px;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .input-area button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .input-area button:hover {
+            background: var(--primary-hover);
+        }
+
+        .typing {
+            font-style: italic;
+            color: #718096;
+            font-size: 0.9rem;
+            display: none;
+            margin-top: -5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <h1><i class="fas fa-robot"></i> AI Chat Tutor</h1>
+        <div>
+            <a href="/app" class="back-btn"><i class="fas fa-arrow-left"></i> Dashboard</a>
+            <a href="/logout" class="back-btn" style="margin-left: 20px;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-box" id="chatBox">
+            <div class="msg msg-ai">
+                Hello! I am your AI Study Tutor. I know about your current study plan and exams. What would you like to study or discuss today?
+            </div>
+        </div>
+        
+        <div style="padding: 0 1.5rem;"><span class="typing" id="typingIndicator">AI is thinking...</span></div>
+        
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Ask me to explain a topic, or quiz you..." onkeypress="handleEnter(event)">
+            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chatBox');
+        const userInput = document.getElementById('userInput');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        function appendMessage(text, isUser) {
+            const div = document.createElement('div');
+            div.className = 'msg ' + (isUser ? 'msg-user' : 'msg-ai');
+            div.textContent = text;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+            
+            appendMessage(text, true);
+            userInput.value = '';
+            
+            typingIndicator.style.display = 'block';
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: text})
+                });
+                const data = await response.json();
+                typingIndicator.style.display = 'none';
+                
+                if (data.reply) {
+                    appendMessage(data.reply, false);
+                } else if (data.error) {
+                    appendMessage("Error: " + data.error, false);
+                }
+            } catch (err) {
+                typingIndicator.style.display = 'none';
+                appendMessage("Failed to reach the server.", false);
+            }
+        }
+    </script>
+</body>
+</html>

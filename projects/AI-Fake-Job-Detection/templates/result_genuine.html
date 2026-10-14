@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-success border-3">
+                <div class="card-header bg-success text-white text-center py-4">
+                    <h2 class="mb-0">✅ Legitimate Job Opportunity</h2>
+                </div>
+                <div class="card-body p-5">
+                    
+                    <div class="text-center mb-5">
+                        <h5 class="text-muted">AI Confidence Score</h5>
+                        <h1 class="display-3 text-success fw-bold">{{ confidence }}%</h1>
+                        <p>Our model indicates this job posting is genuine.</p>
+                    </div>
+
+                    <hr class="my-5">
+
+                    <!-- Skill Gap Analysis -->
+                    <h3 class="mb-4 text-center">Your Skill Gap Analysis</h3>
+                    
+                    {% if skill_gap_data %}
+                        <div class="row text-center mb-4">
+                            <div class="col-md-4 mb-3">
+                                <div class="p-4 bg-light rounded shadow-sm h-100">
+                                    <h4 class="text-muted">Readiness</h4>
+                                    <h1 class="{% if skill_gap_data.readiness > 75 %}text-success{% elif skill_gap_data.readiness > 40 %}text-warning{% else %}text-danger{% endif %}">{{ skill_gap_data.readiness }}%</h1>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="p-4 bg-light rounded shadow-sm h-100 border-start border-4 border-primary">
+                                    <h5 class="text-muted">Skills Found</h5>
+                                    {% for skill in skill_gap_data.found %}
+                                        <span class="badge bg-primary mb-1">{{ skill }}</span>
+                                    {% endfor %}
+                                    {% if not skill_gap_data.found %}
+                                        <p class="text-muted mt-2">None identified.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="p-4 bg-light rounded shadow-sm h-100 border-start border-4 border-danger">
+                                    <h5 class="text-muted">Things to Learn</h5>
+                                    {% for skill in skill_gap_data.missing %}
+                                        <span class="badge bg-danger mb-1">{{ skill }}</span>
+                                    {% endfor %}
+                                    {% if not skill_gap_data.missing and skill_gap_data.found %}
+                                        <p class="text-success fw-bold mt-2">You match all requirements!</p>
+                                    {% elif not skill_gap_data.found %}
+                                        <p class="text-muted mt-2">-</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info text-center">
+                            You didn't provide any skills to compare against. Go back to enter your skills for an analysis.
+                        </div>
+                    {% endif %}
+
+                    <div class="text-center mt-5">
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-lg">Scan Another Job</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

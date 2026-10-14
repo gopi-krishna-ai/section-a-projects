@@ -1,0 +1,248 @@
+:root {
+    --primary: #2563eb; /* Corporate Blue */
+    --primary-light: #eff6ff;
+    --secondary: #4f46e5; /* Indigo */
+    --text-main: #1e293b; /* Dark Slate */
+    --text-muted: #64748b;
+    --bg-main: #f8fafc; /* Very light slate/grey */
+    --bg-panel: #ffffff;
+    --line: #e2e8f0;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --safe: #10b981; /* Emerald Green */
+    --danger: #ef4444; /* Red */
+    --warn: #f59e0b; /* Amber */
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text-main);
+    background-color: var(--bg-main);
+    min-height: 100vh;
+}
+
+/* Navbar */
+.topbar {
+    padding: 15px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.brand-wrap {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+.brand-mark {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    background: var(--primary);
+    font-weight: 800;
+    font-size: 18px;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+}
+.topbar h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+.topbar p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+/* Tabs */
+.tab-buttons {
+    display: flex;
+    gap: 8px;
+}
+.tab-btn {
+    border: none;
+    background: transparent;
+    padding: 10px 20px;
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.tab-btn:hover {
+    color: var(--text-main);
+    background: var(--bg-main);
+}
+.tab-btn.active {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+/* Container & Panels */
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+.panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 40px;
+    display: none; 
+    box-shadow: var(--shadow);
+}
+.panel.active {
+    display: block;
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Typography Overrides */
+h2 {
+    color: var(--text-main);
+    margin-top: 0;
+    font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+.subtitle {
+    color: var(--text-muted);
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+/* Forms & Inputs */
+input[type="text"], input[type="email"], input[type="password"], textarea, select {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    background: #fff;
+    color: var(--text-main);
+    font: inherit;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    transition: 0.2s;
+    font-size: 15px;
+}
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+/* Buttons */
+.primary-btn {
+    border: none;
+    border-radius: 10px;
+    padding: 14px 28px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+    transition: 0.2s;
+    width: 100%;
+}
+.primary-btn:hover {
+    background: #1d4ed8;
+    box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Custom Widgets */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+.stat-box {
+    background: var(--bg-main);
+    border: 1px solid var(--line);
+    padding: 25px;
+    border-radius: 12px;
+}
+.stat-title {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.stat-value {
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0;
+}
+
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+}
+th {
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--bg-main);
+}
+tr:hover {
+    background: var(--bg-main);
+}
+.badge {
+    padding: 6px 12px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.badge-fake { background: #fee2e2; color: var(--danger); }
+.badge-real { background: #d1fae5; color: var(--safe); }
+
+/* Review XAI Card */
+.review-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.trigger-word {
+    background: #fee2e2;
+    color: var(--danger);
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+#map {
+    height: 500px;
+    width: 100%;
+    border-radius: 12px;
+    margin-top: 20px;
+    border: 1px solid var(--line);
+}

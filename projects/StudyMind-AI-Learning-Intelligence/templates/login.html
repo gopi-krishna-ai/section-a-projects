@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyMind — AI Learning Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    :root {
+        --primary: #4f46e5;
+        --primary-light: #818cf8;
+        --dark: #0f172a;
+        --card: rgba(255,255,255,0.12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: 'Inter', sans-serif;
+        background: url('/static/bg.jpg') no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        color: #e2e8f0;
+    }
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.65);
+        z-index: 0;
+    }
+    .wrapper {
+        position: relative;
+        z-index: 1;
+        max-width: 1400px;
+        width: 95%;
+        margin: 0 auto;
+        padding: 40px 0 60px;
+    }
+
+    /* Header */
+    .header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+    .brand-icon {
+        font-size: 3rem;
+        margin-bottom: 10px;
+    }
+    .header h1 {
+        font-size: 2.8rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #a5b4fc, #818cf8, #c084fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 10px;
+    }
+    .header p {
+        font-size: 1.15rem;
+        color: #94a3b8;
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* Layout */
+    .content-grid {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 30px;
+        align-items: start;
+    }
+
+    /* Glass Card */
+    .glass {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        padding: 30px;
+    }
+
+    /* About Section */
+    .about h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 8px;
+    }
+    .about > p {
+        color: #94a3b8;
+        line-height: 1.7;
+        margin-bottom: 25px;
+    }
+
+    /* Steps */
+    .steps {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 25px;
+    }
+    .step {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 14px;
+        padding: 20px;
+        transition: transform 0.2s, background 0.2s;
+    }
+    .step:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.1);
+    }
+    .step-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        font-size: 1.2rem;
+        margin-bottom: 12px;
+    }
+    .step:nth-child(1) .step-icon { background: rgba(99, 102, 241, 0.25); color: #a5b4fc; }
+    .step:nth-child(2) .step-icon { background: rgba(168, 85, 247, 0.25); color: #c4b5fd; }
+    .step:nth-child(3) .step-icon { background: rgba(34, 197, 94, 0.25); color: #86efac; }
+    .step:nth-child(4) .step-icon { background: rgba(251, 191, 36, 0.25); color: #fde68a; }
+    .step:nth-child(5) .step-icon { background: rgba(236, 72, 153, 0.25); color: #f9a8d4; }
+    .step:nth-child(6) .step-icon { background: rgba(56, 189, 248, 0.25); color: #7dd3fc; }
+    .step h4 {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 5px;
+    }
+    .step p {
+        font-size: 0.85rem;
+        color: #94a3b8;
+        line-height: 1.5;
+    }
+
+    /* Tech badges */
+    .tech-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .tech-badge {
+        background: rgba(99, 102, 241, 0.15);
+        color: #a5b4fc;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        border: 1px solid rgba(99, 102, 241, 0.25);
+    }
+
+    /* Login Panel */
+    .login-panel {
+        text-align: center;
+    }
+    .login-panel .avatar {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        display: grid;
+        place-items: center;
+        font-size: 2rem;
+        margin: 0 auto 15px;
+    }
+    .login-panel h2 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 5px;
+    }
+    .login-panel > p {
+        color: #94a3b8;
+        font-size: 0.9rem;
+        margin-bottom: 25px;
+    }
+    .error-msg {
+        background: rgba(239, 68, 68, 0.15);
+        color: #fca5a5;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        font-size: 0.85rem;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .form-group {
+        text-align: left;
+        margin-bottom: 16px;
+    }
+    .form-group label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #94a3b8;
+        margin-bottom: 6px;
+    }
+    .form-group input {
+        width: 100%;
+        padding: 12px 14px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        color: #fff;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+    .form-group input:focus {
+        border-color: #818cf8;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+    .form-group input::placeholder {
+        color: #64748b;
+    }
+    .btn-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    .btn {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+    .btn-login {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    }
+    .btn-register {
+        background: rgba(255, 255, 255, 0.1);
+        color: #c4b5fd;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* AI Pipeline */
+    .pipeline {
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .pipeline h3 {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 12px;
+    }
+    .pipeline-flow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+    .pipe-step {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #c4b5fd;
+    }
+    .pipe-arrow {
+        color: #475569;
+        font-size: 0.7rem;
+    }
+
+    @media (max-width: 900px) {
+        .content-grid { grid-template-columns: 1fr; }
+        .steps { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand-icon">🧠</div>
+            <h1>StudyMind</h1>
+            <p>AI Learning Intelligence for Notes & PDF Analysis — Transform your study materials into interactive flashcards, quizzes, summaries, and semantic search with state-of-the-art NLP.</p>
+        </div>
+
+        <div class="content-grid">
+            <!-- Left: About & How It Works -->
+            <div class="glass about">
+                <h2>How It Works</h2>
+                <p>StudyMind is an advanced AI-powered learning workspace that transforms any PDF, scanned notes, or text document into a complete study toolkit. Here's your step-by-step guide:</p>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                        <h4>1. Upload Documents</h4>
+                        <p>Upload PDFs, images of handwritten notes, or text files. The system extracts text using PyMuPDF, with OCR fallback for scanned pages.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon"><i class="fas fa-brain"></i></div>
+                        <h4>2. AI Understanding</h4>
+                        <p>Your document is chunked into passages and encoded into semantic embeddings using the MiniLM-L6 sentence transformer model.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon"><i class="fas fa-search"></i></div>
+                        <h4>3. Ask Questions</h4>
+                        <p>Ask any question about your documents. The DistilBERT-SQuAD model finds precise answers with confidence scores and source pages.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon"><i class="fas fa-clone"></i></div>
+                        <h4>4. Auto Flashcards & Quizzes</h4>
+                        <p>AI automatically generates flashcards and fill-in-the-blank quizzes from key concepts extracted from your documents.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon"><i class="fas fa-compress-alt"></i></div>
+                        <h4>5. Smart Summaries</h4>
+                        <p>Get both extractive (key sentences) and abstractive (AI-rewritten) summaries of your entire document in seconds.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon"><i class="fas fa-calendar-check"></i></div>
+                        <h4>6. Study Plan</h4>
+                        <p>The system generates a structured study plan with topic organization, importance ranking, and a day-by-day revision schedule.</p>
+                    </div>
+                </div>
+
+                <div class="tech-row">
+                    <span class="tech-badge">PyTorch</span>
+                    <span class="tech-badge">Sentence-Transformers</span>
+                    <span class="tech-badge">DistilBERT-SQuAD</span>
+                    <span class="tech-badge">MiniLM-L6</span>
+                    <span class="tech-badge">PyMuPDF</span>
+                    <span class="tech-badge">Tesseract OCR</span>
+                    <span class="tech-badge">Flask</span>
+                    <span class="tech-badge">scikit-learn</span>
+                </div>
+
+                <div class="pipeline">
+                    <h3>AI Pipeline</h3>
+                    <div class="pipeline-flow">
+                        <span class="pipe-step">PDF / Image</span>
+                        <span class="pipe-arrow"><i class="fas fa-chevron-right"></i></span>
+                        <span class="pipe-step">Text Extraction</span>
+                        <span class="pipe-arrow"><i class="fas fa-chevron-right"></i></span>
+                        <span class="pipe-step">OCR Fallback</span>
+                        <span class="pipe-arrow"><i class="fas fa-chevron-right"></i></span>
+                        <span class="pipe-step">Chunking</span>
+                        <span class="pipe-arrow"><i class="fas fa-chevron-right"></i></span>
+                        <span class="pipe-step">Embeddings</span>
+                        <span class="pipe-arrow"><i class="fas fa-chevron-right"></i></span>
+                        <span class="pipe-step">Search / QA / Flashcards</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Login -->
+            <div class="glass login-panel">
+                <div class="avatar"><i class="fas fa-user-graduate"></i></div>
+                <h2>Welcome</h2>
+                <p>Log in or register to access your personal AI workspace.</p>
+
+                {% if error %}
+                <div class="error-msg">{{ error }}</div>
+                {% endif %}
+
+                <form method="POST" action="/">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    </div>
+                    <div class="btn-row">
+                        <button type="submit" name="action" value="login" class="btn btn-login">Login</button>
+                        <button type="submit" name="action" value="register" class="btn btn-register">Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

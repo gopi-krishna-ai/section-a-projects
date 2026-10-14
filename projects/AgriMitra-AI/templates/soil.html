@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}AgriMitra AI | Soil Analysis{% endblock %}
+
+{% block content %}
+{% if current_user and current_user.userid == 'admin@agrimitra' %}
+
+<div style="padding: 30px;">
+    <h2><i class="fa-solid fa-map-location-dot"></i> Soil & Geo Analytics</h2>
+    <p style="color: #666; margin-bottom: 20px;">System health for mapping APIs and Soil Database.</p>
+    
+    <div style="margin-top: 10px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3 style="margin-top:0;">API Integrity</h3>
+        <p><i class="fa-solid fa-check-circle" style="color: #166534;"></i> <strong>Leaflet JS Mapping:</strong> Connected, rendering interactive tiles.</p>
+        <p><i class="fa-solid fa-check-circle" style="color: #166534;"></i> <strong>Geo-location Services:</strong> Active, fetching precise lat/lng.</p>
+        <p><i class="fa-solid fa-check-circle" style="color: #166534;"></i> <strong>Soil Classification Database:</strong> 12 primary soil textures indexed.</p>
+    </div>
+</div>
+
+{% else %}
+
+
+<div class="page-title" id="pageTitle">Soil Analysis</div>
+<p class="page-subtitle" id="pageSubtitle">
+    Simple nutrient check based on the values you enter. For a lab-level report, do a proper soil test.
+</p>
+
+<div class="form-card">
+    <h3><i class="fa-solid fa-flask"></i> <span id="formTitle">Soil Nutrients</span></h3>
+
+    <form id="soilForm" novalidate>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="nitrogen" id="lblNitrogen">Nitrogen (N)</label>
+                <input type="number" id="nitrogen" step="0.01" min="0" value="104" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phosphorus" id="lblPhosphorus">Phosphorus (P)</label>
+                <input type="number" id="phosphorus" step="0.01" min="0" value="18" required>
+            </div>
+
+            <div class="form-group">
+                <label for="potassium" id="lblPotassium">Potassium (K)</label>
+                <input type="number" id="potassium" step="0.01" min="0" value="30" required>
+            </div>
+
+            <div class="form-group">
+                <label for="ph" id="lblPh">Soil pH</label>
+                <input type="number" id="ph" step="0.01" min="0" max="14" value="6.5" required>
+            </div>
+        </div>
+
+        <button type="submit" class="primary-btn" id="submitBtn">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span>Analyze Soil</span>
+        </button>
+    </form>
+</div>
+
+<div class="error-box hidden" id="errorBox"></div>
+
+<div class="hidden" id="resultArea">
+
+    <div class="summary-card">
+        <h4 id="resultTitle">Soil Nutrient Status</h4>
+        <div class="summary-grid" id="resultGrid"></div>
+    </div>
+
+    <div class="summary-card">
+        <h4 id="adviceTitle">Simple Advice</h4>
+        <ul id="adviceList" style="margin-left:20px;font-size:16px;line-height:1.9;color:#555;"></ul>
+    </div>
+
+    <div class="info-box">
+        <i class="fa-solid fa-circle-info"></i>
+        <span id="noteText">This is a simple rule-based check, not a laboratory test.</span>
+    </div>
+
+</div>
+
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/soil.js') }}"></script>
+{% endblock %}

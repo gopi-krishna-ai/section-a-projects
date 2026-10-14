@@ -1,0 +1,362 @@
+/* ===========================================
+   AGRIMITRA AI - DESIGN TOKENS & PRIMITIVES
+   Single source of truth for the whole app.
+   Load this FIRST, before any page stylesheet.
+   =========================================== */
+
+:root{
+
+    /* ---- Brand greens (semantic) ---- */
+    --c-primary-darkest: #143d16;
+    --c-primary-dark:    #1b5e20;
+    --c-primary:         #2e7d32;
+    --c-primary-mid:     #388e3c;
+    --c-primary-light:   #43a047;
+    --c-primary-lighter: #4caf50;
+    --c-primary-lightest:#81c784;
+    --c-primary-soft:    #a5d6a7;
+    --c-primary-tint:    #e8f5e9;
+
+    /* ---- Surfaces & borders ---- */
+    --c-bg:          #eef6ef;
+    --c-surface:     #ffffff;
+    --c-surface-soft:#f7faf7;
+    --c-surface-tint:#f3faf3;
+    --c-border:      #dce8dd;
+    --c-border-soft: #e4efe5;
+    --c-border-dash: #cfe5d0;
+
+    /* ---- Text ---- */
+    --c-text:       #333333;
+    --c-text-soft:  #555555;
+    --c-text-muted: #666666;
+    --c-text-faint: #777777;
+    --c-text-strong:#1f2937;
+
+    /* ---- Semantic states ---- */
+    --c-success:       #2e7d32;
+    --c-success-tint:  #e8f5e9;
+    --c-warning:       #f9a825;
+    --c-warning-dark:  #5d4e00;
+    --c-warning-tint:  #fff8e1;
+    --c-error:         #e53935;
+    --c-error-dark:    #8c1f1a;
+    --c-error-tint:    #fdecea;
+    --c-info:          #1565c0;
+    --c-info-tint:     #e3f2fd;
+
+    /* ---- Spacing scale ---- */
+    --sp-1: 4px;
+    --sp-2: 8px;
+    --sp-3: 12px;
+    --sp-4: 16px;
+    --sp-5: 20px;
+    --sp-6: 24px;
+    --sp-7: 28px;
+    --sp-8: 32px;
+    --sp-9: 40px;
+    --sp-10: 48px;
+
+    /* ---- Radius ---- */
+    --r-sm:  8px;
+    --r-md:  12px;
+    --r-lg:  16px;
+    --r-xl:  20px;
+    --r-full: 999px;
+
+    /* ---- Shadows ---- */
+    --sh-sm: 0 3px 8px rgba(0,0,0,.05);
+    --sh-md: 0 10px 20px rgba(0,0,0,.08);
+    --sh-lg: 0 12px 30px rgba(0,0,0,.12);
+
+    /* ---- Typography ---- */
+    --font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --fs-display: 34px;
+    --fs-h1: 30px;
+    --fs-h2: 26px;
+    --fs-h3: 20px;
+    --fs-body: 16px;
+    --fs-sm: 15px;
+    --fs-xs: 14px;
+
+    /* ---- Motion ---- */
+    --dur-fast: 150ms;
+    --dur: 250ms;
+    --ease: cubic-bezier(.25,.65,.3,1);
+}
+
+/* ===========================================
+   BASE
+   =========================================== */
+
+*,*::before,*::after{
+    box-sizing:border-box;
+}
+
+html{
+    -webkit-text-size-adjust:100%;
+}
+
+body{
+    margin:0;
+    font-family:var(--font-family);
+    -webkit-font-smoothing:antialiased;
+}
+
+/* Keyboard focus ring - visible everywhere */
+:focus-visible{
+    outline:3px solid rgba(67,160,71,.55);
+    outline-offset:2px;
+    border-radius:4px;
+}
+
+/* Screen-reader only helper */
+.sr-only{
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+}
+
+/* Content width cap for large monitors */
+.container-inner{
+    max-width:1200px;
+    margin:0 auto;
+}
+
+/* ===========================================
+   SPINNER / LOADING STATES
+   =========================================== */
+
+.spinner{
+    display:inline-block;
+    width:16px;
+    height:16px;
+    border:2.5px solid rgba(255,255,255,.4);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+    vertical-align:-2px;
+}
+
+.spinner.dark{
+    border-color:rgba(46,125,50,.25);
+    border-top-color:var(--c-primary);
+}
+
+.btn.loading,
+.btn:disabled{
+    opacity:.65;
+    cursor:not-allowed;
+}
+
+@keyframes spin{
+    to{ transform:rotate(360deg); }
+}
+
+/* ===========================================
+   SKELETON SHIMMER
+   =========================================== */
+
+.skeleton{
+    background:linear-gradient(90deg,#eef3ee 25%,#f7faf7 37%,#eef3ee 63%);
+    background-size:400% 100%;
+    animation:shimmer 1.4s ease infinite;
+    border-radius:var(--r-sm);
+}
+
+.skeleton-row{
+    height:20px;
+    margin:10px 0;
+}
+
+.skeleton-row.w60{ width:60%; }
+.skeleton-row.w40{ width:40%; }
+
+@keyframes shimmer{
+    0%{ background-position:100% 0; }
+    100%{ background-position:-100% 0; }
+}
+
+/* ===========================================
+   TOAST NOTIFICATIONS
+   =========================================== */
+
+.toast-stack{
+    position:fixed;
+    top:20px;
+    right:20px;
+    z-index:9999;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    pointer-events:none;
+}
+
+.toast{
+    pointer-events:auto;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:260px;
+    max-width:360px;
+    padding:14px 18px;
+    border-radius:var(--r-md);
+    background:var(--c-surface);
+    color:var(--c-text-strong);
+    box-shadow:var(--sh-lg);
+    font-size:var(--fs-sm);
+    line-height:1.5;
+    animation:toastIn var(--dur-fast) var(--ease);
+}
+
+.toast i{
+    font-size:18px;
+}
+
+.toast.success{ border-left:4px solid var(--c-success); }
+.toast.success i{ color:var(--c-success); }
+.toast.error{ border-left:4px solid var(--c-error); }
+.toast.error i{ color:var(--c-error); }
+.toast.info{ border-left:4px solid var(--c-info); }
+.toast.info i{ color:var(--c-info); }
+
+.toast.leaving{
+    animation:toastOut var(--dur-fast) var(--ease) forwards;
+}
+
+@keyframes toastIn{
+    from{ opacity:0; transform:translateY(-12px); }
+    to{ opacity:1; transform:translateY(0); }
+}
+
+@keyframes toastOut{
+    from{ opacity:1; }
+    to{ opacity:0; transform:translateY(-12px); }
+}
+
+/* ===========================================
+   MOTION - reduced motion support
+   =========================================== */
+
+@media (prefers-reduced-motion: reduce){
+    *,
+    *::before,
+    *::after{
+        animation-duration:.01ms !important;
+        animation-iteration-count:1 !important;
+        transition-duration:.01ms !important;
+    }
+}
+
+
+
+/* ===========================================
+   PROFESSIONAL CART OVERLAY & SIDEBAR
+   =========================================== */
+.cart-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.cart-overlay.open {
+    display: block;
+    opacity: 1;
+}
+
+.cart-sidebar {
+    position: fixed;
+    top: 0;
+    right: -550px;
+    width: 550px;
+    max-width: 100vw;
+    height: 100vh;
+    background: #fff;
+    box-shadow: -5px 0 25px rgba(0,0,0,0.15);
+    z-index: 10000;
+    transition: right 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    flex-direction: column;
+}
+.cart-sidebar.open {
+    right: 0;
+}
+
+.cart-header {
+    background: #f3f4f6;
+    color: #111;
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+.cart-header h2 { margin: 0; font-size: 1.5rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+#closeCartBtn {
+    background: none; border: none; color: #6b7280; font-size: 1.5rem; cursor: pointer; transition: 0.2s;
+}
+#closeCartBtn:hover { color: #111; }
+
+.cart-tabs { display: flex; background: #fff; border-bottom: 1px solid #e5e7eb; }
+.cart-tab {
+    flex: 1; padding: 15px; border: none; background: transparent; cursor: pointer;
+    font-weight: 600; color: #6b7280; font-size: 1rem; border-bottom: 3px solid transparent;
+    transition: 0.2s;
+}
+.cart-tab:hover { color: #111; }
+.cart-tab.active { color: var(--c-primary); border-bottom-color: var(--c-primary); }
+
+.cart-content { flex: 1; overflow-y: auto; padding: 25px; background: #f9fafb; }
+.cart-footer { padding: 25px; border-top: 1px solid #e5e7eb; background: #fff; }
+
+.cart-item {
+    display: flex; gap: 20px; margin-bottom: 20px; padding: 20px;
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.cart-item img {
+    width: 100px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid #f3f4f6;
+}
+.cart-item-details { flex: 1; display: flex; flex-direction: column; }
+.cart-item-title { font-weight: 600; font-size: 1.1rem; color: #111; margin-bottom: 4px; }
+.cart-item-seller { font-size: 0.85rem; color: #059669; font-weight: 500; margin-bottom: 8px; }
+.cart-item-stock { font-size: 0.8rem; color: #b45309; margin-bottom: 10px; }
+.cart-item-price { font-weight: bold; font-size: 1.2rem; color: #111; margin-bottom: 15px; }
+
+.cart-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.cart-controls select, .cart-controls input {
+    padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.9rem;
+    background: #f9fafb; color: #111; outline: none; cursor: pointer;
+}
+.cart-controls select:focus { border-color: var(--c-primary); box-shadow: 0 0 0 2px rgba(34,197,94,0.2); }
+
+.cart-subtotal { margin-top: auto; font-weight: 600; color: #111; text-align: right; font-size: 1.1rem; }
+
+.remove-item {
+    color: #ef4444; cursor: pointer; font-size: 0.9rem; font-weight: 500; display: inline-flex; align-items: center; gap: 5px; margin-top: 15px;
+}
+.remove-item:hover { text-decoration: underline; }
+
+.checkout-btn {
+    width: 100%; padding: 15px; background: #fbbf24; color: #111; border: none; border-radius: 8px;
+    font-weight: 700; cursor: pointer; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(251,191,36,0.3);
+    transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 10px;
+}
+.checkout-btn:hover { background: #f59e0b; box-shadow: 0 6px 8px rgba(251,191,36,0.4); transform: translateY(-1px); }
+
+.order-card {
+    background: #fff; border: 1px solid #e5e7eb; padding: 20px; margin-bottom: 20px; border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.order-header { display: flex; justify-content: space-between; border-bottom: 1px solid #f3f4f6; padding-bottom: 12px; margin-bottom: 12px; }
+.order-id { font-weight: 600; color: #111; }
+.order-date { color: #6b7280; font-size: 0.85rem; }
+.order-status { display: inline-block; padding: 4px 10px; background: #dcfce7; color: #166534; border-radius: 99px; font-size: 0.8rem; font-weight: 600; }

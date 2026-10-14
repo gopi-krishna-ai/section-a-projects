@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriMitra AI | Splash Screen</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/splash.css') }}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+<div class="overlay">
+
+    <div class="splash-card">
+
+        <img src="{{ url_for('static', filename='images/logo.png') }}" class="logo" alt="AgriMitra AI Logo">
+
+        <h1 id="title">AgriMitra AI</h1>
+
+        <p class="subtitle" id="subtitle">
+            Multilingual Smart Farming Assistant
+        </p>
+
+        <p class="description" id="description">
+            AI Powered Crop Recommendation • Soil Analysis • Fertilizer Recommendation
+        </p>
+
+        <div class="loading">
+            <span></span>
+        </div>
+
+        <p class="loading-text" id="loadingText">
+            🌱 Loading Smart Agriculture...
+        </p>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/splash.js') }}"></script>
+
+</body>
+</html>

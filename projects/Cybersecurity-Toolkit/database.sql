@@ -1,0 +1,11 @@
+CREATE DATABASE IF NOT EXISTS cyber_toolkit;
+USE cyber_toolkit;
+
+CREATE TABLE IF NOT EXISTS scan_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    scan_type VARCHAR(50) NOT NULL,
+    target VARCHAR(255) NOT NULL,
+    result TEXT NOT NULL,
+    risk_level VARCHAR(20) NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+);

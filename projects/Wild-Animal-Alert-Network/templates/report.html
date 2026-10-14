@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detailed Analysis Report</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --bg-color: #f4f7f6;
+            --text-color: #2c3e50;
+            --accent-color: #27ae60;
+            --card-bg: #fff;
+            --danger-color: #e74c3c;
+            --safe-color: #27ae60;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        /* Top Task Bar */
+        .navbar {
+            background-color: #1a1a1a;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: color 0.3s;
+        }
+        .navbar a:hover {
+            color: var(--accent-color);
+        }
+        .navbar .brand {
+            font-size: 1.4em;
+            color: var(--accent-color);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .main-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            background: #000;
+        }
+
+        .summary-card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent-color);
+        }
+        .summary-card.danger {
+            border-left-color: var(--danger-color);
+        }
+
+        .key-boxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .key-box {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        .key-box h3 {
+            margin-top: 0;
+            color: var(--accent-color);
+        }
+        .danger-text { color: var(--danger-color); font-weight: bold; }
+        .safe-text { color: var(--safe-color); font-weight: bold; }
+
+        .extra-pics {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .extra-pics img {
+            width: 30%;
+            min-width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .animal-section {
+            margin-top: 40px;
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .no-data {
+            text-align: center;
+            margin-top: 100px;
+            font-size: 1.5em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="brand">🐾 Alert Network</div>
+        <div>
+            <a href="/">Home</a>
+            <a href="/project">Dashboard</a>
+            <a href="/report" style="color: var(--accent-color);">Live Report</a>
+            <a href="/map">Network Map</a>
+            <a href="/contact">Authorities</a>
+            <a href="/login">Login</a>
+        </div>
+    </div>
+
+    <div class="container" id="content">
+        <div class="no-data" id="no-data">
+            No recent detection data found. Please run an analysis from the <a href="/project">Dashboard</a>.
+        </div>
+        
+        <div id="report-data" style="display: none;">
+            <h1 id="page-title">Detection Report</h1>
+            <img id="main-img" class="main-image" src="" alt="Detected Frame">
+            
+            <div id="summary-card" class="summary-card">
+                <h2>Situation Summary</h2>
+                <p id="summary-text" style="font-size: 1.2em;"></p>
+                <p><strong>Total Animals Detected:</strong> <span id="animal-count">0</span></p>
+            </div>
+
+            <div id="animals-container">
+                <!-- Animal details injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dataStr = localStorage.getItem('latest_detection');
+        if (dataStr) {
+            const data = JSON.parse(dataStr);
+            document.getElementById('no-data').style.display = 'none';
+            document.getElementById('report-data').style.display = 'block';
+
+            document.getElementById('main-img').src = data.image_url;
+            document.getElementById('summary-text').textContent = data.summary;
+            document.getElementById('animal-count').textContent = data.total_count || 0;
+            
+            const summaryCard = document.getElementById('summary-card');
+            if (data.status === 'danger') {
+                summaryCard.classList.add('danger');
+                document.getElementById('page-title').innerHTML = '🚨 Critical Wildlife Alert Report';
+                document.getElementById('page-title').style.color = 'var(--danger-color)';
+            } else if (data.status === 'safe') {
+                document.getElementById('page-title').innerHTML = '✅ Safe Area Report';
+            } else {
+                document.getElementById('page-title').innerHTML = 'ℹ️ Clear Area Report';
+            }
+
+            const container = document.getElementById('animals-container');
+            if (data.animals && data.animals.length > 0) {
+                data.animals.forEach(animal => {
+                    const isWild = animal.wild;
+                    const friendliness = isWild ? '<span class="danger-text">Hostile / Dangerous</span>' : '<span class="safe-text">Friendly / Domestic</span>';
+                    const problemLevel = isWild ? '<span class="danger-text">High Risk to Humans/Crops</span>' : '<span class="safe-text">No Threat</span>';
+                    const actionNeeded = isWild ? 'Trigger Sirens, Notify Authorities' : 'Monitor only';
+
+                    let cropsHtml = '';
+                    if (animal.crops && animal.crops.length > 0) {
+                        cropsHtml = animal.crops.map(url => `<img src="${url}" alt="Cropped ${animal.name}">`).join('');
+                    } else {
+                        cropsHtml = '<p style="color: #666;">No crops available.</p>';
+                    }
+
+                    const section = document.createElement('div');
+                    section.className = 'animal-section';
+                    
+                    section.innerHTML = `
+                        <h2>Species Profile: ${animal.name}</h2>
+                        <div class="key-boxes">
+                            <div class="key-box">
+                                <h3>Nature</h3>
+                                <p>${animal.wild ? 'Wild Animal' : 'Domestic Animal'}</p>
+                            </div>
+                            <div class="key-box">
+                                <h3>Diet Type</h3>
+                                <p>${animal.type}</p>
+                            </div>
+                            <div class="key-box">
+                                <h3>Behavior</h3>
+                                <p>${friendliness}</p>
+                            </div>
+                            <div class="key-box">
+                                <h3>Risk/Problem</h3>
+                                <p>${problemLevel}</p>
+                            </div>
+                            <div class="key-box">
+                                <h3>Action Required</h3>
+                                <p>${actionNeeded}</p>
+                            </div>
+                            ${animal.distance ? `
+                            <div class="key-box" style="border-left: 4px solid var(--danger-color); background: rgba(231,76,60,0.1);">
+                                <h3>Distance</h3>
+                                <p><strong style="color: var(--danger-color); font-size: 1.2em;">~${animal.distance} meters</strong></p>
+                            </div>` : ''}
+                        </div>
+                        <h3 style="margin-top: 30px;">Detected ${animal.name} Instances</h3>
+                        <p style="color: #666; font-size: 0.9em;">(Isolated directly from the sensor footage)</p>
+                        <div class="extra-pics">
+                            ${cropsHtml}
+                        </div>
+                    `;
+                    container.appendChild(section);
+                });
+            }
+        }
+    </script>
+</body>
+</html>

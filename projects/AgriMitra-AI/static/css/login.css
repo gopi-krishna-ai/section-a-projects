@@ -1,0 +1,356 @@
+/*==================================
+        AGRIMITRA AI LOGIN PAGE
+==================================*/
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:url("../images/login-bg.jpg") no-repeat center center;
+    background-size:cover;
+    overflow:hidden;
+}
+
+.overlay{
+    width:100%;
+    min-height:100vh;
+    background:rgba(0,0,0,.20);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.login-card{
+
+    width:430px;
+    padding:35px;
+
+    background:rgba(255,255,255,.18);
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.35);
+
+    border-radius:25px;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.35);
+
+    text-align:center;
+
+    animation:fadeUp 1s ease;
+
+}
+
+.logo{
+
+    width:95px;
+    margin-bottom:10px;
+
+}
+
+#title{
+
+    color:#1B5E20;
+    font-size:42px;
+    font-weight:700;
+    margin-bottom:8px;
+
+}
+
+.tagline{
+
+    color:#ffffff;
+    font-size:17px;
+    font-weight:500;
+
+    margin-bottom:25px;
+
+}
+
+/* Language */
+
+#language{
+
+    width:100%;
+    padding:13px 15px;
+
+    border:none;
+    outline:none;
+
+    border-radius:12px;
+
+    background:rgba(255,255,255,.95);
+
+    font-size:15px;
+
+    cursor:pointer;
+
+    margin-bottom:18px;
+
+}
+
+/* Input */
+
+.input-box{
+
+    width:100%;
+
+    display:flex;
+
+    align-items:center;
+
+    background:rgba(255,255,255,.95);
+
+    border-radius:12px;
+
+    padding:0 15px;
+
+    margin:15px 0;
+
+}
+
+.input-box i{
+
+    color:#2E7D32;
+
+    font-size:18px;
+
+}
+
+.input-box input{
+
+    flex:1;
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    padding:15px 12px;
+
+    font-size:15px;
+
+    font-family:var(--font-family);
+
+}
+
+.input-box:focus-within{
+
+    box-shadow:0 0 0 3px rgba(67,160,71,.35);
+
+}
+
+#eye{
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+#eye:hover{
+
+    color:#1B5E20;
+
+}
+
+/* Error */
+
+#error{
+
+    color:#fff;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    min-height:22px;
+
+    margin-top:8px;
+
+    background:rgba(0,0,0,.62);
+
+    padding:9px 12px;
+
+    border-radius:8px;
+
+    line-height:1.4;
+
+    transition:opacity .2s ease;
+
+}
+
+#error:empty{
+
+    background:transparent;
+
+    padding:0;
+
+    opacity:0;
+
+}
+
+/* Button */
+
+button{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:linear-gradient(135deg,#2E7D32,#43A047);
+
+    color:#fff;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    margin-top:12px;
+
+    transition:.3s;
+
+}
+
+button:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 20px rgba(46,125,50,.35);
+
+}
+
+button:disabled{
+
+    opacity:.75;
+
+    cursor:wait;
+
+    transform:none;
+
+}
+
+button .spinner{
+
+    margin-right:10px;
+
+    vertical-align:-2px;
+
+}
+
+/* Links */
+
+.links{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-top:22px;
+
+}
+
+.links a{
+
+    color:#ffffff;
+
+    text-decoration:none;
+
+    font-size:14px;
+
+    transition:.3s;
+
+    text-shadow:0 1px 3px rgba(0,0,0,.45);
+
+}
+
+.links a:hover{
+
+    color:#FFD54F;
+
+}
+
+/* Animation */
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(40px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+.login-card{
+
+    width:90%;
+    padding:25px;
+
+}
+
+
+
+    .logo{
+    width:110px;
+    height:110px;
+    object-fit:contain;
+    margin:0 auto 15px;
+    display:block;
+}
+
+
+
+#title{
+
+    font-size:32px;
+
+}
+
+.tagline{
+
+    font-size:15px;
+
+}
+
+button{
+
+    font-size:16px;
+
+}
+
+.links{
+
+    flex-direction:column;
+    gap:12px;
+
+}
+
+}

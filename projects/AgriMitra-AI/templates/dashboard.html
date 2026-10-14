@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+{% block title %}AgriMitra AI | Dashboard{% endblock %}
+
+{% block content %}
+{% if current_user and current_user.userid == 'admin@agrimitra' %}
+
+<div style="padding: 30px;">
+    <h2><i class="fa-solid fa-server"></i> System Overview</h2>
+    <p style="color: #666; margin-bottom: 20px;">Welcome to the AgriMitra AI Admin Command Center.</p>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-left: 4px solid #166534;">
+            <h3 style="margin: 0; color: #166534;"><i class="fa-solid fa-users"></i> User Base</h3>
+            <p style="font-size: 24px; font-weight: bold; margin: 10px 0 0 0;">Active</p>
+            <small style="color: #666;">Farmers registered across all regions</small>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-left: 4px solid #0284c7;">
+            <h3 style="margin: 0; color: #0284c7;"><i class="fa-solid fa-box"></i> Inventory</h3>
+            <p style="font-size: 24px; font-weight: bold; margin: 10px 0 0 0;">Online</p>
+            <small style="color: #666;">Products listed in database</small>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-left: 4px solid #ca8a04;">
+            <h3 style="margin: 0; color: #ca8a04;"><i class="fa-solid fa-truck"></i> Sales Flow</h3>
+            <p style="font-size: 24px; font-weight: bold; margin: 10px 0 0 0;">Processing</p>
+            <small style="color: #666;">Orders handled by system</small>
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h3><i class="fa-solid fa-heart-pulse"></i> AI Model Status</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 10px;"><strong>Crop Recommendation Engine (Random Forest)</strong></td>
+                <td style="padding: 10px; color: #166534; font-weight: bold;">ONLINE</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 10px;"><strong>Fertilizer Suggestion Engine (XGBoost)</strong></td>
+                <td style="padding: 10px; color: #166534; font-weight: bold;">ONLINE</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px;"><strong>Weather API Integration</strong></td>
+                <td style="padding: 10px; color: #166534; font-weight: bold;">ONLINE</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <button onclick="window.location.href='/admin'" style="background: #166534; color: white; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;"><i class="fa-solid fa-wrench"></i> Go to Admin Data Panel</button>
+    </div>
+</div>
+
+{% else %}
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+    <h2 id="heroTitle">
+        Welcome to AgriMitra AI
+    </h2>
+
+    <p id="heroDesc">
+        Smart farming starts with smart decisions.
+    </p>
+
+</section>
+
+<!-- LOCATION SELECTION MAP -->
+<section class="map-section">
+    <div class="map-header">
+        <h2>📍 Select Location</h2>
+        <div class="search-box">
+            <input type="text" id="citySearchInput" placeholder="Enter city or village name...">
+            <button id="citySearchBtn">Search</button>
+        </div>
+    </div>
+    <div id="map"></div>
+</section>
+
+<!-- WEATHER -->
+
+<section class="weather-card">
+
+    <div class="weather-header">
+
+        <h2 id="weatherTitle">
+            🌦 Today's Weather
+        </h2>
+
+        <div class="weather-header-right">
+
+            <span id="location" class="weather-location"></span>
+
+            <span id="weatherStatus">
+                Live Weather
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="weather-main">
+
+        <div class="temp-box">
+
+            <img id="weatherIcon"
+                src="/static/images/real_sun.jpg">
+
+            <h1 id="temperature">
+                --°C
+            </h1>
+
+            <p id="condition">
+                Loading...
+            </p>
+
+        </div>
+
+        <div class="weather-grid">
+
+            <div class="weather-item">
+                <i class="fa-solid fa-temperature-half"></i>
+                <h3 id="feelsLikeText">Feels Like</h3>
+                <p id="feelsLike">--°C</p>
+            </div>
+
+            <div class="weather-item">
+                <i class="fa-solid fa-droplet"></i>
+                <h3 id="humidityText">Humidity</h3>
+                <p id="humidity">--%</p>
+            </div>
+
+            <div class="weather-item">
+                <i class="fa-solid fa-cloud-rain"></i>
+                <h3 id="rainText">Rain</h3>
+                <p id="rain">-- mm</p>
+            </div>
+
+            <div class="weather-item">
+                <i class="fa-solid fa-wind"></i>
+                <h3 id="windText">Wind</h3>
+                <p id="wind">-- km/h</p>
+            </div>
+
+            <div class="weather-item">
+                <i class="fa-solid fa-sun"></i>
+                <h3 id="uvText">UV Index</h3>
+                <p id="uv">--</p>
+            </div>
+
+            <div class="weather-item">
+                <i class="fa-solid fa-eye"></i>
+                <h3 id="visibilityText">Visibility</h3>
+                <p id="visibility">-- km</p>
+            </div>
+
+            <div class="weather-item">
+                <i class="fa-solid fa-gauge-high"></i>
+                <h3 id="pressureText">Pressure</h3>
+                <p id="pressure">-- mb</p>
+            </div>
+
+            <div class="weather-item">
+                <i class="fa-solid fa-clock"></i>
+                <h3 id="updatedText">Updated</h3>
+                <p id="updated">--</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ==========================================
+        WEATHER-BASED FARMING ADVICE
+=========================================== -->
+
+<section class="ai-card">
+
+    <div class="card-header">
+
+        <h2 id="adviceTitle">
+            🤖 Farming Advice for Today
+        </h2>
+
+    </div>
+
+    <div class="card-body">
+
+        <p id="adviceText">
+            Loading advice...
+        </p>
+
+    </div>
+
+</section>
+
+<!-- ==========================================
+        TIPS + NEWS
+=========================================== -->
+
+<div class="info-grid">
+
+    <!-- Farming Tips -->
+
+    <div class="info-card">
+
+        <h2 id="tipTitle">
+            💡 Farming Tip
+        </h2>
+
+        <p id="tipText">
+            Healthy soil grows healthy crops.
+        </p>
+
+    </div>
+
+    <!-- Agriculture News -->
+
+    <div class="info-card">
+
+        <h2 id="newsTitle">
+            📰 Agriculture News
+        </h2>
+
+        <ul class="news-list">
+
+            <li id="news1"></li>
+
+            <li id="news2"></li>
+
+            <li id="news3"></li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+        FEATURE CARDS
+=========================================== -->
+
+<section class="features">
+
+    <div class="feature-card" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('/static/images/crop_recommendation_1789710998687.jpg'); color: white;">
+        <h3 id="cropTitle" style="color: white;">Crop Recommendation</h3>
+        <p id="cropDesc" style="color: #ddd;">Get AI based crop suggestions.</p>
+        <button class="feature-btn" data-nav="crop">Open</button>
+    </div>
+
+    <div class="feature-card" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('/static/images/soil_analysis_1789711012180.jpg'); color: white;">
+        <h3 id="soilTitle" style="color: white;">Soil Analysis</h3>
+        <p id="soilDesc" style="color: #ddd;">Check soil nutrients and health.</p>
+        <button class="feature-btn" data-nav="soil">Open</button>
+    </div>
+
+    <div class="feature-card" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('/static/images/fertilizer_1789711034119.jpg'); color: white;">
+        <h3 id="fertTitle" style="color: white;">Fertilizer Recommendation</h3>
+        <p id="fertDesc" style="color: #ddd;">Find the best fertilizer.</p>
+        <button class="feature-btn" data-nav="fertilizer">Open</button>
+    </div>
+
+    <div class="feature-card" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('/static/images/complete_farm_1789711047054.jpg'); color: white;">
+        <h3 id="combTitle" style="color: white;">Complete Recommendation</h3>
+        <p id="combDesc" style="color: #ddd;">Crop + fertilizer in one form.</p>
+        <button class="feature-btn" data-nav="recommendation">Open</button>
+    </div>
+
+    <div class="feature-card" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('/static/images/ai_farmer_1789711059648.jpg'); color: white;">
+        <h3 id="chatTitle" style="color: white;">AI Assistant</h3>
+        <p id="chatDesc" style="color: #ddd;">Ask farming questions anytime.</p>
+        <button class="feature-btn" data-nav="assistant">Chat</button>
+    </div>
+
+    <div class="feature-card" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('/static/images/farm_history_1789711071822.jpg'); color: white;">
+        <h3 id="historyTitle" style="color: white;">History</h3>
+        <p id="historyDesc" style="color: #ddd;">View previous recommendations.</p>
+        <button class="feature-btn" data-nav="history">View</button>
+    </div>
+
+</section>
+
+<!-- ==========================================
+        QUICK STATS (from actual trained models)
+=========================================== -->
+
+<section class="stats">
+
+    <div class="stat-card">
+        <h2>🌾</h2>
+        <h3 id="statCrops">Crops</h3>
+        <p>22</p>
+    </div>
+
+    <div class="stat-card">
+        <h2>🧪</h2>
+        <h3 id="statSoilTypes">Soil Types</h3>
+        <p>5</p>
+    </div>
+
+    <div class="stat-card">
+        <h2>🌱</h2>
+        <h3 id="statFertilizers">Fertilizers</h3>
+        <p>7</p>
+    </div>
+
+    <div class="stat-card">
+        <h2>🤖</h2>
+        <h3 id="statModels">ML Models</h3>
+        <p>2</p>
+    </div>
+
+</section>
+
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}?v=4"></script>
+{% endblock %}

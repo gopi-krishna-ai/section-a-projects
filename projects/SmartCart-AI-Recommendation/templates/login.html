@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mt-4 mb-5 align-items-center">
+    
+    <!-- LEFT SIDE: ABOUT THE APP & FEATURES -->
+    <div class="col-md-7 pe-md-5 mb-5 mb-md-0">
+        <div class="p-5 rounded-4 shadow-lg text-white" style="background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);">
+            <div class="badge bg-primary px-3 py-2 rounded-pill mb-3"><i class="fas fa-rocket"></i> Next-Gen E-Commerce</div>
+            <h1 class="fw-bold display-5 mb-3" style="letter-spacing: -1px;">Welcome to SmartCart</h1>
+            <p class="fs-5 text-light opacity-75 mb-4">The shopping platform that actually learns what you love. Our Artificial Intelligence analyzes your every click, search, and purchase to build a unique store just for you.</p>
+            
+            <h4 class="fw-bold text-white mb-3 border-bottom border-secondary pb-2">How It Works</h4>
+            <div class="d-flex mb-3">
+                <div class="me-3 fs-3 text-primary"><i class="fas fa-sign-in-alt"></i></div>
+                <div>
+                    <strong class="text-white">1. Log In</strong>
+                    <p class="text-light opacity-75 small mb-0">Sign in to your account or try one of our pre-trained demo personas below.</p>
+                </div>
+            </div>
+            <div class="d-flex mb-3">
+                <div class="me-3 fs-3 text-warning"><i class="fas fa-shopping-cart"></i></div>
+                <div>
+                    <strong class="text-white">2. Shop & Browse</strong>
+                    <p class="text-light opacity-75 small mb-0">View products, add them to your cart, and complete checkouts.</p>
+                </div>
+            </div>
+            <div class="d-flex mb-4">
+                <div class="me-3 fs-3 text-success"><i class="fas fa-brain"></i></div>
+                <div>
+                    <strong class="text-white">3. Watch the AI Learn</strong>
+                    <p class="text-light opacity-75 small mb-0">Visit the <strong>AI Recommendations</strong> page or chat with our <strong>AI Assistant</strong> to see your live personalized experience.</p>
+                </div>
+            </div>
+            
+            <div class="row g-3">
+                <div class="col-6">
+                    <div class="bg-dark bg-opacity-50 p-3 rounded-3 text-center border border-secondary">
+                        <i class="fas fa-robot text-info fs-3 mb-2"></i>
+                        <h6 class="text-white mb-0">Smart Assistant</h6>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="bg-dark bg-opacity-50 p-3 rounded-3 text-center border border-secondary">
+                        <i class="fas fa-magic text-warning fs-3 mb-2"></i>
+                        <h6 class="text-white mb-0">Live Curation</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDE: LOGIN FORM -->
+    <div class="col-md-5">
+        <div class="card product-card p-4 shadow-lg border-0" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);">
+            <h3 class="text-center mb-4 fw-bold text-dark"><i class="fas fa-user-circle text-primary"></i> Login to SmartCart</h3>
+            <form action="{{ url_for('login') }}" method="POST">
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-muted small">Email Address</label>
+                    <input type="email" class="form-control bg-light" name="email" required placeholder="user@example.com">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-muted small">Password</label>
+                    <input type="password" class="form-control bg-light" name="password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-3 shadow-sm fs-5">Login to Account <i class="fas fa-arrow-right ms-2"></i></button>
+            </form>
+            
+            <div class="mt-3 p-3 bg-white border rounded text-center small text-muted shadow-sm">
+                <i class="fas fa-shield-alt text-success"></i> <strong>Admin Access:</strong><br>Email: admin@smartcart.com | Password: admin123
+            </div>
+            <div class="text-center mt-3">
+                <small class="fw-bold">Don't have an account? <a href="{{ url_for('register') }}" class="text-decoration-none">Register here</a></small>
+            </div>
+            
+            <hr class="my-4 text-muted">
+            
+            <div class="text-center">
+                <p class="text-muted small fw-bold mb-2">QUICK TEST: TRY OUR AI PERSONAS</p>
+                <div class="d-flex flex-wrap justify-content-center gap-2">
+                    <a href="{{ url_for('login_demo', customer_id=1) }}" class="btn btn-sm btn-info text-white fw-bold shadow-sm"><i class="fas fa-football-ball"></i> Sports Fan</a>
+                    <a href="{{ url_for('login_demo', customer_id=2) }}" class="btn btn-sm btn-secondary fw-bold shadow-sm"><i class="fas fa-laptop-code"></i> Tech Geek</a>
+                    <a href="{{ url_for('login_demo', customer_id=3) }}" class="btn btn-sm btn-danger fw-bold shadow-sm"><i class="fas fa-paint-brush"></i> Beauty Lover</a>
+                    <a href="{{ url_for('login_demo', customer_id=4) }}" class="btn btn-sm btn-success fw-bold shadow-sm"><i class="fas fa-baby"></i> Busy Parent</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

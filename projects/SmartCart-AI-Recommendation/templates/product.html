@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-5">
+        <img src="{% if product.image_url and product.image_url.startswith("http") %}{{ product.image_url }}{% else %}{{ url_for('static', filename=product.image_url) }}{% endif %}" class="img-fluid rounded" alt="{{ product.name }}" style="object-fit: cover; max-height: 400px; width: 100%;">
+    </div>
+    <div class="col-md-7">
+        <h2>{{ product.name }}</h2>
+        <h5 class="text-muted">{{ product.brand }} | {{ product.category.name }}</h5>
+        
+        <div class="mb-3">
+            <span class="badge bg-warning text-dark">⭐ {{ product.rating }}</span>
+            <span class="text-muted">({{ product.review_count }} reviews)</span>
+        </div>
+        
+        <h3 class="text-success">${{ "%.2f"|format(product.price) }}</h3>
+        {% if product.discount > 0 %}
+            <span class="badge bg-danger">-{{ product.discount }}% Off</span>
+        {% endif %}
+        
+        <p class="mt-4">{{ product.description }}</p>
+        
+        <p><strong>Availability:</strong> {% if product.stock_quantity > 0 %}<span class="text-success">In Stock ({{ product.stock_quantity }})</span>{% else %}<span class="text-danger">Out of Stock</span>{% endif %}</p>
+        
+        <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST" class="mt-4 d-flex align-items-center">
+            <input type="number" name="quantity" value="1" min="1" max="{{ product.stock_quantity }}" class="form-control w-25 me-3" {% if product.stock_quantity == 0 %}disabled{% endif %}>
+            <button type="submit" class="btn btn-primary btn-lg" {% if product.stock_quantity == 0 %}disabled{% endif %}>Add to Cart</button>
+        </form>
+    </div>
+</div>
+
+{% if similar %}
+<div class="row mt-5">
+    <div class="col-md-12">
+        <h4>Similar Products</h4>
+        <hr>
+        <div class="row row-cols-1 row-cols-md-4 g-4 mt-2">
+            {% for prod in similar %}
+            <div class="col">
+                <div class="card h-100 product-card">
+                    <div class="card-body">
+                        <h6 class="card-title">{{ prod.name }}</h6>
+                        <p class="text-success">${{ "%.2f"|format(prod.price) }}</p>
+                        <a href="{{ url_for('product', product_id=prod.id) }}" class="btn btn-sm btn-outline-secondary w-100">View</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}AgriMitra AI | Error{% endblock %}
+
+{% block content %}
+
+<div class="empty-state">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <h1 style="color:#2e7d32;font-size:60px;margin-bottom:10px;">{{ code }}</h1>
+    <p style="font-size:18px;color:#555;">{{ message }}</p>
+    <br>
+    <a href="{{ url_for('dashboard') }}" class="primary-btn" style="text-decoration:none;" id="errorCta">
+        <i class="fa-solid fa-house"></i> Go to Dashboard
+    </a>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const cta = document.getElementById("errorCta");
+    function apply(lang) {
+        NLP.translate(["Back to Dashboard"], lang).then(function (out) {
+            cta.innerHTML = '<i class="fa-solid fa-house"></i> ' + out[0];
+        });
+    }
+    apply(getSavedLanguage());
+    document.addEventListener("agri:langchange", function (e) { apply(e.detail.lang); });
+});
+</script>
+{% endblock %}
